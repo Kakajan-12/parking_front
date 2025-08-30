@@ -1,0 +1,45 @@
+@import "tailwindcss";
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.main-color{
+  background-color: #0A940B;
+}
+
+.bg-gray {
+  background-color: #3f3f3f;
+}
+
+.border-color{
+  border-color: #0A940B;
+}
+
+.text-color{
+  color: #0A940B;
+}
+
+.react-datepicker__close-icon::after {
+  background-color: #0A940B !important;
+  content: "✕" !important;
+  font-size: 14px;
+}
+
+.react-datepicker-popper{
+  z-index: 10;
+}
