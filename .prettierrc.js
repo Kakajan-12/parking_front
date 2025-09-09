@@ -20,10 +20,6 @@ module.exports = {
     ],
 
     importOrderSeparation: true,
-    importOrderBuiltinModulesToTop: true,
     importOrderParserPlugins: ["typescript", "jsx"],
-    importOrderMergeDuplicateImports: true,
 
-    // 🔑 this ensures ALL `.css` files are ignored by the sort plugin
-    importOrderIgnorePatterns: ["\\.css$"],
 };

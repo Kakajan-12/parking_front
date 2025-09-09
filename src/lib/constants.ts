@@ -23,6 +23,7 @@ const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_URL
 
 export const WEBAPP_URL =
     process.env.NEXT_PUBLIC_WEBAPP_URL || VERCEL_URL || "http://localhost:3000";
+export const DEFAULT_LOCALE = "tk";
 
 export const BASE_URL =
     typeof window !== "undefined" ? process.env.NEXT_PUBLIC_BASE_URL : process.env.BASE_SERVER_URL;
@@ -34,5 +35,18 @@ export const M_FIVE_MINUTES_DELAY = 600; // revalidate at every 5 minute
 export const M_HOUR_DELAY = 3600; // revalidate at every 1 hour
 export const M_DAY_DELAY = 86400; // revalidate at every 1 day
 export const M_WEEK_DELAY = 604800; // revalidate at every 1 week
-export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME ?? "Company name";
+export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Company name";
+export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME ?? "Site name";
 export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? "localhost";
+
+export const ROLES = {
+    ADMIN: "admin",
+    OPERATOR: "operator",
+    ACCOUNTANT: "accountant",
+};
+
+export const ROUTES_BY_ROLE = {
+    [ROLES.ADMIN]: "/dashboard",
+    [ROLES.OPERATOR]: "/video",
+    [ROLES.ACCOUNTANT]: "/report",
+};

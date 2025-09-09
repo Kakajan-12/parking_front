@@ -1,11 +1,11 @@
 "use server";
 
-import {cookies} from "next/headers";
-import {RedirectType, redirect} from "next/navigation";
+import { cookies } from "next/headers";
+import { RedirectType, redirect } from "next/navigation";
 
 import jwtDecode from "jwt-decode";
 
-import {checkToken} from "@/lib/auth/index";
+import { checkToken } from "@/lib/auth/index";
 import {
     AUTH_LOGOUT_REDIRECT,
     AUTH_LOGOUT_URL,
@@ -33,10 +33,7 @@ export const checkAuthCookies = async (): Promise<boolean> => {
     return checkToken(token?.value);
 };
 
-export const setAuthCookies = async (
-    response: { access_token: string; },
-    remember?: boolean,
-) => {
+export const setAuthCookies = async (response: { access_token: string }, remember?: boolean) => {
     let exp = undefined;
     const cookiesStore = await cookies();
     console.log(response, "response");

@@ -1,0 +1,165 @@
+{
+  "title": "Управление парковкой",
+  "login": "Вход в систему",
+  "username": "Имя пользователя",
+  "input-username": "Введите имя пользователя",
+  "password": "Пароль",
+  "input-password": "Введите пароль",
+  "parkno": "Выберите парк",
+  "parkno-empty-value": "Не выбирать (для admin/accountant)",
+  "park-3": "Парк 3",
+  "park-4": "Парк 4",
+  "submit": "Войти",
+  "success": "Авторизация успешна",
+  "error-network": "Ошибка сети. Попробуйте позже.",
+  "logo": "Логотип",
+  "users": {
+    "title": "Пользователи",
+    "create": "Создать пользователя",
+    "no-users": "Нет пользователей",
+    "success-add": "Пользователь добавлен",
+    "success-updated": "Пользователь обновлён",
+    "success-deleted": "Пользователь удалён"
+  },
+  "loading": "Загрузка...",
+  "first-name": "Имя",
+  "last-name": "Фамилия",
+  "status": "Статус",
+  "park-number": "Номер парковки",
+  "actions": "Действия",
+  "active": "Активный",
+  "inactive": "Не активный",
+  "select-role": "Выберите роль",
+  "select-parking": "Выберите парковку (для операторов)",
+  "add-user": "Добавить пользователя",
+  "edit-user": "Редактировать пользователя",
+  "update": "Обновить",
+  "save": "Сохранить",
+  "total-users": "Количество пользователей: {count}",
+  "add": "Добавить",
+  "start-time": "Время начала",
+  "endTime": "Время окончания",
+  "price": "Цена",
+  "report": {
+    "title": "Отчёт",
+    "no-tariffs": "Нет данных о тарифах",
+    "total-amount": "Общая сумма: {amount} Манат",
+    "car-number": "Номер автомобиля",
+    "add-tariff": "Добавить тариф",
+    "total-logs": "Количество логов: {count}",
+    "success-added": "Тариф успешно добавлен",
+    "success-deleted": "Тариф успешно удалён",
+    "submit": "Добавить тариф",
+
+    "delete-confirm": "Вы уверены, что хотите удалить этот тариф?",
+    "card-number-placeholder": "введите номер машины",
+    "first-name-placeholder": "Введите имя",
+    "last-name-placeholder": "Введите фамилию",
+    "start-time-placeholder": "Выберите время начала",
+    "end-time-placeholder": "Выберите время окончания",
+    "price-placeholder": "Введите цену (TMT)"
+  },
+  "session-expired": "Сессия истекла. Пожалуйста, войдите снова.",
+  "access-denied": "Доступ запрещён.",
+  "operators": "Операторы",
+  "cameras": "Камеры",
+  "dashboard": {
+    "title": "Панель управления",
+    "total-cars": "Всего машин",
+    "income-park-3": "Доходы P3",
+    "income-park-4": "Доходы P4",
+    "income-park-summary": "income-park-summary",
+    "users-count": "users-count",
+    "operators-count": "operators-count",
+    "cameras-count": "cameras-count",
+    "total-cars-count": "total-cars-count"
+  },
+  "logout": "Выйти",
+  "logout-success": "Выход успешен!",
+  "sidebar": {
+    "title": "Меню",
+    "dashboard": "Администратор",
+    "reports": "Ежемесячные отчеты",
+    "videos": "Видеонаблюдение",
+    "settings": "Настройки"
+  },
+  "role": "Роль",
+  "role-dict": {
+    "admin": "Администратор",
+    "operator": "Оператор",
+    "accountant": "Бухгалтер",
+    "unknown": "Неизвестно"
+  },
+  "search": "Поиск",
+  "start-date": "Начало даты",
+  "end-date": "Конец даты",
+  "status-inside": "Внутри",
+  "status-exited": "Вышел",
+  "all-statuses": "Все статусы",
+  "parking-number": "Номер парковки",
+  "car-number": "Номер автомобиля",
+  "entry-time": "Время въезда",
+  "departure-time": "Время выезда",
+  "open-barrier": "Открыть шлагбаум",
+  "view-photo": "Снимок",
+  "monthly-subscription": "Ежемесячная подписка",
+  "total-logs": "Всего журналов",
+  "previous": "Пред.",
+  "next": "След.",
+  "id": "ID",
+  "park-barrier": "Шлагбаум",
+  "operator-name": "Имя оператора",
+  "login-at": "Вход",
+  "logout-at": "Выход",
+  "summary-price": "Сумма",
+  "download-pdf": "Отчет в PDF",
+  "cancel": "Отмена",
+  "validation": {
+    "email": {
+      "required": "Пожалуйста, введите ваш email.",
+      "invalid": "Введите действительный адрес электронной почты."
+    },
+    "phone": {
+      "invalid": "Неправильный формат телефона"
+    },
+    "password": {
+      "min": "Пароль должен содержать минимум {number} символов",
+      "passwords-do-not-match": "Пароли не совпадают"
+    },
+    "full-name": {
+      "invalid": "Пожалуйста, введите имя и фамилию через пробел или дефис"
+    },
+    "default": {
+      "required": "Это поле обязательно.",
+      "min": "Минимум {min} символов"
+    },
+    "role": {
+      "required": "Роль обязательна",
+      "invalid": "Роль должна быть: admin, accountant, operator"
+    },
+    "park-number": {
+      "required": "Номер парковки обязателен для accountant",
+      "invalid": "Номер парковки должен быть P3 или P4"
+    },
+    "report": {
+      "car-number-required": "Номер автомобиля обязателен",
+      "name-required": "Имя или фамилия обязательны",
+      "invalid-date": "Время начала должно быть раньше времени окончания",
+      "invalid-price": "Введите корректную цену"
+    }
+  },
+  "please-wait": "please-wait",
+  "auth-successfully": "auth-successfully",
+  "page-titles": {
+    "login": "Вход",
+    "logout": "Выход",
+    "dashboard": "dashboard",
+    "video": "video"
+  },
+  "we-hope-to-see-you-again-soon": "we-hope-to-see-you-again-soon",
+  "sign-out-first": "To switch accounts, please sign out first.",
+  "you-have-been-logged-out": "You have been logged out",
+  "try-again": "try-again",
+  "go-home": "go-home",
+  "account": "account"
+}

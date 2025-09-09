@@ -1,38 +1,50 @@
 "use client";
 
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import jwtDecode from "jwt-decode";
-import {parseCookies} from "nookies";
+import { parseCookies } from "nookies";
+import { useDebouncedCallback } from "use-debounce";
 
-import {navigateToLogout} from "@/lib/auth/actions";
-import {AUTH_TOKEN_COOKIE} from "@/lib/constants";
+import { navigateToLogout } from "@/lib/auth/actions";
+import { AUTH_TOKEN_COOKIE } from "@/lib/constants";
 
 interface TokenPayload {
+    exp: number;
+    macpassword?: string;
+    macusername?: string;
+    parkno?: string;
+    role: string;
     user_id: string;
     username: string;
-    iat?: string;
-    exp: number;
-    aud: string;
-    iss: string;
+}
+
+interface UserInfo {
+    keys: Array<string>;
+    macpassword?: string;
+    macusername?: string;
+    parkno?: string;
+    role: string;
+    user_id: string;
+    username: string;
 }
 
 export type AuthContextType = {
     payload: TokenPayload | null;
     refreshTokenPayload: () => void;
-    // user: CustomerInfo | null;
-    // setUserData: (value: CustomerInfo | null) => void;
+    user: UserInfo | null;
+    setUserData: (value: UserInfo | null) => void;
     token: string | null;
     isLoading: boolean;
 };
 
-// const API_ME_URL = "/api/auth/me";
+const API_ME_URL = "/api/auth/me";
 
 export const AuthContext = React.createContext<AuthContextType>({
     payload: null,
     refreshTokenPayload: () => undefined,
-    // user: null,
-    // setUserData: () => undefined,
+    user: null,
+    setUserData: () => undefined,
     token: null,
     isLoading: false,
 });
@@ -50,14 +62,14 @@ const retrievePayload = (token: string): TokenPayload | null => {
     }
 };
 
-function AuthProvider({children}: { children: React.ReactNode }) {
+function AuthProvider({ children }: { children: React.ReactNode }) {
     const [authState, setAuthState] = useState<{
         payload: TokenPayload | null;
-        // user: CustomerInfo | null;
+        user: UserInfo | null;
         isLoading: boolean;
     }>({
         payload: null,
-        // user: null,
+        user: null,
         isLoading: true,
     });
 
@@ -69,44 +81,44 @@ function AuthProvider({children}: { children: React.ReactNode }) {
         const currentToken = cookies[AUTH_TOKEN_COOKIE];
 
         if (!currentToken) {
-            setAuthState(prev => ({...prev, payload: null, user: null}));
+            setAuthState(prev => ({ ...prev, payload: null, user: null }));
             return;
         }
 
         const tokenPayload = retrievePayload(currentToken);
-        setAuthState(prev => ({...prev, payload: tokenPayload}));
+        setAuthState(prev => ({ ...prev, payload: tokenPayload }));
     }, []);
 
-    // const fetchUserData = useCallback(async () => {
-    //     const { [AUTH_TOKEN_COOKIE]: currentToken } = parseCookies();
-    //     if (!currentToken) return;
-    //
-    //     setAuthState(prev => ({...prev, isLoading: true}));
-    //
-    //     try {
-    //         const response = await fetch(API_ME_URL, {
-    //             headers: {
-    //                 'Authorization': `Bearer ${currentToken}`,
-    //             },
-    //             cache: 'no-store',
-    //         });
-    //
-    //         const data = await response.json();
-    //
-    //         if (data.status === 200) {
-    //             setAuthState(prev => ({...prev, user: data.data}));
-    //         } else if (data.status === 401) {
-    //             await navigateToLogout();
-    //         }
-    //     } catch (error) {
-    //         console.error("Fetch user failed:", error);
-    //         setAuthState(prev => ({...prev, user: null}));
-    //     } finally {
-    //         setAuthState(prev => ({...prev, isLoading: false}));
-    //     }
-    // }, []);
+    const fetchUserData = useCallback(async () => {
+        const { [AUTH_TOKEN_COOKIE]: currentToken } = parseCookies();
+        if (!currentToken) return;
 
-    // const debouncedFetchUser = useDebouncedCallback(fetchUserData, 500);
+        setAuthState(prev => ({ ...prev, isLoading: true }));
+
+        try {
+            const response = await fetch(API_ME_URL, {
+                headers: {
+                    Authorization: `Bearer ${currentToken}`,
+                },
+                cache: "no-store",
+            });
+
+            const data = await response.json();
+
+            if (data.status === 200) {
+                setAuthState(prev => ({ ...prev, user: data.data }));
+            } else if (data.status === 401) {
+                await navigateToLogout();
+            }
+        } catch (error) {
+            console.error("Fetch user failed:", error);
+            setAuthState(prev => ({ ...prev, user: null }));
+        } finally {
+            setAuthState(prev => ({ ...prev, isLoading: false }));
+        }
+    }, []);
+
+    const debouncedFetchUser = useDebouncedCallback(fetchUserData, 500);
 
     // Initialize auth state
     useEffect(() => {
@@ -143,20 +155,22 @@ function AuthProvider({children}: { children: React.ReactNode }) {
     }, [authState.payload]);
 
     // Periodic refresh
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         debouncedFetchUser();
-    //     }, 5 * 60 * 1000);
-    //     return () => clearInterval(interval);
-    // }, [debouncedFetchUser]); // stable reference avoids resets
+    useEffect(() => {
+        const interval = setInterval(
+            () => {
+                debouncedFetchUser();
+            },
+            5 * 60 * 1000,
+        );
+        return () => clearInterval(interval);
+    }, [debouncedFetchUser]); // stable reference avoids resets
 
     const contextValue = useMemo(
         () => ({
             payload: authState.payload,
             refreshTokenPayload,
-            // user: authState.user,
-            // setUserData: (user: CustomerInfo | null) =>
-            //     setAuthState(prev => ({...prev, user})),
+            user: authState.user,
+            setUserData: (user: UserInfo | null) => setAuthState(prev => ({ ...prev, user })),
             token,
             isLoading: authState.isLoading,
         }),

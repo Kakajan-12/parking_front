@@ -2,11 +2,13 @@ import React from "react";
 
 import { LocalePrefix, Pathnames } from "next-intl/routing";
 
-import { ENFlag, RUFlag, TMFlag } from "@/components/icons";
+import ENFlag from "@/components/ENFlag";
+import RUFlag from "@/components/RUFlag";
+import TMFlag from "@/components/TMFlag";
 import { DEFAULT_LOCALE, WEBAPP_URL } from "@/lib/constants";
 
-export const locales = ["ru", "tk"] as const;
-export type Locale  = "tk" | "ru"; // "en" | "ru"
+export const locales = ["en", "ru", "tk"] as const;
+export type Locale = "en" | "tk" | "ru"; // "en" | "ru"
 
 interface Language {
     value: Locale;
@@ -17,6 +19,7 @@ interface Language {
 
 export const languages: Language[] = [
     { value: "tk", label: "Türkmen", flag: "/images/flags/tk.svg", Icon: TMFlag },
+    { value: "en", label: "English", flag: "/images/flags/en.svg", Icon: ENFlag },
     { value: "ru", label: "Русский", flag: "/images/flags/ru.svg", Icon: RUFlag },
 ];
 
@@ -31,7 +34,8 @@ type LanguagesKeymapType = Record<
 >;
 
 export const languagesKeymap: LanguagesKeymapType = {
-    ru: { value: "ru", label: "Русский", flag: "/images/flags/ru.svg" },
+    en: { value: "en", label: "English", flag: "/images/flags/en.svg", Icon: ENFlag },
+    ru: { value: "ru", label: "Русский", flag: "/images/flags/ru.svg", Icon: RUFlag },
     tk: { value: "tk", label: "Türkmen", flag: "/images/flags/tk.svg", Icon: TMFlag },
 };
 

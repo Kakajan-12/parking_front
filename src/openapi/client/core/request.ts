@@ -1,33 +1,33 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import {ApiError} from '@/openapi/client/core/ApiError';
-import type {ApiRequestOptions} from '@/openapi/client/core/ApiRequestOptions';
-import type {ApiResult} from '@/openapi/client/core/ApiResult';
-import {CancelablePromise} from '@/openapi/client/core/CancelablePromise';
-import type {OnCancel} from '@/openapi/client/core/CancelablePromise';
-import type {OpenAPIConfig} from '@/openapi/client/core/OpenAPI';
+import { ApiError } from "@/openapi/client/core/ApiError";
+import type { ApiRequestOptions } from "@/openapi/client/core/ApiRequestOptions";
+import type { ApiResult } from "@/openapi/client/core/ApiResult";
+import { CancelablePromise } from "@/openapi/client/core/CancelablePromise";
+import type { OnCancel } from "@/openapi/client/core/CancelablePromise";
+import type { OpenAPIConfig } from "@/openapi/client/core/OpenAPI";
 
 const isDefined = <T>(value: T | null | undefined): value is Exclude<T, null | undefined> => {
     return value !== undefined && value !== null;
 };
 
 const isString = (value: any): value is string => {
-    return typeof value === 'string';
+    return typeof value === "string";
 };
 
 const isStringWithValue = (value: any): value is string => {
-    return isString(value) && value !== '';
+    return isString(value) && value !== "";
 };
 
 const isBlob = (value: any): value is Blob => {
     return (
-        typeof value === 'object' &&
-        typeof value.type === 'string' &&
-        typeof value.stream === 'function' &&
-        typeof value.arrayBuffer === 'function' &&
-        typeof value.constructor === 'function' &&
-        typeof value.constructor.name === 'string' &&
+        typeof value === "object" &&
+        typeof value.type === "string" &&
+        typeof value.stream === "function" &&
+        typeof value.arrayBuffer === "function" &&
+        typeof value.constructor === "function" &&
+        typeof value.constructor.name === "string" &&
         /^(Blob|File)$/.test(value.constructor.name) &&
         /^(Blob|File)$/.test(value[Symbol.toStringTag])
     );
@@ -42,7 +42,7 @@ const base64 = (str: string): string => {
         return btoa(str);
     } catch (err) {
         // @ts-ignore
-        return Buffer.from(str).toString('base64');
+        return Buffer.from(str).toString("base64");
     }
 };
 
@@ -59,7 +59,7 @@ const getQueryString = (params: Record<string, any>): string => {
                 value.forEach(v => {
                     process(key, v);
                 });
-            } else if (typeof value === 'object') {
+            } else if (typeof value === "object") {
                 Object.entries(value).forEach(([k, v]) => {
                     process(`${key}[${k}]`, v);
                 });
@@ -74,17 +74,17 @@ const getQueryString = (params: Record<string, any>): string => {
     });
 
     if (qs.length > 0) {
-        return `?${qs.join('&')}`;
+        return `?${qs.join("&")}`;
     }
 
-    return '';
+    return "";
 };
 
 const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
     const encoder = config.ENCODE_PATH || encodeURI;
 
     const path = options.url
-        .replace('{api-version}', config.VERSION)
+        .replace("{api-version}", config.VERSION)
         .replace(/{(.*?)}/g, (substring: string, group: string) => {
             if (options.path?.hasOwnProperty(group)) {
                 return encoder(String(options.path[group]));
@@ -128,8 +128,11 @@ const getFormData = (options: ApiRequestOptions): FormData | undefined => {
 
 type Resolver<T> = (options: ApiRequestOptions) => Promise<T>;
 
-const resolve = async <T>(options: ApiRequestOptions, resolver?: T | Resolver<T>): Promise<T | undefined> => {
-    if (typeof resolver === 'function') {
+const resolve = async <T>(
+    options: ApiRequestOptions,
+    resolver?: T | Resolver<T>,
+): Promise<T | undefined> => {
+    if (typeof resolver === "function") {
         return (resolver as Resolver<T>)(options);
     }
     return resolver;
@@ -141,39 +144,42 @@ const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptions): Pr
     const password = await resolve(options, config.PASSWORD);
     const additionalHeaders = await resolve(options, config.HEADERS);
     const headers = Object.entries({
-        Accept: 'application/json',
+        Accept: "application/json",
         ...additionalHeaders,
         ...options.headers,
     })
         .filter(([_, value]) => isDefined(value))
-        .reduce((headers, [key, value]) => ({
-            ...headers,
-            [key]: String(value),
-        }), {} as Record<string, string>);
+        .reduce(
+            (headers, [key, value]) => ({
+                ...headers,
+                [key]: String(value),
+            }),
+            {} as Record<string, string>,
+        );
 
     if (isStringWithValue(token)) {
-        console.log(token, "token")
+        console.log(token, "token");
         if (token.startsWith("Bearer")) {
-            headers['Authorization'] = token
+            headers["Authorization"] = token;
         } else {
-            headers['Authorization'] = `Bearer ${token}`;
+            headers["Authorization"] = `Bearer ${token}`;
         }
     }
 
     if (isStringWithValue(username) && isStringWithValue(password)) {
         const credentials = base64(`${username}:${password}`);
-        headers['Authorization'] = `Basic ${credentials}`;
+        headers["Authorization"] = `Basic ${credentials}`;
     }
 
     if (options.body) {
         if (options.mediaType) {
-            headers['Content-Type'] = options.mediaType;
+            headers["Content-Type"] = options.mediaType;
         } else if (isBlob(options.body)) {
-            headers['Content-Type'] = options.body.type || 'application/octet-stream';
+            headers["Content-Type"] = options.body.type || "application/octet-stream";
         } else if (isString(options.body)) {
-            headers['Content-Type'] = 'text/plain';
+            headers["Content-Type"] = "text/plain";
         } else if (!isFormData(options.body)) {
-            headers['Content-Type'] = 'application/json';
+            headers["Content-Type"] = "application/json";
         }
     }
     return new Headers(headers);
@@ -181,8 +187,8 @@ const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptions): Pr
 
 const getRequestBody = (options: ApiRequestOptions): any => {
     if (options.body) {
-        if (options.mediaType?.includes('/json')) {
-            return JSON.stringify(options.body)
+        if (options.mediaType?.includes("/json")) {
+            return JSON.stringify(options.body);
         } else if (isString(options.body) || isBlob(options.body) || isFormData(options.body)) {
             return options.body;
         } else {
@@ -201,7 +207,7 @@ export const sendRequest = async (
     headers: Headers,
     onCancel: OnCancel,
     next: NextFetchRequestConfig | undefined,
-    cache?: "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload"
+    cache?: "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload",
 ): Promise<Response> => {
     const controller = new AbortController();
 
@@ -211,7 +217,7 @@ export const sendRequest = async (
         method: options.method,
         signal: controller.signal,
         next: next,
-        cache: cache
+        cache: cache,
     };
 
     if (config.WITH_CREDENTIALS) {
@@ -221,7 +227,6 @@ export const sendRequest = async (
     onCancel(() => controller.abort());
     return await fetch(url, request);
 };
-
 
 const getResponseHeader = (response: Response, responseHeader?: string): string | undefined => {
     if (responseHeader) {
@@ -236,15 +241,17 @@ const getResponseHeader = (response: Response, responseHeader?: string): string 
 const getResponseBody = async (response: Response): Promise<any> => {
     if (response.status !== 204) {
         try {
-            const contentType = response.headers.get('Content-Type');
+            const contentType = response.headers.get("Content-Type");
             if (contentType) {
-                const isJSON = contentType.toLowerCase().startsWith('application/json');
+                const isJSON = contentType.toLowerCase().startsWith("application/json");
                 if (isJSON) {
                     return await response.json();
-                } else if ([
-                    'application/pdf',
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                ].includes(contentType)) {
+                } else if (
+                    [
+                        "application/pdf",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    ].includes(contentType)
+                ) {
                     return await response.blob();
                 } else {
                     return await response.text();
@@ -257,26 +264,29 @@ const getResponseBody = async (response: Response): Promise<any> => {
     return undefined;
 };
 
-const catchErrorCodes = async (config: OpenAPIConfig, options: ApiRequestOptions, result: ApiResult): Promise<void> => {
+const catchErrorCodes = async (
+    config: OpenAPIConfig,
+    options: ApiRequestOptions,
+    result: ApiResult,
+): Promise<void> => {
     const errors: Record<number, string> = {
-        400: 'Bad Request',
-        401: 'Unauthorized',
-        403: 'Forbidden',
-        404: 'Not Found',
-        500: 'Internal Server Error',
-        502: 'Bad Gateway',
-        503: 'Service Unavailable',
+        400: "Bad Request",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        500: "Internal Server Error",
+        502: "Bad Gateway",
+        503: "Service Unavailable",
         ...options.errors,
-    }
+    };
 
     const error = errors[result.status];
-
 
     if (error) {
         throw new ApiError(options, result, error);
     }
     if (!result.ok) {
-        throw new ApiError(options, result, 'Generic Error');
+        throw new ApiError(options, result, "Generic Error");
     }
 };
 
@@ -287,12 +297,14 @@ const catchErrorCodes = async (config: OpenAPIConfig, options: ApiRequestOptions
  * @returns CancelablePromise<T>
  * @throws ApiError
  */
-export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions): CancelablePromise<T> => {
+export const request = <T>(
+    config: OpenAPIConfig,
+    options: ApiRequestOptions,
+): CancelablePromise<T> => {
     let tryError: any = {
-        status: null
-    }
-    const result =  new CancelablePromise<T>(async (resolve, reject, onCancel) => {
-
+        status: null,
+    };
+    const result = new CancelablePromise<T>(async (resolve, reject, onCancel) => {
         try {
             const url = getUrl(config, options);
             const formData = getFormData(options);
@@ -302,7 +314,15 @@ export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions): C
             const cache = config.CACHE;
             if (!onCancel.isCancelled) {
                 const response = await sendRequest(
-                    config, options, url, body, formData, headers, onCancel, next, cache
+                    config,
+                    options,
+                    url,
+                    body,
+                    formData,
+                    headers,
+                    onCancel,
+                    next,
+                    cache,
                 );
                 const responseBody = await getResponseBody(response);
                 const responseHeader = getResponseHeader(response, options.responseHeader);
@@ -313,19 +333,17 @@ export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions): C
                     status: response.status,
                     statusText: response.statusText,
                     body: responseHeader ?? responseBody,
-                    responseHeaders: response.headers
+                    responseHeaders: response.headers,
                 };
 
                 await catchErrorCodes(config, options, result);
                 resolve(result.body);
-
             }
         } catch (error) {
-            console.debug(error)
+            console.debug(error);
             reject(error);
         }
-
     });
 
-    return result
+    return result;
 };
