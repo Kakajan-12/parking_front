@@ -32,7 +32,7 @@ export class CarsService {
     }): CancelablePromise<CarSessionPaginatedResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/car-session/',
+            url: '/api/v1/session-car/',
             query: {
                 'page': page,
                 'limit': limit,
@@ -53,7 +53,7 @@ export class CarsService {
     public getApiV1CarSessionCount(): CancelablePromise<CountResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/car-session/count/',
+            url: '/api/v1/session-car/count/',
             errors: {
                 401: `detail: Unauthorized - Invalid token`,
                 403: `detail: Permission denied`,

@@ -122,7 +122,8 @@
     "car-add": "car-add",
     "car-detail": "car-detail",
     "tariffs": "tariffs",
-    "cars-sessions": "cars-sessions"
+    "cars-sessions": "cars-sessions",
+    "report": "report"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -137,7 +138,9 @@
     "car-add": "Добавить машину",
     "car-detail": "car-detail",
     "tariffs": "tariffs",
-    "cars-sessions": "cars-sessions"
+    "cars-sessions": "cars-sessions",
+    "video": "video",
+    "report": "report"
   },
   "users-page": {
     "add-new-user": "Добавить нового пользователя",

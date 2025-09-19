@@ -53,6 +53,37 @@ function Content({ rows, page, limit }: Props) {
     const searchParams = useSearchParams();
     const t = useTranslations();
 
+// Add inside your Content component
+    React.useEffect(() => {
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws/car-session");
+
+    ws.onopen = () => {
+        console.log("✅ WS Connected");
+    };
+
+    ws.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            console.log("📩 WS Message:", data);
+
+            // If server sends "refresh" trigger, you can re-fetch table data
+            if (data === "refresh") {
+                router.refresh?.(); // or call your data fetching logic
+            } else {
+                // data is a CarSession object -> prepend or update table rows
+                // Example: setRows(prev => [data, ...prev]);
+            }
+        } catch (err) {
+            console.error("WS parse error", err);
+        }
+    };
+
+    ws.onclose = () => console.log("❌ WS Disconnected");
+    ws.onerror = (err) => console.error("WS Error", err);
+
+    return () => ws.close();
+}, [router]);
+
 
     const handlePageChange = (updaterOrValue: Updater<PaginationState>) => {
         const newState =
