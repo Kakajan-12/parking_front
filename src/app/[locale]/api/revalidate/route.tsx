@@ -5,17 +5,17 @@ export async function GET(request: NextRequest) {
     const path = request.nextUrl.searchParams.get("path");
     const redirectParam = request.nextUrl.searchParams.get("redirect");
     const tag = request.nextUrl.searchParams.get("tag");
-    let message = "Missing revalidate params"
+    let message = "Missing revalidate params";
     let revalidated = false;
     // Revalidate the path if provided
     if (path) {
         revalidatePath(path);
         message = `Path ${path} revalidated`;
-        revalidated = true
-    }else if (tag){
+        revalidated = true;
+    } else if (tag) {
         revalidateTag(tag);
         message = `Tag ${tag} revalidated`;
-        revalidated = true
+        revalidated = true;
     }
 
     // Handle redirect logic
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
             revalidated: !!path,
             now: Date.now(),
-            message: path ? `Path ${path} revalidated` : "Missing path to revalidate"
+            message: path ? `Path ${path} revalidated` : "Missing path to revalidate",
         });
     } else if (redirectParam === "pass") {
         // Redirect to the provided path if it exists and redirect=pass
@@ -39,6 +39,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
         revalidated: revalidated,
         now: Date.now(),
-        message: message
+        message: message,
     });
 }

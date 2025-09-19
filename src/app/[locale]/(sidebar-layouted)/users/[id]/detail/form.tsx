@@ -1,0 +1,226 @@
+"use client";
+
+import { useState } from "react";
+
+import { useRouter } from "next/navigation";
+
+import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
+import { z } from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
+import {
+    Select,
+    SelectTrigger,
+    SelectContent,
+    SelectItem,
+    SelectValue,
+} from "@/components/ui/select";
+import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
+import { CarParkType, UserUpdateInput, UserResponse, RoleType } from "@/openapi/client";
+
+import { userUpdateAction } from "./actions";
+
+const Content = ({ data }: { data: UserResponse }) => {
+    const t = useTranslations();
+    const [errors, setErrors] = useState<Record<string, string> | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    const handleSubmit = async (values: {
+        username: string;
+        fullName: string;
+        password: string;
+        role?: string;
+        carPark?: string;
+        isActive: boolean;
+    }) => {
+        if (values.role === undefined) return;
+        setLoading(true);
+        const toastId = toastLoading(t("please-wait"));
+        const response = await userUpdateAction(data.id, {
+            username: values.username,
+            password: values.password,
+            fullName: values.fullName,
+            role: values.role as UserUpdateInput["role"],
+            carPark: (values.carPark || undefined) as UserUpdateInput["carPark"],
+            isActive: values.isActive,
+        });
+
+        if (response.status == 200 && response.data) {
+            toastUpdate(
+                toastId,
+                response.message ?? t("users-page.user-updated-successfully"),
+                "success",
+            );
+            setErrors(null);
+            if (response.data) {
+                router.push(`/users/${response.data.id}/detail`);
+            }
+        } else {
+            toastUpdate(toastId, response.message ?? t("errors.something-went-wrong"), "warning");
+            if (response.errors !== null) setErrors(response.errors);
+        }
+        setLoading(false);
+    };
+
+    const schema = z.object({
+        username: z.string({ required_error: t("validation.default.required") }),
+        fullName: z.string({ required_error: t("validation.default.required") }),
+        password: z.string().optional(),
+        role: z.nativeEnum(RoleType, {
+            required_error: t("validation.default.required"),
+            message: t("validation.select.invalid"),
+        }),
+        carPark: z.nativeEnum(CarParkType, { message: t("validation.select.invalid") }).optional(),
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            username: data.username,
+            fullName: data.fullName ?? "",
+            password: "",
+            carPark: data.carPark ? data.carPark.value : undefined,
+            role: data.role.value,
+            isActive: data.isActive,
+        },
+        validationSchema: toFormikValidationSchema(schema),
+        onSubmit: handleSubmit,
+    });
+
+    return (
+        <Card className="w-full mx-auto p-6">
+            <CardHeader>
+                <CardTitle>{t("users-page.update-user-details")}</CardTitle>
+                <CardDescription>{t("users-page.update-user-instruction")}</CardDescription>
+            </CardHeader>
+            <CardContent className="px-6 py-4">
+                <Form onSubmit={formik.handleSubmit} noValidate={true} className="w-full space-y-4">
+                    <Input
+                        required={true}
+                        id="fullName"
+                        name="fullName"
+                        error={getError(formik, errors, "fullName")}
+                        value={formik.values.fullName}
+                        onChange={formik.handleChange}
+                        placeholder={t("users-page.fill-full-name")}
+                        label={t("full-name")}
+                    />
+
+                    <Input
+                        required={true}
+                        id="username"
+                        name="username"
+                        error={getError(formik, errors, "username")}
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        label={t("username")}
+                        placeholder={t("users-page.fill-username")}
+                    />
+
+                    <PasswordInput
+                        id="password"
+                        name="password"
+                        required={true}
+                        error={getError(formik, errors, "password")}
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        label={t("password")}
+                        helperText={t("users-page.fill-password-for-change")}
+                        placeholder="••••••••"
+                    />
+
+                    <Select
+                        value={formik.values.role}
+                        onValueChange={(value: string) => {
+                            formik.setFieldValue("role", value);
+                        }}
+                    >
+                        <SelectTrigger
+                            required={true}
+                            error={getError(formik, errors, "role")}
+                            label={t("role")}
+                            id="role"
+                            fullWidth={true}
+                        >
+                            <SelectValue placeholder={t("users-page.select-role")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value={RoleType.AdminRole}>Admin</SelectItem>
+                            <SelectItem value={RoleType.OperatorRole}>Operator</SelectItem>
+                            <SelectItem value={RoleType.AccountantRole}>Accountant</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <Select
+                        value={formik.values.carPark}
+                        onValueChange={(value: string) => {
+                            if (value === "clear") {
+                                formik.setFieldValue("carPark", "");
+                            } else {
+                                formik.setFieldValue("carPark", value);
+                            }
+                        }}
+                    >
+                        <SelectTrigger
+                            error={getError(formik, errors, "carPark")}
+                            label={t("park-number")}
+                            id="carPark"
+                            fullWidth={true}
+                        >
+                            <SelectValue placeholder={t("users-page.select-car-park")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="clear" className="text-muted-foreground">
+                                {t("select-park-number")}
+                            </SelectItem>
+                            <SelectItem value={CarParkType.Park3}>Park 3</SelectItem>
+                            <SelectItem value={CarParkType.Park4}>Park 4</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    {/* Is Active */}
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            name="isActive"
+                            id="isActive"
+                            checked={formik.values.isActive}
+                            onCheckedChange={checked => {
+                                formik.setFieldValue("isActive", checked);
+                            }}
+                        />
+                        <Label htmlFor="isActive" className="text-sm font-medium">
+                            {t("is-active")}
+                        </Label>
+                    </div>
+
+                    <CardFooter className="gap-x-4 justify-end  px-0 py-4">
+                        <Button onClick={() => formik.resetForm()} type="button" variant="outline">
+                            {t("action-buttons.reset")}
+                        </Button>
+                        <Button disabled={canSubmit(formik) || loading} type="submit">
+                            {t("action-buttons.submit")}
+                        </Button>
+                    </CardFooter>
+                </Form>
+            </CardContent>
+        </Card>
+    );
+};
+
+export default Content;

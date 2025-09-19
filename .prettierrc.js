@@ -21,5 +21,4 @@ module.exports = {
 
     importOrderSeparation: true,
     importOrderParserPlugins: ["typescript", "jsx"],
-
 };

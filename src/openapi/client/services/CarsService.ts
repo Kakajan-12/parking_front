@@ -2,160 +2,217 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { modelscar_Car_Model } from '../models/modelscar_Car_Model';
-import type { modelscar_CarUpdate } from '../models/modelscar_CarUpdate';
-import type { operator_GetCarsResponse } from '../models/operator_GetCarsResponse';
+import type { CarCreateInput } from '../models/CarCreateInput';
+import type { CarMessageResponse } from '../models/CarMessageResponse';
+import type { CarPaginatedResponse } from '../models/CarPaginatedResponse';
+import type { CarResponse } from '../models/CarResponse';
+import type { CarSessionPaginatedResponse } from '../models/CarSessionPaginatedResponse';
+import type { CarUpdateInput } from '../models/CarUpdateInput';
+import type { CountResponse } from '../models/CountResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class CarsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Update a car by plate number
-     * Updates a car's status and calculates payment and duration based on start and end times.
-     * @returns any Updated car details
+     * @returns CarSessionPaginatedResponse OK
      * @throws ApiError
      */
-    public putApiV1CameraUpdatecar({
-        plate,
-        car,
-    }: {
-        /**
-         * Car plate number
-         */
-        plate: string,
-        /**
-         * Car details to update
-         */
-        car: modelscar_CarUpdate,
-    }): CancelablePromise<any> {
-        return this.httpRequest.request({
-            method: 'PUT',
-            url: '/api/v1/camera/updatecar/{plate}',
-            path: {
-                'plate': plate,
-            },
-            body: car,
-            errors: {
-                400: `Car already exited or invalid request`,
-                404: `Car not found`,
-                500: `Error parsing time`,
-            },
-        });
-    }
-    /**
-     * Get list of cars
-     * Get list of cars with pagination
-     * @returns operator_GetCarsResponse OK
-     * @throws ApiError
-     */
-    public getApiV1Getallcars({
-        page = 1,
-        limit = 5,
+    public getApiV1CarSession({
+        page,
+        limit,
     }: {
         /**
          * Page number
          */
         page?: number,
         /**
-         * Number of items per page
+         * Limit per page
          */
         limit?: number,
-    }): CancelablePromise<operator_GetCarsResponse> {
+    }): CancelablePromise<CarSessionPaginatedResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/getallcars',
+            url: '/api/v1/car-session/',
             query: {
                 'page': page,
                 'limit': limit,
             },
             errors: {
-                400: `Bad Request`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
             },
         });
     }
     /**
-     * Get a car by ID
-     * Get a car by ID
-     * @returns modelscar_Car_Model OK
+     * Count returns total cars count
+     * Retrieves a count of cars
+     * @returns CountResponse count: 12345
      * @throws ApiError
      */
-    public getApiV1Getcar({
+    public getApiV1CarSessionCount(): CancelablePromise<CountResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/api/v1/car-session/count/',
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Retrieves lists cars with optional search, type, and pagination
+     * Retrieves a list of cars with pagination support
+     * @returns CarPaginatedResponse OK
+     * @throws ApiError
+     */
+    public getApiV1Car({
+        page,
+        limit,
+        search,
+    }: {
+        /**
+         * Page number
+         */
+        page?: number,
+        /**
+         * Limit per page
+         */
+        limit?: number,
+        /**
+         * Search term
+         */
+        search?: string,
+    }): CancelablePromise<CarPaginatedResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/api/v1/car/',
+            query: {
+                'page': page,
+                'limit': limit,
+                'search': search,
+            },
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Retrieve single car
+     * Retrieve single car detail
+     * @returns CarResponse OK
+     * @throws ApiError
+     */
+    public getApiV1CarDetail({
         id,
     }: {
         /**
-         * Car ID
+         * Car ID (int)
          */
         id: number,
-    }): CancelablePromise<modelscar_Car_Model> {
+    }): CancelablePromise<CarResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/getcar/{id}',
+            url: '/api/v1/car/{id}/detail/',
             path: {
                 'id': id,
             },
             errors: {
-                404: `Not Found`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
             },
         });
     }
     /**
-     * Search for cars
-     * Retrieve a paginated list of cars with optional filtering by car number, enter time range, end time range, park number, and status.
-     * @returns operator_GetCarsResponse OK
+     * Update a car
+     * Updates an existing car
+     * @returns CarMessageResponse Bad Request
      * @throws ApiError
      */
-    public getApiV1Searchcar({
-        carNumber,
-        enterTime,
-        endTime,
-        parkno,
-        status,
-        page = 1,
-        limit = 5,
+    public patchApiV1CarUpdate({
+        id,
+        requestBody,
     }: {
         /**
-         * Filter by car plate number (partial match allowed)
+         * Car ID (int)
          */
-        carNumber?: string,
+        id: number,
         /**
-         * Start of enter time range (YYYY-MM-DD)
+         * Request data
          */
-        enterTime?: string,
+        requestBody: CarUpdateInput,
+    }): CancelablePromise<CarMessageResponse> {
+        return this.httpRequest.request({
+            method: 'PATCH',
+            url: '/api/v1/car/{id}/update/',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            errors: {
+                400: `detail: BadRequest - invalid request`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                404: `detail: User not found`,
+                422: `detail: Validation errors`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Count returns total cars count
+     * Retrieves a count of cars
+     * @returns CountResponse count: 12345
+     * @throws ApiError
+     */
+    public getApiV1CarCount({
+        search,
+    }: {
         /**
-         * End of end time range (YYYY-MM-DD)
+         * Search term
          */
-        endTime?: string,
-        /**
-         * Filter by parking spot number
-         */
-        parkno?: string,
-        /**
-         * Filter by car status (Inside, Exited)
-         */
-        status?: string,
-        /**
-         * Page number
-         */
-        page?: number,
-        /**
-         * Number of items per page
-         */
-        limit?: number,
-    }): CancelablePromise<operator_GetCarsResponse> {
+        search?: string,
+    }): CancelablePromise<CountResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/searchcar',
+            url: '/api/v1/car/count/',
             query: {
-                'car_number': carNumber,
-                'enter_time': enterTime,
-                'end_time': endTime,
-                'parkno': parkno,
-                'status': status,
-                'page': page,
-                'limit': limit,
+                'search': search,
             },
             errors: {
-                400: `Bad Request`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Creates a new car
+     * Creates new car
+     * @returns CarMessageResponse Created
+     * @throws ApiError
+     */
+    public postApiV1CarCreate({
+        requestBody,
+    }: {
+        /**
+         * Request body
+         */
+        requestBody: CarCreateInput,
+    }): CancelablePromise<CarMessageResponse> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/api/v1/car/create/',
+            body: requestBody,
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                422: `detail: Validation errors`,
+                500: `detail: Internal Server Error`,
             },
         });
     }

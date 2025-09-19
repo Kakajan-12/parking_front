@@ -5,8 +5,8 @@
   "input-username": "Введите имя пользователя",
   "password": "Пароль",
   "input-password": "Введите пароль",
-  "parkno": "Выберите парк",
-  "parkno-empty-value": "Не выбирать (для admin/accountant)",
+  "select-park-number": "Выберите парк",
+  "park-number-empty-value": "Не выбирать (для admin/accountant)",
   "park-3": "Парк 3",
   "park-4": "Парк 4",
   "submit": "Войти",
@@ -50,7 +50,6 @@
     "success-added": "Тариф успешно добавлен",
     "success-deleted": "Тариф успешно удалён",
     "submit": "Добавить тариф",
-
     "delete-confirm": "Вы уверены, что хотите удалить этот тариф?",
     "card-number-placeholder": "введите номер машины",
     "first-name-placeholder": "Введите имя",
@@ -77,11 +76,12 @@
   "logout": "Выйти",
   "logout-success": "Выход успешен!",
   "sidebar": {
-    "title": "Меню",
-    "dashboard": "Администратор",
-    "reports": "Ежемесячные отчеты",
-    "videos": "Видеонаблюдение",
-    "settings": "Настройки"
+    "title": "Menu",
+    "dashboard": "Dashboard",
+    "reports": "Monthly reports",
+    "videos": "Video surveillance",
+    "settings": "Settings",
+    "platform": "Platform"
   },
   "role": "Роль",
   "role-dict": {
@@ -150,16 +150,49 @@
   },
   "please-wait": "please-wait",
   "auth-successfully": "auth-successfully",
-  "page-titles": {
-    "login": "Вход",
-    "logout": "Выход",
-    "dashboard": "dashboard",
-    "video": "video"
-  },
+
   "we-hope-to-see-you-again-soon": "we-hope-to-see-you-again-soon",
   "sign-out-first": "To switch accounts, please sign out first.",
   "you-have-been-logged-out": "You have been logged out",
   "try-again": "try-again",
   "go-home": "go-home",
-  "account": "account"
+  "account": "account",
+
+  "errors": {
+    "fetch-failed": "Error receiving data, check your connection to the server",
+    "failed-to-fetch-data": "Error receiving data, check your connection to the server",
+    "error-network": "Network connection error",
+    "page-not-found": "404 - Page not found",
+    "terminated": "Error bundling application",
+    "failed-to-fetch-data-404": "Error, data not found",
+    "nothing-found": "Nothing found",
+    "internal-server-error": "Error connecting to server",
+    "search-result-not-found": "Nothing found for your search",
+    "something-went-wrong": "Something went wrong!",
+    "search-min-chars": "Minimum {min} characters required for search",
+    "provide-valid-data": "Please provide valid information",
+    "login-invalid-password-or-username": "Invalid username or password",
+    "login-locked-retry-after-several-minutes": "Account locked. Please try again after a few minutes",
+    "error-occurred-when-auth-tried": "An error occurred while trying to authenticate. Please try again.",
+    "please-login-first": "Please log in first to continue"
+  },
+  "page-titles": {
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "video": "Video",
+    "users": "users"
+  },
+
+  "nav": {
+    "dashboard": "dashboard",
+    "users": "Users",
+
+    "add-user": "Add user"
+  },
+
+  "users-page": {
+    "add-new-user": "add-new-user",
+    "add-user-instruction": "Fill out the form below to add a new user to the system."
+  }
 }

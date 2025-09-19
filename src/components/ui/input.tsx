@@ -23,6 +23,7 @@ interface BaseInputProps {
     withoutStyling?: boolean;
     inputClassName?: string;
     disabled?: boolean;
+    required?: boolean;
 }
 
 type PolymorphicInputProps<T extends ElementType = "input"> = BaseInputProps &
@@ -48,6 +49,7 @@ const InputInner = <T extends ElementType = "input">(
         id,
         name,
         withoutStyling = false,
+        required,
         ...rest
     }: PolymorphicInputProps<T>,
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -61,7 +63,7 @@ const InputInner = <T extends ElementType = "input">(
         : cn(
               "file:text-foreground placeholder:text-muted-foreground selection:bg-primary",
               "selection:text-primary-foreground dark:bg-input/30 border-input flex",
-              "h-14 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base",
+              "h-10 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base",
               "shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7",
               "file:border-0 file:bg-transparent file:text-sm file:font-medium",
               "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
@@ -81,7 +83,11 @@ const InputInner = <T extends ElementType = "input">(
                 fullWidth && "w-full",
             )}
         >
-            {label && <Label htmlFor={id}>{label}</Label>}
+            {label && (
+                <Label htmlFor={id}>
+                    {label} {required && "*"}
+                </Label>
+            )}
             <div className="relative flex items-center">
                 {hasStartAdornment && (
                     <span className="absolute left-3 text-gray-500 pointer-events-none">
@@ -100,6 +106,7 @@ const InputInner = <T extends ElementType = "input">(
                     aria-label={rest.ariaLabel}
                     name={name}
                     id={id}
+                    required={required}
                     {...rest}
                 >
                     {children}

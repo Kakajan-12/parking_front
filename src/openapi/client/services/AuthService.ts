@@ -2,99 +2,67 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { modelsuser_User } from '../models/modelsuser_User';
-import type { usercontrol_LoginInput } from '../models/usercontrol_LoginInput';
+import type { LoginInput } from '../models/LoginInput';
+import type { LoginResponse } from '../models/LoginResponse';
+import type { MessagedResponse } from '../models/MessagedResponse';
+import type { UserSessionExtendedResponse } from '../models/UserSessionExtendedResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class AuthService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Login User
-     * { "username": "Dowran", "password": "12345678", "parkno": "P4" }
-     * @returns string message: Login successful
+     * User login
+     * @returns LoginResponse Login successful
      * @throws ApiError
      */
     public postApiV1AuthLogin({
-        credentials,
+        requestBody,
     }: {
         /**
          * User Login Data
          */
-        credentials: usercontrol_LoginInput,
-    }): CancelablePromise<Record<string, string>> {
+        requestBody: LoginInput,
+    }): CancelablePromise<LoginResponse> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/api/v1/auth/login',
-            body: credentials,
+            url: '/api/v1/auth/login/',
+            body: requestBody,
             errors: {
-                400: `message: Invalid request body`,
-                401: `message: Invalid username or password`,
-                500: `message: Internal Server Error`,
+                400: `Invalid request body`,
+                401: `detail: Unauthorized - Invalid token`,
+                422: `detail: Validation errors`,
+                500: `detail: Internal Server Error`,
             },
         });
     }
     /**
      * Logout User
      * Ends the session of a logged-in user by deleting the JWT token cookie.
-     * @returns string message: Logout successful
+     * @returns MessagedResponse message: Logout successful
      * @throws ApiError
      */
-    public postApiV1AuthLogout(): CancelablePromise<Record<string, string>> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/auth/logout',
-            errors: {
-                500: `message: Internal Server Error`,
-            },
-        });
-    }
-    /**
-     * Get current user information
-     * Retrieves the current user's username, role, and user ID from the JWT token.
-     * @returns any Returns user information
-     * @throws ApiError
-     * @example: {
-     *     "keys": [],
-     *     "macpassword": "adam",
-     *     "macusername": "adam",
-     *     "parkno": "P3",
-     *     "role": "admin",
-     *     "user_id": "2",
-     *     "username": "adam-2"
-     * }
-     */
-    public getApiV1AuthMe(): CancelablePromise<any> {
+    public getApiV1AuthLogout(): CancelablePromise<MessagedResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/auth/me',
+            url: '/api/v1/auth/logout/',
             errors: {
-                400: `message: Bad Request - Missing data from middleware`,
-                401: `message: Unauthorized - Invalid token`,
-                500: `message: Internal Server Error - Missing data from middleware`,
+                401: `detail: Unauthorized - Invalid token`,
+                500: `detail: Internal Server Error`,
             },
         });
     }
     /**
-     * Register User
-     * Creates a new user and stores their hashed password. Example: { "username": "newUser", "password": "password123", "firstname": "John", "lastname": "Doe", "role": "admin" }
-     * @returns string message: User Created
+     * Retrieves the current user's username, role, and user ID from the JWT token.
+     * @returns UserSessionExtendedResponse detail: Returns user session information
      * @throws ApiError
      */
-    public postApiV1AuthRegister({
-        user,
-    }: {
-        /**
-         * User Registration Data
-         */
-        user: modelsuser_User,
-    }): CancelablePromise<Record<string, string>> {
+    public getApiV1AuthMe(): CancelablePromise<UserSessionExtendedResponse> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/auth/register',
-            body: user,
+            method: 'GET',
+            url: '/api/v1/auth/me/',
             errors: {
-                400: `message: Password must be at least 8 characters long`,
-                500: `message: Internal Server Error`,
+                401: `detail: Unauthorized - Invalid token`,
+                500: `detail: Internal Server Error`,
             },
         });
     }

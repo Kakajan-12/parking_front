@@ -2,13 +2,17 @@
 
 import React from "react";
 
-import Link from "next/link";
-
+import Link from "@/components/Link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAuthContext } from "@/lib/auth/provider";
-import { ROUTES_BY_ROLE } from "@/lib/constants";
+import { RoleType } from "@/openapi/client";
 
+const ROUTES_BY_ROLE = {
+    [RoleType.AdminRole]: "/dashboard",
+    [RoleType.OperatorRole]: "/video",
+    [RoleType.AccountantRole]: "/report",
+};
 
 const Content = () => {
     const { payload } = useAuthContext();
@@ -41,14 +45,14 @@ const Content = () => {
                 <CardContent className="flex flex-col gap-3">
                     {Array.isArray(route) ? (
                         route.map(r => (
-                            <Link key={r} href={r} passHref>
-                                <Button className="w-full">{r}</Button>
-                            </Link>
+                            <Button key={r} asChild={true} className="w-full">
+                                <Link href={r}>{r}</Link>
+                            </Button>
                         ))
                     ) : (
-                        <Link href={route} passHref>
-                            <Button className="w-full">{route}</Button>
-                        </Link>
+                        <Button asChild={true} className="w-full">
+                            <Link href={route}>{route}</Link>
+                        </Button>
                     )}
                 </CardContent>
             </Card>

@@ -1,42 +1,29 @@
 import { ReactNode } from "react";
 
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbList,
-    BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
-export default function DefaultLayout({
-    children,
-    title,
-}: {
-    children?: ReactNode;
-    title?: ReactNode;
-}) {
+import { AppSidebar } from "./app-sidebar";
+
+export default function DefaultLayout({ children }: { children?: ReactNode; title?: ReactNode }) {
     return (
         <SidebarProvider>
             <AppSidebar />
-            <SidebarInset>
-                <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
-                    <SidebarTrigger className="-ml-1" />
-                    <Separator
-                        orientation="vertical"
-                        className="mr-2 data-[orientation=vertical]:h-4"
-                    />
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>{title}</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                </header>
-                <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
-            </SidebarInset>
+
+                <SidebarInset className="max-h-full overflow-auto">
+                    <header className="z-100 bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                        <SidebarTrigger className="-ml-1" />
+                        <Separator
+                            orientation="vertical"
+                            className="mr-2 data-[orientation=vertical]:h-4"
+                        />
+                        <div className="ml-auto">
+                            <LocaleSwitcher />
+                        </div>
+                    </header>
+                    <div className="w-full flex flex-1 flex-col gap-4">{children}</div>
+                </SidebarInset>
         </SidebarProvider>
     );
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { notFound, redirect, RedirectType } from "next/navigation";
 
 import { defaultLocale } from "@/config";
@@ -17,23 +18,36 @@ async function getServerInstance({
     cache?: "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload";
     locale?: string | undefined;
 } = {}): Promise<FetchClient> {
+
+
+    const headersList = await headers()
+
+    const userAgent = headersList.get("user-agent") ?? "";
+    const forwardedFor = headersList.get("x-forwarded-for");
+    const clientIp = forwardedFor?.split(",")[0].trim() ?? "";
+    const forwardedHost = headersList.get("x-forwarded-host") ?? "";
+
+    if (!BASE_URL) throw new Error("BASE_URL is not defined");
+
     const config: {
         BASE: string | undefined;
         HEADERS: Record<string, string>;
         TOKEN?: string;
         NEXT?: NextFetchRequestConfig;
-
         CACHE?: "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload";
     } = {
         BASE: BASE_URL,
         HEADERS: {
             "Accept-Language": locale,
+            "User-Agent": userAgent,
+            "X-Forwarded-For": clientIp,
+            "X-Forwarded-Host": forwardedHost,
         },
         NEXT: next,
         CACHE: cache,
     };
     if (token) {
-        config["TOKEN"] = token;
+        if (token) config["TOKEN"] = token;
     }
     return new FetchClient(config);
 }
@@ -67,9 +81,9 @@ export async function callRequest<
     action,
     params,
     safeReturn,
-    allow401 = false,
-    allow404 = false,
-    raiseExp = false,
+    allow401 = true,
+    allow404 = true,
+    raiseExp = true,
 }: CallRequestParams<S, A, R>): Promise<R> {
     let error = null;
     let attempts = 0;
@@ -91,26 +105,43 @@ export async function callRequest<
             }
         }
     }
-    if (error instanceof ApiError || (error && typeof error === "object" && "status" in error)) {
-        if (error.status === 401) {
-            if (allow401) {
+
+    const isApiError = (err: unknown): err is ApiError =>
+        typeof err === "object" &&
+        err !== null &&
+        "status" in err &&
+        typeof (err as any).status === "number" &&
+        "responseHeaders" in err &&
+        typeof (err as any).responseHeaders?.get === "function";
+
+    if (isApiError(error)) {
+        const { status, responseHeaders } = error;
+
+        if (status === 401 && allow401) {
+            const wwwAuthenticate = responseHeaders.get("WWW-Authenticate");
+
+            if (
+                wwwAuthenticate === "Bearer signature_expired" &&
+                "refreshToken" in instance.auth &&
+                typeof instance.auth.refreshToken === "function"
+            ) {
+                try {
+                    await instance.auth.refreshToken();
+                } catch {
+                    redirect(AUTH_LOGOUT_URL, RedirectType.replace);
+                }
+            } else {
                 redirect(AUTH_LOGOUT_URL, RedirectType.replace);
             }
-        } else if (error.status === 404) {
-            if (allow404) {
-                notFound();
-            }
+        } else if (status === 404 && allow404) {
+            notFound();
         } else {
-            console.info(`callRequest error: ${error}`);
-            if (raiseExp) {
-                throw error; // Re-throw for other ApiError statuses
-            }
+            console.debug(`callRequest error:`, error);
+            if (raiseExp) throw error;
         }
     } else if (error) {
-        console.info(`callRequest error: ${error}`);
-        if (raiseExp) {
-            throw error; // Re-throw if it's not an ApiError
-        }
+        console.debug(`callRequest error:`, error);
+        if (raiseExp) throw error;
     }
 
     return safeReturn;

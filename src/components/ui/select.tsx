@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Fragment, ReactNode } from "react";
+import { ReactNode } from "react";
 
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -32,6 +32,7 @@ function SelectTrigger({
     id,
     error,
     helperText,
+    required,
     ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
     size?: "sm" | "default";
@@ -40,6 +41,7 @@ function SelectTrigger({
     wrapperClass?: string;
     error?: ReactNode;
     helperText?: ReactNode;
+    required?: boolean;
 }) {
     return (
         <div
@@ -50,7 +52,11 @@ function SelectTrigger({
                 fullWidth && "w-full",
             )}
         >
-            {label && <Label htmlFor={id}>{label}</Label>}
+            {label && (
+                <Label htmlFor={id}>
+                    {label} {required && "*"}
+                </Label>
+            )}
             <SelectPrimitive.Trigger
                 id={id}
                 data-slot="select-trigger"
@@ -64,7 +70,7 @@ function SelectTrigger({
                     "flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent",
                     "px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow]",
                     "outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed",
-                    "disabled:opacity-50 data-[size=default]:h-14 data-[size=sm]:h-8",
+                    "disabled:opacity-50 data-[size=default]:h-10 data-[size=sm]:h-8",
                     "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex",
                     "*:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
                     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",

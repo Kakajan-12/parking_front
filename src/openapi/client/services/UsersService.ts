@@ -2,53 +2,29 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { modelsuser_User } from '../models/modelsuser_User';
-import type { modelsuser_UserRes } from '../models/modelsuser_UserRes';
+import type { CountResponse } from '../models/CountResponse';
+import type { MessagedResponse } from '../models/MessagedResponse';
+import type { UserCreateInput } from '../models/UserCreateInput';
+import type { UserMessageResponse } from '../models/UserMessageResponse';
+import type { UserPaginatedResponse } from '../models/UserPaginatedResponse';
+import type { UserResponse } from '../models/UserResponse';
+import type { UserSessionExtendedPaginatedResponse } from '../models/UserSessionExtendedPaginatedResponse';
+import type { UserSessionExtendedResponse } from '../models/UserSessionExtendedResponse';
+import type { UserUpdateInput } from '../models/UserUpdateInput';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class UsersService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Get all operators
-     * Retrieves a list of users who have the role "operator" in descending order by ID
-     * @returns any List of operators with pagination metadata
-     * @throws ApiError
-     */
-    public getApiV1UserOperators({
-        page = 1,
-        limit = 10,
-    }: {
-        /**
-         * Page number
-         */
-        page?: number,
-        /**
-         * Number of items per page
-         */
-        limit?: number,
-    }): CancelablePromise<any> {
-        return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/operators',
-            query: {
-                'page': page,
-                'limit': limit,
-            },
-            errors: {
-                404: `No operators found`,
-                500: `Error retrieving users with operator role`,
-            },
-        });
-    }
-    /**
-     * Get all users
+     * Retrieves all users with pagination
      * Retrieves a list of users with pagination support
-     * @returns any OK
+     * @returns UserSessionExtendedPaginatedResponse OK
      * @throws ApiError
      */
-    public getApiV1Users({
+    public getApiV1UserSession({
         page,
         limit,
+        userId,
     }: {
         /**
          * Page number
@@ -58,121 +34,273 @@ export class UsersService {
          * Limit per page
          */
         limit?: number,
-    }): CancelablePromise<any> {
+        /**
+         * User ID (UUID)
+         */
+        userId?: string,
+    }): CancelablePromise<UserSessionExtendedPaginatedResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/users',
+            url: '/api/v1/user-session/',
             query: {
                 'page': page,
                 'limit': limit,
+                'user_id': userId,
             },
             errors: {
-                500: `Can not retrieve users`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
             },
         });
     }
     /**
-     * Create a new user
-     * Creates a new user in the database
-     * @returns modelsuser_User OK
+     * Retrieve single user session
+     * Retrieve single user session
+     * @returns UserSessionExtendedResponse OK
      * @throws ApiError
      */
-    public postApiV1Users({
-        user,
-    }: {
-        /**
-         * User data
-         */
-        user: modelsuser_User,
-    }): CancelablePromise<modelsuser_User> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/users',
-            body: user,
-            errors: {
-                400: `Can not parse`,
-                500: `Can not create`,
-            },
-        });
-    }
-    /**
-     * Get user by ID
-     * Retrieves a user from the database using their unique ID
-     * @returns modelsuser_UserRes OK
-     * @throws ApiError
-     */
-    public getApiV1Users1({
+    public getApiV1UserSessionDetail({
         id,
     }: {
         /**
-         * User ID
+         * User session ID (UUID)
          */
-        id: number,
-    }): CancelablePromise<modelsuser_UserRes> {
+        id: string,
+    }): CancelablePromise<UserSessionExtendedResponse> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/v1/users/{id}',
+            url: '/api/v1/user-session/{id}/detail/',
             path: {
                 'id': id,
             },
-        });
-    }
-    /**
-     * Update user fields based on the provided data
-     * Updates a user's data (isActive, username, firstname, lastname, etc.) in the database based on the input provided
-     * @returns modelsuser_UserRes OK
-     * @throws ApiError
-     */
-    public putApiV1Users({
-        id,
-        user,
-    }: {
-        /**
-         * User ID
-         */
-        id: number,
-        /**
-         * User data to update
-         */
-        user: modelsuser_User,
-    }): CancelablePromise<modelsuser_UserRes> {
-        return this.httpRequest.request({
-            method: 'PUT',
-            url: '/api/v1/users/{id}',
-            path: {
-                'id': id,
-            },
-            body: user,
             errors: {
-                400: `Invalid user data`,
-                404: `User not found`,
-                500: `Error updating user`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
             },
         });
     }
     /**
-     * Delete a user by ID
-     * Deletes a user's information from the database using their unique ID
-     * @returns string User deleted successfully
+     * Retrieves all user sessions with pagination
+     * Retrieves a list of users with pagination support
+     * @returns MessagedResponse OK
      * @throws ApiError
      */
-    public deleteApiV1Users({
+    public getApiV1UserSessionRevoke({
         id,
     }: {
         /**
-         * User ID
+         * User session ID (UUID)
          */
-        id: number,
-    }): CancelablePromise<string> {
+        id: string,
+    }): CancelablePromise<MessagedResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/api/v1/user-session/{id}/revoke/',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Retrieves all users with pagination
+     * Retrieves a list of users with pagination support
+     * @returns UserPaginatedResponse OK
+     * @throws ApiError
+     */
+    public getApiV1User({
+        page,
+        limit,
+        search,
+        isActive,
+    }: {
+        /**
+         * Page number
+         */
+        page?: number,
+        /**
+         * Limit per page
+         */
+        limit?: number,
+        /**
+         * Search term
+         */
+        search?: string,
+        /**
+         * User activity
+         */
+        isActive?: boolean,
+    }): CancelablePromise<UserPaginatedResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/api/v1/user/',
+            query: {
+                'page': page,
+                'limit': limit,
+                'search': search,
+                'is_active': isActive,
+            },
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Delete a user
+     * Deletes a user by ID
+     * @returns UserMessageResponse User deleted successfully
+     * @throws ApiError
+     */
+    public deleteApiV1UserDelete({
+        id,
+    }: {
+        /**
+         * User ID (UUID)
+         */
+        id: string,
+    }): CancelablePromise<UserMessageResponse> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/api/v1/users/{id}',
+            url: '/api/v1/user/{id}/delete/',
             path: {
                 'id': id,
             },
             errors: {
+                400: `Bad Request`,
+                401: `Unauthorized - Invalid token`,
+                403: `Permission denied`,
                 404: `User not found`,
-                500: `Error deleting user`,
+                500: `Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Retrieve single user
+     * Retrieve single user detail
+     * @returns UserResponse OK
+     * @throws ApiError
+     */
+    public getApiV1UserDetail({
+        id,
+    }: {
+        /**
+         * User ID (UUID)
+         */
+        id: string,
+    }): CancelablePromise<UserResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/api/v1/user/{id}/detail/',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Update a user
+     * Updates user data by ID
+     * @returns UserMessageResponse Bad Request
+     * @throws ApiError
+     */
+    public patchApiV1UserUpdate({
+        id,
+        requestBody,
+    }: {
+        /**
+         * User ID (UUID)
+         */
+        id: string,
+        /**
+         * User update Data
+         */
+        requestBody: UserUpdateInput,
+    }): CancelablePromise<UserMessageResponse> {
+        return this.httpRequest.request({
+            method: 'PATCH',
+            url: '/api/v1/user/{id}/update/',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            errors: {
+                400: `detail: BadRequest - invalid request`,
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                404: `detail: User not found`,
+                422: `detail: Validation errors`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Count all users
+     * Retrieves a count of users
+     * @returns CountResponse count: 12345
+     * @throws ApiError
+     */
+    public getApiV1UserCount({
+        search,
+        isActive,
+    }: {
+        /**
+         * Search term
+         */
+        search?: string,
+        /**
+         * User activity
+         */
+        isActive?: boolean,
+    }): CancelablePromise<CountResponse> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/api/v1/user/count/',
+            query: {
+                'search': search,
+                'is_active': isActive,
+            },
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                500: `detail: Internal Server Error`,
+            },
+        });
+    }
+    /**
+     * Create and response new user
+     * Creates new user
+     * @returns UserMessageResponse Created
+     * @throws ApiError
+     */
+    public postApiV1UserCreate({
+        requestBody,
+    }: {
+        /**
+         * User create Data
+         */
+        requestBody: UserCreateInput,
+    }): CancelablePromise<UserMessageResponse> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/api/v1/user/create/',
+            body: requestBody,
+            errors: {
+                401: `detail: Unauthorized - Invalid token`,
+                403: `detail: Permission denied`,
+                422: `detail: Validation errors`,
+                500: `detail: Internal Server Error`,
             },
         });
     }

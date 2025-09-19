@@ -150,3 +150,14 @@ export function formatVideoDuration(seconds: number) {
         return `${format(minutes)}:${format(secs)}`;
     }
 }
+
+export function getPrice({ amount, currency }: { amount: number; currency: string }): string {
+    if (isNaN(amount)) return "";
+
+    return new Intl.NumberFormat("ru-RU", {
+        style: "currency",
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount);
+}

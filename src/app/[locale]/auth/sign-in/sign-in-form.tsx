@@ -22,10 +22,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ROLES, ROUTES_BY_ROLE } from "@/lib/constants";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
+import { CarParkType, RoleType } from "@/openapi/client";
 
 import { authenticate } from "./actions";
+
+const ROUTES_BY_ROLE = {
+    [RoleType.AdminRole]: "/dashboard",
+    [RoleType.OperatorRole]: "/video",
+    [RoleType.AccountantRole]: "/report",
+};
 
 const SignInForm = () => {
     const [errors, setErrors] = useState<Record<string, string> | null>(null);
@@ -37,20 +43,23 @@ const SignInForm = () => {
     const schema = z.object({
         username: z.string({ required_error: t("validation.default.required") }),
         password: z.string({ required_error: t("validation.default.required") }),
-        parkno: z.string(),
+        carPark: z.string().optional(),
     });
 
     const handleSubmit = async (values: {
         username: string;
         password: string;
-        parkno?: "empty" | "P3" | "P4";
+        remember: boolean;
+        carPark?: CarParkType;
     }) => {
+        setErrors(null);
         setLoading(true);
         const toastId = toastLoading(t("please-wait"));
         const response = await authenticate({
             username: values.username,
             password: values.password,
-            parkno: values.parkno === "empty" ? "" : values.parkno,
+            carPark: values.carPark || undefined,
+            remember: values.remember,
         });
 
         if (response.status == 200 && response.data) {
@@ -68,7 +77,8 @@ const SignInForm = () => {
         initialValues: {
             username: "",
             password: "",
-            parkno: "empty",
+            carPark: undefined,
+            remember: true,
         },
         validationSchema: toFormikValidationSchema(schema),
         onSubmit: handleSubmit,
@@ -127,25 +137,33 @@ const SignInForm = () => {
                             />
                             <div className="flex flex-col">
                                 <Select
-                                    value={formik.values.parkno}
-                                    onValueChange={(value: string) =>
-                                        formik.setFieldValue("parkno", value)
-                                    }
+                                    value={formik.values.carPark}
+                                    onValueChange={(value: string) => {
+                                        if (value === "clear") {
+                                            formik.setFieldValue("carPark", "");
+                                        } else {
+                                            formik.setFieldValue("carPark", value);
+                                        }
+                                    }}
                                 >
                                     <SelectTrigger
-                                        error={getError(formik, errors, "parkno")}
-                                        label={t("parkno")}
-                                        id="parkno"
+                                        error={getError(formik, errors, "carPark")}
+                                        label={t("park-number")}
+                                        id="carPark"
                                         fullWidth={true}
                                     >
-                                        <SelectValue />
+                                        <SelectValue placeholder={t("park-number-empty-value")} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="empty">
-                                            {t("parkno-empty-value")}
+                                        <SelectItem value="clear" className="text-muted-foreground">
+                                            {t("select-park-number")}
                                         </SelectItem>
-                                        <SelectItem value="P3">{t("park-3")}</SelectItem>
-                                        <SelectItem value="P4">{t("park-4")}</SelectItem>
+                                        <SelectItem value={CarParkType.Park3}>
+                                            {t("car-park-type.park-3")}
+                                        </SelectItem>
+                                        <SelectItem value={CarParkType.Park4}>
+                                            {t("car-park-type.park-4")}
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -155,7 +173,7 @@ const SignInForm = () => {
                             className="w-full"
                             disabled={canSubmit(formik) || loading}
                         >
-                            {t("submit")}
+                            {t("action-buttons.submit")}
                         </Button>
                     </Form>
                 </CardContent>

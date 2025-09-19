@@ -158,7 +158,6 @@ const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptions): Pr
         );
 
     if (isStringWithValue(token)) {
-        console.log(token, "token");
         if (token.startsWith("Bearer")) {
             headers["Authorization"] = token;
         } else {

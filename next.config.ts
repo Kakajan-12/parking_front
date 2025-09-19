@@ -1,19 +1,25 @@
-import {NextConfig} from "next";
+import { NextConfig } from "next";
 
+import dotenv from "dotenv";
 import createNextIntlPlugin from "next-intl/plugin";
 import path from "path";
 
-const defaultAllowedDevOrigins = ["127.0.0.1", "localhost"];
-const allowedDevOrigins = process.env.ALLOWED_DEV_ORIGINS;
-if (allowedDevOrigins) {
-    const origins = allowedDevOrigins.split(",");
-    origins.forEach(origin => {
-        defaultAllowedDevOrigins.push(origin);
-    })
+export const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction) {
+    dotenv.config({ path: ".env.production" });
+} else {
+    dotenv.config({ path: ".env.development" });
 }
 
+const allowedDevOriginsString = process.env.ALLOWED_DEV_ORIGINS;
+const allowedDevOrigins =
+    typeof allowedDevOriginsString === "string"
+        ? allowedDevOriginsString.split(",")
+        : ["127.0.0.1", "localhost"];
+
 const nextConfig: NextConfig = {
-    allowedDevOrigins: defaultAllowedDevOrigins,
+    allowedDevOrigins: allowedDevOrigins,
     reactStrictMode: true,
     poweredByHeader: false,
     // trailingSlash: false,
@@ -60,27 +66,9 @@ const nextConfig: NextConfig = {
                     },
                 ],
             },
-            {
-                source: "/notification-sw.js",
-                headers: [
-                    {
-                        key: "Content-Type",
-                        value: "application/javascript; charset=utf-8",
-                    },
-                    {
-                        key: "Cache-Control",
-                        value: "no-cache, no-store, must-revalidate",
-                    },
-                    {
-                        key: "Content-Security-Policy",
-                        value: "default-src 'self'; script-src 'self'",
-                    },
-                ],
-            },
         ];
     },
 };
 
 const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);
-

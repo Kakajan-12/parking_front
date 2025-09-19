@@ -13,11 +13,13 @@ export default async function Await<T>({
     children,
     className = "",
     fallback,
+    allow401 = true,
 }: {
     promise: Promise<T>;
     children: (value: T) => JSX.Element;
     className?: string;
     fallback?: () => ReactNode;
+    allow401?: boolean;
 }) {
     const t = await getTranslations("errors");
     let error: ApiError | null = null;
@@ -25,7 +27,7 @@ export default async function Await<T>({
         const data = await promise;
         return children(data);
     } catch (e) {
-        if (e instanceof ApiError && e.status === 401) {
+        if (e instanceof ApiError && e.status === 401 && allow401) {
             error = e;
         } else {
             if (fallback) return fallback();

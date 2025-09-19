@@ -3,11 +3,7 @@
 import Link from "next/link";
 
 import { useTranslations } from "next-intl";
-import { FaUserShield, FaRegUser } from "react-icons/fa";
 import { HiOutlineChevronUpDown, HiCheckBadge } from "react-icons/hi2";
-import { LuSettings2 } from "react-icons/lu";
-import { MdCameraAlt } from "react-icons/md";
-import { TbLayoutDashboardFilled, TbReportAnalytics } from "react-icons/tb";
 import { TbLogout } from "react-icons/tb";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

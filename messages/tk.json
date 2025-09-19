@@ -76,11 +76,12 @@
   "logout": "Выйти",
   "logout-success": "Выход успешен!",
   "sidebar": {
-    "title": "Меню",
-    "dashboard": "Администратор",
-    "reports": "Ежемесячные отчеты",
-    "videos": "Видеонаблюдение",
-    "settings": "Настройки"
+    "title": "Menýu",
+    "dashboard": "Administrator",
+    "reports": "Aýlyk hasabatlar",
+    "videos": "Wideo gözegçilik",
+    "settings": "Sazlamalar",
+    "platform": "Platforma"
   },
   "role": "Роль",
   "role-dict": {
@@ -147,19 +148,23 @@
       "invalid-price": "Введите корректную цену"
     }
   },
-  "please-wait": "please-wait",
-  "auth-successfully": "auth-successfully",
+  "we-hope-to-see-you-again-soon": "Ýakynda ýene-de duşuşarys diýip umyt edýäris",
+  "sign-out-first": "Hasaby çalyşmak üçin ilki bilen çykmaly",
+  "you-have-been-logged-out": "Hasapdan çykdyňyz",
+  "try-again": "Täzeden synanyşyň",
+  "go-home": "Baş sahypa git",
+  "account": "Hasap",
+  "please-wait": "Haýyş edýäris, garaşyň",
+  "auth-successfully": "Ulgama üstünlikli girildi",
   "page-titles": {
-    "login": "Вход",
-    "logout": "Выход",
-    "dashboard": "dashboard",
-
-    "video": "video"
+    "login": "Giriş",
+    "logout": "Çykyş",
+    "dashboard": "Dolandyryş paneli",
+    "video": "Wideo",
+    "users": "users"
   },
-  "we-hope-to-see-you-again-soon": "we-hope-to-see-you-again-soon",
-  "sign-out-first": "To switch accounts, please sign out first.",
-  "you-have-been-logged-out": "You have been logged out",
-  "try-again": "try-again",
-  "go-home": "go-home",
-  "account": "account"
+  "nav": {
+    "users": "Ulanyjylar",
+    "add-user": "Ulanyjy goşmak"
+  }
 }

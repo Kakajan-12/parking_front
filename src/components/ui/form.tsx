@@ -46,6 +46,9 @@ const Form = ({
                     <div className="animate-spin rounded-full border-4 border-gray-300 border-t-transparent h-12 w-12" />
                 </div>
             )}
+
+            {/*<pre>{JSON.stringify(formik.values, null, 2)}</pre>*/}
+            {/*<pre>{JSON.stringify(formik.errors, null, 2)}</pre>*/}
         </div>
     );
 };

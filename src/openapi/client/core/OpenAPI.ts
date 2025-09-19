@@ -31,4 +31,5 @@ export const OpenAPI: OpenAPIConfig = {
     HEADERS: undefined,
     ENCODE_PATH: undefined,
     NEXT: undefined,
+    CACHE: "default"
 };

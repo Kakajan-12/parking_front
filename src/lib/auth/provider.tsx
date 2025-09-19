@@ -8,23 +8,11 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { navigateToLogout } from "@/lib/auth/actions";
 import { AUTH_TOKEN_COOKIE } from "@/lib/constants";
+import { RoleType, UserSessionExtendedResponse } from "@/openapi/client";
 
 interface TokenPayload {
     exp: number;
-    macpassword?: string;
-    macusername?: string;
-    parkno?: string;
-    role: string;
-    user_id: string;
-    username: string;
-}
-
-interface UserInfo {
-    keys: Array<string>;
-    macpassword?: string;
-    macusername?: string;
-    parkno?: string;
-    role: string;
+    role: RoleType;
     user_id: string;
     username: string;
 }
@@ -32,8 +20,8 @@ interface UserInfo {
 export type AuthContextType = {
     payload: TokenPayload | null;
     refreshTokenPayload: () => void;
-    user: UserInfo | null;
-    setUserData: (value: UserInfo | null) => void;
+    userSession: UserSessionExtendedResponse | null;
+    setUserSession: (value: UserSessionExtendedResponse | null) => void;
     token: string | null;
     isLoading: boolean;
 };
@@ -43,8 +31,8 @@ const API_ME_URL = "/api/auth/me";
 export const AuthContext = React.createContext<AuthContextType>({
     payload: null,
     refreshTokenPayload: () => undefined,
-    user: null,
-    setUserData: () => undefined,
+    userSession: null,
+    setUserSession: () => undefined,
     token: null,
     isLoading: false,
 });
@@ -65,11 +53,11 @@ const retrievePayload = (token: string): TokenPayload | null => {
 function AuthProvider({ children }: { children: React.ReactNode }) {
     const [authState, setAuthState] = useState<{
         payload: TokenPayload | null;
-        user: UserInfo | null;
+        userSession: UserSessionExtendedResponse | null;
         isLoading: boolean;
     }>({
         payload: null,
-        user: null,
+        userSession: null,
         isLoading: true,
     });
 
@@ -77,17 +65,14 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     const token = cookies[AUTH_TOKEN_COOKIE];
 
     const refreshTokenPayload = useCallback(() => {
-        const cookies = parseCookies();
-        const currentToken = cookies[AUTH_TOKEN_COOKIE];
-
-        if (!currentToken) {
+        if (!token) {
             setAuthState(prev => ({ ...prev, payload: null, user: null }));
             return;
         }
 
-        const tokenPayload = retrievePayload(currentToken);
+        const tokenPayload = retrievePayload(token);
         setAuthState(prev => ({ ...prev, payload: tokenPayload }));
-    }, []);
+    }, [token]);
 
     const fetchUserData = useCallback(async () => {
         const { [AUTH_TOKEN_COOKIE]: currentToken } = parseCookies();
@@ -169,8 +154,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         () => ({
             payload: authState.payload,
             refreshTokenPayload,
-            user: authState.user,
-            setUserData: (user: UserInfo | null) => setAuthState(prev => ({ ...prev, user })),
+            userSession: authState.userSession,
+            setUserSession: (user: UserSessionExtendedResponse | null) =>
+                setAuthState(prev => ({ ...prev, user })),
             token,
             isLoading: authState.isLoading,
         }),

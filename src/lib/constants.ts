@@ -2,6 +2,7 @@ export const PROJECT_NAME = process.env.NEXT_PUBLIC_PROJECT_NAME;
 
 export const AUTH_TOKEN = "access_token";
 export const AUTH_TOKEN_COOKIE: string = "Authorization";
+export const AUTH_REFRESH_TOKEN_COOKIE: string = "refresh";
 export const AUTH_LOGOUT_REDIRECT = "/auth/sign-in";
 
 export const AUTH_LOGIN_URL = "/auth/sign-in";
@@ -39,14 +40,5 @@ export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Company nam
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME ?? "Site name";
 export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? "localhost";
 
-export const ROLES = {
-    ADMIN: "admin",
-    OPERATOR: "operator",
-    ACCOUNTANT: "accountant",
-};
 
-export const ROUTES_BY_ROLE = {
-    [ROLES.ADMIN]: "/dashboard",
-    [ROLES.OPERATOR]: "/video",
-    [ROLES.ACCOUNTANT]: "/report",
-};
+

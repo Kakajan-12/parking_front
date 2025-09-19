@@ -3,6 +3,7 @@
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import Link from "@/components/Link";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
     SidebarGroup,
@@ -33,16 +34,16 @@ export function NavMain({
     const t = useTranslations();
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>{t("platform")}</SidebarGroupLabel>
+            <SidebarGroupLabel>{t("sidebar.platform")}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map(item => (
                     <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild tooltip={item.title}>
-                                <a href={item.url}>
+                                <Link href={item.url}>
                                     <item.icon />
                                     <span>{item.title}</span>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                             {item.items?.length ? (
                                 <>

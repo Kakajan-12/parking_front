@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect, RedirectType } from "next/navigation";
 
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import { AUTH_TOKEN_COOKIE, AUTH_LOGIN_URL } from "@/lib/constants";
 import getServerInstance, { callRequest } from "@/openapi/server-instance";
@@ -24,23 +24,25 @@ export async function generateMetadata(props: Omit<Props, "children">): Promise<
     };
 }
 
-const Page = async ({ params }: Props) => {
-    const { locale } = await params;
-
-    setRequestLocale(locale);
+const Page = async () => {
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_TOKEN_COOKIE);
     if (!token) {
         redirect(AUTH_LOGIN_URL, RedirectType.replace);
     }
 
-    const fetchClient = await getServerInstance({ withAuth: true, cache: "no-cache" });
+    const fetchClient = await getServerInstance({
+        token: token.value,
+        cache: "no-cache",
+    });
 
     await callRequest({
         instance: fetchClient,
         service: "auth",
-        action: "postApiV1AuthLogout",
+        action: "getApiV1AuthLogout",
         safeReturn: null,
+        allow401: false,
+        allow404: false,
         raiseExp: false,
     });
     return <Content />;

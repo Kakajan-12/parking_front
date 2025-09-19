@@ -1,4 +1,7 @@
+import { cookies } from "next/headers";
+
 import { checkAuthCookies } from "@/lib/auth/actions";
+import { AUTH_TOKEN_COOKIE } from "@/lib/constants";
 import { ApiError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
@@ -8,9 +11,12 @@ export async function GET() {
         return Response.json({ data: null, status: 401 });
     }
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTH_TOKEN_COOKIE);
+
     const fetchClient = await getServerInstance({
-        next: { revalidate: 1, tags: ["auth-me"] },
-        withAuth: true,
+        cache: "no-cache",
+        token: token?.value,
     });
     try {
         const response = await fetchClient.auth.getApiV1AuthMe();
