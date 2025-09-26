@@ -9,17 +9,17 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { CarCreateInput, CarResponse } from "@/openapi/client";
+import type { CarCreate, CarVisible, ValidationError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
     status: number;
     message: string | null | undefined;
-    errors: Record<string, string> | null;
-    data?: CarResponse | null;
+    errors: Array<ValidationError> | null;
+    data?: CarVisible | null;
 }
 
-export const carCreateAction = async (values: CarCreateInput): Promise<IResponse> => {
+export const carCreateAction = async (values: CarCreate): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -36,7 +36,7 @@ export const carCreateAction = async (values: CarCreateInput): Promise<IResponse
     });
     let result = undefined;
     try {
-        const response = await fetchClient.cars.postApiV1CarCreate({
+        const response = await fetchClient.carPark.carCreate({
             requestBody: values,
         });
         result = { status: 201, message: response.message, data: response.data, errors: null };
@@ -46,8 +46,8 @@ export const carCreateAction = async (values: CarCreateInput): Promise<IResponse
                 console.log(e.body?.errors);
                 return {
                     status: e.status,
-                    message: e.body?.detail || t("errors.provide-valid-data"),
-                    errors: e.body?.errors ?? null,
+                    message:  t("errors.provide-valid-data"),
+                    errors: e.body?.detail ?? null,
                     data: null,
                 };
             } else {

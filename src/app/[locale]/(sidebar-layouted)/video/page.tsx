@@ -10,6 +10,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Loader from "@/components/Loader";
 import PageHeading from "@/components/PageHeading";
 import { Paper } from "@/components/ui/paper";
+import { retrievePayload } from "@/lib/auth/utils";
 import Await from "@/lib/await";
 import { AUTH_LOGIN_URL, AUTH_TOKEN_COOKIE } from "@/lib/constants";
 import getServerInstance from "@/openapi/server-instance";
@@ -37,15 +38,17 @@ const Page = async ({ params, searchParams }: Props) => {
     setRequestLocale(locale);
     const t = await getTranslations();
 
-    const { page, limit } = await searchParams;
+    const { page, limit, search } = await searchParams;
     const safePage = typeof page === "string" ? Number(page) : 1;
     const safeLimit = typeof limit === "string" ? Number(limit) : 25;
+    const safeSearch = typeof search === "string" ? String(search) : undefined;
 
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_TOKEN_COOKIE);
     if (!token) {
         redirect(AUTH_LOGIN_URL, RedirectType.replace);
     }
+    const payload = retrievePayload(token.value);
 
     const fetchClient = await getServerInstance({
         cache: "no-cache",
@@ -57,9 +60,11 @@ const Page = async ({ params, searchParams }: Props) => {
         },
     });
 
-    const promise = fetchClient.cars.getApiV1CarSession({
+    const promise = fetchClient.carPark.carSessionList({
         page: safePage,
         limit: safeLimit,
+        search: safeSearch,
+        carPark: payload?.car_park,
     });
     return (
         <Fragment>
@@ -78,7 +83,14 @@ const Page = async ({ params, searchParams }: Props) => {
             <Paper>
                 <Suspense fallback={<Loader />}>
                     <Await promise={promise} allow401={true}>
-                        {data => <Content rows={data.rows} page={safePage} limit={safeLimit} />}
+                        {data => (
+                            <Content
+                                rows={data.rows}
+                                page={safePage}
+                                limit={safeLimit}
+                                search={safeSearch}
+                            />
+                        )}
                     </Await>
                 </Suspense>
             </Paper>

@@ -9,17 +9,17 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { CameraCreateInput, CameraResponse } from "@/openapi/client";
+import type { CameraCreate, CameraVisible, ValidationError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
     status: number;
     message: string | null | undefined;
-    errors: Record<string, string> | null;
-    data?: CameraResponse | null;
+    errors: Array<ValidationError> | null;
+    data?: CameraVisible | null;
 }
 
-export const cameraCreateAction = async (values: CameraCreateInput): Promise<IResponse> => {
+export const cameraCreateAction = async (values: CameraCreate): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -36,7 +36,7 @@ export const cameraCreateAction = async (values: CameraCreateInput): Promise<IRe
     });
     let result = undefined;
     try {
-        const response = await fetchClient.cameras.postApiV1CameraCreate({
+        const response = await fetchClient.camera.cameraCreate({
             requestBody: values,
         });
         result = { status: 201, message: response.message, data: response.data, errors: null };
@@ -45,8 +45,8 @@ export const cameraCreateAction = async (values: CameraCreateInput): Promise<IRe
             if (e.status === 422) {
                 return {
                     status: e.status,
-                    message: e.body?.detail || t("errors.provide-valid-data"),
-                    errors: e.body?.errors ?? null,
+                    message:  t("errors.provide-valid-data"),
+                    errors: e.body?.detail ?? null,
                     data: null,
                 };
             } else {

@@ -6,12 +6,12 @@ import Link from "@/components/Link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAuthContext } from "@/lib/auth/provider";
-import { RoleType } from "@/openapi/client";
+import { RoleTypeChoices } from "@/openapi/client";
 
 const ROUTES_BY_ROLE = {
-    [RoleType.AdminRole]: "/dashboard",
-    [RoleType.OperatorRole]: "/video",
-    [RoleType.AccountantRole]: "/report",
+    [RoleTypeChoices.ADMIN]: "/dashboard",
+    [RoleTypeChoices.OPERATOR]: "/video",
+    [RoleTypeChoices.ACCOUNTANT]: "/report",
 };
 
 const Content = () => {

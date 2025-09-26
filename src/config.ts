@@ -6,7 +6,7 @@ import ENFlag from "@/components/ENFlag";
 import RUFlag from "@/components/RUFlag";
 import TMFlag from "@/components/TMFlag";
 import { DEFAULT_LOCALE, WEBAPP_URL } from "@/lib/constants";
-import { RoleType } from "@/openapi/client";
+import { RoleTypeChoices } from "@/openapi/client";
 
 export const locales = ["en", "ru", "tk"] as const;
 export type Locale = "en" | "tk" | "ru"; // "en" | "ru"
@@ -53,7 +53,7 @@ export const host = WEBAPP_URL;
 
 
 export const ROUTES_BY_ROLE = {
-    [RoleType.AdminRole]: "/dashboard",
-    [RoleType.OperatorRole]: "/video",
-    [RoleType.AccountantRole]: "/report",
+    [RoleTypeChoices.ADMIN]: "/dashboard",
+    [RoleTypeChoices.OPERATOR]: "/video",
+    [RoleTypeChoices.ACCOUNTANT]: "/report",
 };

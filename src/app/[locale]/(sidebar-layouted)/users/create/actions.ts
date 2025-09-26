@@ -9,17 +9,17 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { UserCreateInput, UserResponse } from "@/openapi/client";
+import type { UserCreate, UserVisible, ValidationError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
     status: number;
     message: string | null | undefined;
-    errors: Record<string, string> | null;
-    data?: UserResponse | null;
+    errors: ValidationError[] | null;
+    data?: UserVisible | null;
 }
 
-export const userCreateAction = async (values: UserCreateInput): Promise<IResponse> => {
+export const userCreateAction = async (values: UserCreate): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -36,7 +36,7 @@ export const userCreateAction = async (values: UserCreateInput): Promise<IRespon
     });
     let result = undefined;
     try {
-        const response = await fetchClient.users.postApiV1UserCreate({
+        const response = await fetchClient.account.userCreate({
             requestBody: values,
         });
         result = { status: 201, message: response.message, data: response.data, errors: null };
@@ -46,8 +46,8 @@ export const userCreateAction = async (values: UserCreateInput): Promise<IRespon
                 console.log(e.body?.errors);
                 return {
                     status: e.status,
-                    message: e.body?.detail || t("errors.provide-valid-data"),
-                    errors: e.body?.errors ?? null,
+                    message:   t("errors.provide-valid-data"),
+                    errors: e.body?.detail ?? null,
                     data: null,
                 };
             } else {

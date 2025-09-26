@@ -4,9 +4,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { formatDatetime } from "@/lib/helper";
-import { CameraResponse } from "@/openapi/client";
+import { CameraVisible } from "@/openapi/client";
 
-const Content = ({ data }: { data: CameraResponse }) => {
+const Content = ({ data }: { data: CameraVisible }) => {
     const locale = useLocale();
     const t = useTranslations();
 
@@ -41,7 +41,7 @@ const Content = ({ data }: { data: CameraResponse }) => {
                             {t("type")}
                         </th>
                         <td className="px-4 py-2">
-                            <Badge variant="outline">{data.type.label}</Badge>
+                            <Badge variant="outline">{data.cameraType.label}</Badge>
                         </td>
                     </tr>
                     <tr className="border-b">

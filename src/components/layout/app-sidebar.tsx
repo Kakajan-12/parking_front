@@ -11,6 +11,7 @@ import {
     DollarSignIcon,
     VideoIcon,
     ChartBar,
+    CreditCard,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -29,13 +30,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuthContext } from "@/lib/auth/provider";
 // import { COMPANY_NAME, SITE_NAME } from "@/lib/constants";
-import { RoleType } from "@/openapi/client";
+import { RoleTypeChoices } from "@/openapi/client";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const t = useTranslations();
     const { payload } = useAuthContext();
     const routes = {
-        [RoleType.AdminRole]: [
+        [RoleTypeChoices.ADMIN]: [
             {
                 title: t("nav.dashboard"),
                 url: "/dashboard",
@@ -98,16 +99,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 url: "/reports",
                 icon: ChartBar,
             },
+            {
+                title: t("nav.subscriptions"),
+                url: "/subscriptions",
+                icon: CreditCard,
+            },
         ],
-        [RoleType.AccountantRole]: [
+        [RoleTypeChoices.ACCOUNTANT]: [
             {
                 title: t("nav.report"),
                 url: "/reports",
                 icon: ChartBar,
             },
+            {
+                title: t("nav.subscriptions"),
+                url: "/subscriptions",
+                icon: CreditCard,
+            },
         ],
 
-        [RoleType.OperatorRole]: [
+        [RoleTypeChoices.OPERATOR]: [
             {
                 title: t("nav.video"),
                 url: "/video",
@@ -124,7 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             size="lg"
-                            className="bg-background hover:bg-background/95"
+                            className="transition-colors duration-300 hover:bg-background/95"
                             asChild
                         >
                             <Link href="/">

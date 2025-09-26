@@ -1,25 +1,24 @@
-import { cookies } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
 import { checkAuthCookies } from "@/lib/auth/actions";
-import { AUTH_TOKEN_COOKIE } from "@/lib/constants";
+import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 export async function GET() {
-    const isAuth = await checkAuthCookies();
-    if (!isAuth) {
-        return Response.json({ data: null, status: 401 });
-    }
+    const t = await getTranslations();
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get(AUTH_TOKEN_COOKIE);
+    const [token, isAuth] = await checkAuthCookies();
+    if (!isAuth) {
+        throw new AuthError(t("auth.must-sign-in"));
+    }
 
     const fetchClient = await getServerInstance({
         cache: "no-cache",
-        token: token?.value,
+        token: token,
     });
     try {
-        const response = await fetchClient.auth.getApiV1AuthMe();
+        const response = await fetchClient.account.me();
         return Response.json({ data: response, status: 200 });
     } catch (e) {
         if (e instanceof ApiError) {

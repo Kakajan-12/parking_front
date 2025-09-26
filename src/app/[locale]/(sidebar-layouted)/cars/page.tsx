@@ -66,10 +66,11 @@ const Page = async ({ params, searchParams }: Props) => {
         locale: locale,
         token: token.value,
     });
-    const count = await callRequest<"cars", "getApiV1CarCount", { count: number }>({
+
+    const count = await callRequest<"carPark", "carCount", { count: number }>({
         instance: countClient,
-        service: "cars",
-        action: "getApiV1CarCount",
+        service: "carPark",
+        action: "carCount",
         safeReturn: { count: 0 },
         allow401: true,
         raiseExp: true,
@@ -78,12 +79,14 @@ const Page = async ({ params, searchParams }: Props) => {
         },
     });
 
-
-    const promise = fetchClient.cars.getApiV1Car({
+    const promise = fetchClient.carPark.carList({
         page: safePage,
         limit: safeLimit,
         search: safeSearch,
     });
+
+
+
     return (
         <Fragment>
             <PageHeading

@@ -51,13 +51,9 @@ const Page = async ({ params, searchParams }: Props) => {
         cache: "no-cache",
         locale: locale,
         token: token.value,
-        next: {
-            revalidate: 0,
-            tags: ["user-sessions-list"],
-        },
     });
 
-    const promise = fetchClient.users.getApiV1UserSession({
+    const promise = fetchClient.account.userSessionList({
         page: safePage,
         limit: safeLimit,
     });

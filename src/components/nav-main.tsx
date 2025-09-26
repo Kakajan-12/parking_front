@@ -1,6 +1,7 @@
 "use client";
+import React from "react";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight} from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import Link from "@/components/Link";
@@ -23,7 +24,7 @@ export function NavMain({
     items: {
         title: string;
         url: string;
-        icon: LucideIcon;
+        icon: React.ComponentType<{ className?: string }>;
         isActive?: boolean;
         items?: {
             title: string;

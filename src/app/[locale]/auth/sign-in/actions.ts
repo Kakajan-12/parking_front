@@ -6,18 +6,18 @@ import { getTranslations } from "next-intl/server";
 
 import { defaultLocale } from "@/config";
 import { setAuthCookies } from "@/lib/auth/actions";
-import { ApiError, type CarParkType, LoginResponse } from "@/openapi/client";
+import { ApiError, CarParkChoices,  Token} from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IContactResponse {
     status: number;
     message?: string | null | undefined;
     errors: Record<string, string> | null;
-    data: LoginResponse | null;
+    data: Token | null;
 }
 
 export const authenticate = async (values: {
-    carPark: CarParkType | undefined;
+    carPark: CarParkChoices | undefined;
     password: string;
     username: string;
     remember: boolean;
@@ -32,12 +32,12 @@ export const authenticate = async (values: {
             locale: locale,
         });
 
-        const response = await fetchClient.auth.postApiV1AuthLogin({
-            requestBody: {
+        const response = await fetchClient.account.getToken({
+            formData: {
                 username: values.username,
                 password: values.password,
-                carPark: values.carPark,
             },
+            carPark: values.carPark,
         });
         await setAuthCookies(
             {
@@ -62,8 +62,8 @@ export const authenticate = async (values: {
             } else if (e.status === 422) {
                 return {
                     status: e.status,
-                    message: e.body?.detail || t("errors.provide-valid-data"),
-                    errors: e.body?.errors ?? null,
+                    message: t("errors.provide-valid-data"),
+                    errors: e.body?.detail ?? null,
                     data: null,
                 };
             } else {

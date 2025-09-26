@@ -4,9 +4,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { formatDatetime } from "@/lib/helper";
-import { CarResponse } from "@/openapi/client";
+import { CarVisible } from "@/openapi/client";
 
-const Content = ({ data }: { data: CarResponse }) => {
+const Content = ({ data }: { data: CarVisible }) => {
     const locale = useLocale();
     const t = useTranslations();
 

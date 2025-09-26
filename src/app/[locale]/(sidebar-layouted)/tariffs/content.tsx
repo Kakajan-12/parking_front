@@ -12,7 +12,7 @@ import {
     PaginationState,
     Updater,
 } from "@tanstack/react-table";
-import { ChevronDown, MoreHorizontal, PlusIcon } from "lucide-react";
+import { ChevronDown, PlusIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import Link from "@/components/Link";
@@ -22,9 +22,6 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -37,10 +34,10 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { formatDatetime, getPrice } from "@/lib/helper";
-import { TariffResponse } from "@/openapi/client";
+import { TariffVisible } from "@/openapi/client";
 
 interface Props {
-    rows: Array<TariffResponse>;
+    rows: Array<TariffVisible>;
     page: number;
     limit: number;
     totalCount: number;
@@ -65,7 +62,7 @@ function Content({ rows, page, limit, totalCount }: Props) {
         router.replace(`${pathname}?${params.toString()}`, { scroll: true });
     };
 
-    const columns: ColumnDef<TariffResponse>[] = [
+    const columns: ColumnDef<TariffVisible>[] = [
         {
             accessorKey: "id",
             header: "Id",
@@ -83,6 +80,7 @@ function Content({ rows, page, limit, totalCount }: Props) {
             header: t("tariffs-page.price-amount"),
             cell: ({ row }) => {
                 const priceAmount = row.original.priceAmount;
+
                 const currency = row.original.currency;
                 return getPrice({ amount: priceAmount, currency: currency });
             },
@@ -94,7 +92,7 @@ function Content({ rows, page, limit, totalCount }: Props) {
                 const isActive = row.original.isActive;
                 return (
                     <Badge variant={isActive ? "secondary" : "destructive"}>
-                        {isActive ? t("tariffs-page.active") : t("cars-page.not-active")}
+                        {isActive ? t("tariffs-page.active") : t("tariffs-page.not-active")}
                     </Badge>
                 );
             },
@@ -114,32 +112,6 @@ function Content({ rows, page, limit, totalCount }: Props) {
                 const updatedAt = row.original.updatedAt;
                 if (!updatedAt) return "-";
                 return formatDatetime({ date: updatedAt, locale: locale });
-            },
-        },
-        {
-            id: "actions",
-            enableHiding: false,
-            cell: ({ row }) => {
-                const objData = row.original;
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild={true}>
-                                <Link href={`/cars/${objData.id}/detail`}>
-                                    {t("action-buttons.view-details")}
-                                </Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
             },
         },
     ];

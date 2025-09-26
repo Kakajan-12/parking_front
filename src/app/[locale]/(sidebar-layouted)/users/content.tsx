@@ -38,12 +38,12 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { formatDatetime, toastLoading, toastUpdate } from "@/lib/helper";
-import { UserResponse } from "@/openapi/client";
+import { UserVisible } from "@/openapi/client";
 
 import { userDeleteAction } from "./actions";
 
 interface Props {
-    rows: Array<UserResponse>;
+    rows: Array<UserVisible>;
     page: number;
     limit: number;
     search?: string;
@@ -118,7 +118,7 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
         }
     };
 
-    const columns: ColumnDef<UserResponse>[] = [
+    const columns: ColumnDef<UserVisible>[] = [
         {
             accessorKey: "id",
             header: "Id",

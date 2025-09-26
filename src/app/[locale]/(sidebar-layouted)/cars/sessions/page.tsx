@@ -37,9 +37,10 @@ const Page = async ({ params, searchParams }: Props) => {
     setRequestLocale(locale);
     const t = await getTranslations();
 
-    const { page, limit } = await searchParams;
+    const { page, limit, search } = await searchParams;
     const safePage = typeof page === "string" ? Number(page) : 1;
     const safeLimit = typeof limit === "string" ? Number(limit) : 25;
+    const safeSearch = typeof search === "string" ? String(search) : undefined;
 
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_TOKEN_COOKIE);
@@ -57,9 +58,10 @@ const Page = async ({ params, searchParams }: Props) => {
         },
     });
 
-    const promise = fetchClient.cars.getApiV1CarSession({
+    const promise = fetchClient.carPark.carSessionList({
         page: safePage,
         limit: safeLimit,
+        search: safeSearch,
     });
     return (
         <Fragment>
@@ -80,6 +82,7 @@ const Page = async ({ params, searchParams }: Props) => {
                     <Await promise={promise} allow401={true}>
                         {data => (
                             <Content
+                                search={safeSearch}
                                 rows={data.rows}
                                 page={safePage}
                                 limit={safeLimit}

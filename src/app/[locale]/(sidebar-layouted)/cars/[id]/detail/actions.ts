@@ -9,20 +9,17 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { CarUpdateInput, CarResponse } from "@/openapi/client";
+import type { CarVisible, CarBase, ValidationError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
     status: number;
     message: string | null | undefined;
-    errors: Record<string, string> | null;
-    data?: CarResponse | null;
+    errors: Array<ValidationError> | null;
+    data?: CarVisible | null;
 }
 
-export const carUpdateAction = async (
-    objId: number,
-    values: CarUpdateInput,
-): Promise<IResponse> => {
+export const carUpdateAction = async (objId: number, values: CarBase): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -39,18 +36,18 @@ export const carUpdateAction = async (
     });
     let result = undefined;
     try {
-        const response = await fetchClient.cars.patchApiV1CarUpdate({
-            id: objId,
+        const response = await fetchClient.carPark.carUpdate({
+            objId: objId,
             requestBody: values,
         });
-        result = { status: 201, message: response.message, data: response.data, errors: null };
+        result = { status: 200, message: response.message, data: response.data, errors: null };
     } catch (e: any) {
         if (e instanceof ApiError) {
             if (e.status === 422) {
                 return {
                     status: e.status,
-                    message: e.body?.detail || t("errors.provide-valid-data"),
-                    errors: e.body?.errors ?? null,
+                    message: t("errors.provide-valid-data"),
+                    errors: e.body?.detail ?? null,
                     data: null,
                 };
             } else {

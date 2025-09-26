@@ -122,11 +122,11 @@ export async function callRequest<
 
             if (
                 wwwAuthenticate === "Bearer signature_expired" &&
-                "refreshToken" in instance.auth &&
-                typeof instance.auth.refreshToken === "function"
+                "refreshToken" in instance.account &&
+                typeof instance.account.refreshToken === "function"
             ) {
                 try {
-                    await instance.auth.refreshToken();
+                    await instance.account.refreshToken();
                 } catch {
                     redirect(AUTH_LOGOUT_URL, RedirectType.replace);
                 }

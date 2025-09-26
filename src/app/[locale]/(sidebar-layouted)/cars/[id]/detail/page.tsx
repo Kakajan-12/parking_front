@@ -10,7 +10,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import PageHeading from "@/components/PageHeading";
 import { Paper } from "@/components/ui/paper";
 import { AUTH_LOGIN_URL, AUTH_TOKEN_COOKIE } from "@/lib/constants";
-import { CameraResponse } from "@/openapi/client";
+import { CarVisible } from "@/openapi/client";
 import getServerInstance, { callRequest } from "@/openapi/server-instance";
 
 import Content from "./content";
@@ -46,11 +46,11 @@ const Page = async ({ params }: Props) => {
         token: token.value,
         locale: locale,
     });
-    const data: CameraResponse | null = await callRequest({
+    const data: CarVisible | null = await callRequest({
         instance: fetchClient,
-        service: "cars",
-        action: "getApiV1CarDetail",
-        params: { id: id },
+        service: "carPark",
+        action: "carDetail",
+        params: { objId: id },
         safeReturn: null,
     });
 

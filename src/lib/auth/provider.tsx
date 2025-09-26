@@ -2,26 +2,20 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import jwtDecode from "jwt-decode";
 import { parseCookies } from "nookies";
 import { useDebouncedCallback } from "use-debounce";
 
 import { navigateToLogout } from "@/lib/auth/actions";
 import { AUTH_TOKEN_COOKIE } from "@/lib/constants";
-import { RoleType, UserSessionExtendedResponse } from "@/openapi/client";
+import { UserSessionExtendedVisible } from "@/openapi/client";
 
-interface TokenPayload {
-    exp: number;
-    role: RoleType;
-    user_id: string;
-    username: string;
-}
+import { TokenPayload, retrievePayload } from "./utils";
 
 export type AuthContextType = {
     payload: TokenPayload | null;
     refreshTokenPayload: () => void;
-    userSession: UserSessionExtendedResponse | null;
-    setUserSession: (value: UserSessionExtendedResponse | null) => void;
+    userSession: UserSessionExtendedVisible | null;
+    setUserSession: (value: UserSessionExtendedVisible | null) => void;
     token: string | null;
     isLoading: boolean;
 };
@@ -37,23 +31,10 @@ export const AuthContext = React.createContext<AuthContextType>({
     isLoading: false,
 });
 
-const retrievePayload = (token: string): TokenPayload | null => {
-    if (!token) return null;
-
-    const parts = token.split(" ");
-    const actualToken = parts.length === 2 ? parts[1] : parts[0];
-    try {
-        return jwtDecode<TokenPayload>(actualToken);
-    } catch (error) {
-        console.error("JWT decode failed:", error);
-        return null;
-    }
-};
-
 function AuthProvider({ children }: { children: React.ReactNode }) {
     const [authState, setAuthState] = useState<{
         payload: TokenPayload | null;
-        userSession: UserSessionExtendedResponse | null;
+        userSession: UserSessionExtendedVisible | null;
         isLoading: boolean;
     }>({
         payload: null,
@@ -83,7 +64,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const response = await fetch(API_ME_URL, {
                 headers: {
-                    Authorization: `Bearer ${currentToken}`,
+                    Authorization: currentToken,
                 },
                 cache: "no-store",
             });
@@ -91,7 +72,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
             const data = await response.json();
 
             if (data.status === 200) {
-                setAuthState(prev => ({ ...prev, user: data.data }));
+                setAuthState(prev => ({ ...prev, userSession: data.data }));
             } else if (data.status === 401) {
                 await navigateToLogout();
             }
@@ -155,8 +136,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
             payload: authState.payload,
             refreshTokenPayload,
             userSession: authState.userSession,
-            setUserSession: (user: UserSessionExtendedResponse | null) =>
-                setAuthState(prev => ({ ...prev, user })),
+            setUserSession: (value: UserSessionExtendedVisible | null) =>
+                setAuthState(prev => ({ ...prev, userSession: value })),
             token,
             isLoading: authState.isLoading,
         }),

@@ -66,10 +66,10 @@ const Page = async ({ params, searchParams }: Props) => {
         locale: locale,
         token: token.value,
     });
-    const count = await callRequest<"users", "getApiV1UserCount", { count: number }>({
+    const count = await callRequest<"account", "userCount", { count: number }>({
         instance: countClient,
-        service: "users",
-        action: "getApiV1UserCount",
+        service: "account",
+        action: "userCount",
         safeReturn: { count: 0 },
         allow401: true,
         raiseExp: true,
@@ -78,7 +78,7 @@ const Page = async ({ params, searchParams }: Props) => {
         },
     });
 
-    const promise = fetchClient.users.getApiV1User({
+    const promise = fetchClient.account.userList({
         page: safePage,
         limit: safeLimit,
         search: safeSearch,

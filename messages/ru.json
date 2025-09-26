@@ -30,11 +30,11 @@
     "total-cars": "Всего машин",
     "income-park-3": "Доходы P3",
     "income-park-4": "Доходы P4",
-    "income-park-summary": "income-park-summary",
-    "users-count": "users-count",
-    "operators-count": "operators-count",
-    "cameras-count": "cameras-count",
-    "total-cars-count": "total-cars-count"
+    "income-park-summary": "Итоговые доходы парковок",
+    "users-count": "Количество пользователей",
+    "operators-count": "Количество операторов",
+    "cameras-count": "Количество камер",
+    "total-cars-count": "Общее количество машин"
   },
   "sidebar": {
     "title": "Меню",
@@ -85,6 +85,10 @@
     },
     "select": {
       "invalid": "Недопустимый вариант выбора"
+    },
+    "number": {
+      "max": "Максимум {value}",
+      "min": "Минимум {value}"
     }
   },
   "errors": {
@@ -119,11 +123,15 @@
     "camera-add": "Добавить камеру",
     "camera-detail": "Детали камеры",
     "cars": "Машины",
-    "car-add": "car-add",
-    "car-detail": "car-detail",
-    "tariffs": "tariffs",
-    "cars-sessions": "cars-sessions",
-    "report": "report"
+    "car-add": "Добавить машину",
+    "car-detail": "Детали машины",
+    "tariffs": "Тарифы",
+    "tariff-add": "Добавить тариф",
+    "cars-sessions": "Сессии машин",
+    "report": "Отчёт",
+    "camera-session-detail": "Детали сессии камеры",
+    "subscriptions": "Подписки",
+    "subscription-add": "Добавить подписку"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -136,11 +144,15 @@
     "camera-detail": "Детали камеры",
     "cars": "Машины",
     "car-add": "Добавить машину",
-    "car-detail": "car-detail",
-    "tariffs": "tariffs",
-    "cars-sessions": "cars-sessions",
-    "video": "video",
-    "report": "report"
+    "car-detail": "Детали машины",
+    "tariffs": "Тарифы",
+    "tariff-add": "Добавить тариф",
+    "cars-sessions": "Сессии машин",
+    "video": "Видео",
+    "report": "Отчёт",
+    "camera-session-detail": "Детали сессии камеры",
+    "subscriptions": "Подписки",
+    "subscription-add": "Добавить подписку"
   },
   "users-page": {
     "add-new-user": "Добавить нового пользователя",
@@ -158,48 +170,66 @@
     "fill-password-for-change": "Введите новый пароль, чтобы изменить его (оставьте пустым, если не хотите менять)",
     "revoke-session": "Отозвать сессию",
     "user-session-revoked": "Сессия пользователя отозвана",
-    "delete-user-action": "Удалить пользователя"
+    "delete-user-action": "Удалить пользователя",
+    "users-sessions": "Сессии пользователей",
+    "operator-sessions": "Сессии операторов",
+    "operator-session-calculated": "Сессия оператора рассчитана"
   },
   "cameras-page": {
     "add-new-camera": "Добавить новую камеру",
     "add-camera-instruction": "Заполните форму ниже, чтобы добавить новую камеру",
     "update-camera-details": "Изменить данные камеры",
     "update-camera-instruction": "Измените необходимые поля и сохраните изменения, чтобы обновить данные камеры",
-    "name": "Наименования",
+    "name": "Наименование",
     "camera-add": "Добавить камеру",
     "camera-created-successfully": "Камера успешно создана",
     "camera-updated-successfully": "Камера успешно обновлена",
     "camera-deleted-successfully": "Камера успешно удалена",
     "fill-name": "Введите наименование",
     "select-camera-type": "Выберите тип камеры",
-    "channel-name": "channel-name",
-    "fill-channel-name": "fill-channel-name",
-    "channel-token": "channel-token",
-    "fill-channel-token": "fill-channel-token"
+    "channel-name": "Название канала",
+    "fill-channel-name": "Введите название канала",
+    "channel-token": "Токен канала",
+    "fill-channel-token": "Введите токен канала"
   },
   "cars-page": {
-    "car-number": "car-number",
-    "owner-name": "owner-name",
-    "is-staff": "is-staff",
-    "staff": "staff",
-    "non-staff": "non-staff",
-    "car-created-successfully": "car-created-successfully",
-    "add-new-car": "add-new-car",
-    "add-car-instruction": "add-car-instruction",
-    "fill-car-number": "fill-car-number",
-    "fill-owner-name": "fill-owner-name",
-    "user-detail-information": "user-detail-information",
-    "car-updated-successfully": "camera-updated-successfully",
-    "update-car-details": "update-car-details",
-    "update-car-instruction": "update-car-instruction"
+    "car-number": "Номер машины",
+    "owner-name": "Имя владельца",
+    "is-staff": "Сотрудник",
+    "staff": "Сотрудник",
+    "non-staff": "Не сотрудник",
+    "car-created-successfully": "Машина успешно добавлена",
+    "add-new-car": "Добавить новую машину",
+    "add-car-instruction": "Инструкция по добавлению машины",
+    "fill-car-number": "Введите номер машины",
+    "fill-owner-name": "Введите имя владельца",
+    "user-detail-information": "Информация о пользователе",
+    "car-updated-successfully": "Машина успешно обновлена",
+    "update-car-details": "Обновить данные машины",
+    "update-car-instruction": "Инструкция по обновлению машины",
+    "event-type": "Тип события"
   },
   "tariffs-page": {
-    "name": "name",
-    "duration": "duration",
-    "is-active": "is-active",
-    "active": "active",
-    "not-active": "not-active",
-    "price-amount": "price-amount"
+    "name": "Название",
+    "duration": "Длительность",
+    "is-active": "Активен",
+    "active": "Активный",
+    "not-active": "Неактивный",
+    "price-amount": "Стоимость",
+    "fill-name": "Введите название",
+    "fill-tariff-duration": "Введите длительность тарифа",
+    "add-new-tariff": "Добавить новый тариф",
+    "add-tariff-instruction": "Инструкция по добавлению тарифа",
+    "fill-tariff-price-amount": "Введите стоимость тарифа"
+  },
+  "subscriptions-page": {
+    "subscription-add-successfully": "Подписка успешно добавлена",
+    "fill-total-amount": "Укажите общую сумму",
+    "select-car": "Выберите автомобиль",
+    "select-start-time": "Выберите время начала",
+    "select-end-time": "Выберите время окончания",
+    "add-new-car-subscription": "Добавить новую подписку на автомобиль",
+    "add-car-subscription-instruction": "Инструкция по добавлению подписки на автомобиль"
   },
   "action-buttons": {
     "add": "Добавить",
@@ -228,7 +258,13 @@
     "previous": "Назад",
     "next": "Далее",
     "yes": "Да",
-    "no": "Нет"
+    "no": "Нет",
+    "calculate": "Рассчитать"
+  },
+  "role-type": {
+    "admin": "Администратор",
+    "operator": "Оператор",
+    "accountant": "Бухгалтер"
   },
   "camera-type": {
     "inside": "Внутренняя",
@@ -236,7 +272,9 @@
   },
   "car-park-type": {
     "park-3": "Парк 3",
-    "park-4": "Парк 4"
+    "park-4": "Парк 4",
+    "P3": "Парк 3",
+    "P4": "Парк 4"
   },
   "not-found-page": {
     "title": "Упс! Эта страница не найдена",
@@ -306,10 +344,13 @@
   "total-users": "Количество пользователей: {count}",
   "start-time": "Время начала",
   "end-time": "Время окончания",
+  "invalidated-at": "Аннулировано в",
   "price": "Цена",
   "session-expired": "Сессия истекла. Пожалуйста, войдите снова.",
   "access-denied": "Доступ запрещён.",
   "operators": "Операторы",
+  "operator": "Оператор",
+  "session": "Сессия",
   "cameras": "Камеры",
   "logout": "Выйти",
   "logout-success": "Выход успешен!",
@@ -317,8 +358,20 @@
   "rows": "Строк",
   "go-to-login": "Перейти к входу",
   "type": "Тип",
-  "car": "car",
-  "total-amount": "total-amount",
-  "is-paid": "is-paid",
-  "duration": "duration"
+  "car": "Машина",
+  "total-amount": "Итоговая сумма",
+  "is-paid": "Оплачено",
+  "duration": "Длительность",
+  "connect": "Подключить",
+  "disconnect": "Отключить",
+  "connected": "Подключено",
+  "disconnected": "Отключено",
+  "page-refreshed": "Страница обновлена",
+  "channel-name": "Название канала",
+  "image": "Изображение",
+  "total-cars": "Всего машин",
+  "paid-cars": "Оплаченные машины",
+  "captured-amount": "Списанная сумма",
+  "user": "Пользователь",
+  "note": "Заметка"
 }

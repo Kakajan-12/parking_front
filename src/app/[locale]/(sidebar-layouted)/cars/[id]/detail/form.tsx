@@ -23,13 +23,13 @@ import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import { CarResponse } from "@/openapi/client";
+import { CarVisible, ValidationError } from "@/openapi/client";
 
 import { carUpdateAction } from "./actions";
 
-const Content = ({ data }: { data: CarResponse }) => {
+const Content = ({ data }: { data: CarVisible }) => {
     const t = useTranslations();
-    const [errors, setErrors] = useState<Record<string, string> | null>(null);
+    const [errors, setErrors] = useState<Array<ValidationError> | null>(null);
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
@@ -55,7 +55,8 @@ const Content = ({ data }: { data: CarResponse }) => {
             );
             setErrors(null);
             if (response.data) {
-                router.push(`/cars/${response.data.id}/detail`);
+                router.prefetch(`/users/${response.data.id}/detail`);
+                router.refresh();
             }
         } else {
             toastUpdate(toastId, response.message ?? t("errors.something-went-wrong"), "warning");
@@ -76,6 +77,7 @@ const Content = ({ data }: { data: CarResponse }) => {
         },
         validationSchema: toFormikValidationSchema(schema),
         onSubmit: handleSubmit,
+        enableReinitialize: true,
     });
 
     return (

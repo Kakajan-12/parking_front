@@ -38,10 +38,10 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { formatDatetime } from "@/lib/helper";
-import { CarResponse } from "@/openapi/client";
+import { CarVisible } from "@/openapi/client";
 
 interface Props {
-    rows: Array<CarResponse>;
+    rows: Array<CarVisible>;
     page: number;
     limit: number;
     search?: string;
@@ -87,7 +87,7 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
         router.replace(`${pathname}?${params.toString()}`, { scroll: true });
     };
 
-    const columns: ColumnDef<CarResponse>[] = [
+    const columns: ColumnDef<CarVisible>[] = [
         {
             accessorKey: "id",
             header: "Id",

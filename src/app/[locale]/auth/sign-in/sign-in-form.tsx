@@ -23,14 +23,14 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import { CarParkType, RoleType } from "@/openapi/client";
+import { CarParkChoices, RoleTypeChoices } from "@/openapi/client";
 
 import { authenticate } from "./actions";
 
 const ROUTES_BY_ROLE = {
-    [RoleType.AdminRole]: "/dashboard",
-    [RoleType.OperatorRole]: "/video",
-    [RoleType.AccountantRole]: "/report",
+    [RoleTypeChoices.ADMIN]: "/dashboard",
+    [RoleTypeChoices.OPERATOR]: "/video",
+    [RoleTypeChoices.ACCOUNTANT]: "/report",
 };
 
 const SignInForm = () => {
@@ -50,7 +50,7 @@ const SignInForm = () => {
         username: string;
         password: string;
         remember: boolean;
-        carPark?: CarParkType;
+        carPark?: CarParkChoices;
     }) => {
         setErrors(null);
         setLoading(true);
@@ -65,7 +65,7 @@ const SignInForm = () => {
         if (response.status == 200 && response.data) {
             toastUpdate(toastId, response.message ?? t("auth-successfully"), "success");
             router.refresh();
-            router.push(ROUTES_BY_ROLE[response.data.role]);
+            router.push(ROUTES_BY_ROLE[response.data.user.role.value]);
         } else {
             toastUpdate(toastId, response.message ?? t("errors.something-went-wrong"), "warning");
             if (response.errors !== null) setErrors(response.errors);
@@ -158,10 +158,10 @@ const SignInForm = () => {
                                         <SelectItem value="clear" className="text-muted-foreground">
                                             {t("select-park-number")}
                                         </SelectItem>
-                                        <SelectItem value={CarParkType.Park3}>
+                                        <SelectItem value={CarParkChoices.P3}>
                                             {t("car-park-type.park-3")}
                                         </SelectItem>
-                                        <SelectItem value={CarParkType.Park4}>
+                                        <SelectItem value={CarParkChoices.P4}>
                                             {t("car-park-type.park-4")}
                                         </SelectItem>
                                     </SelectContent>

@@ -44,7 +44,7 @@ export interface ImageProps extends Omit<BaseImageProps, "src"> {
 const Image = memo(
     ({
         src,
-        fallbackSrc = "/placeholders/light/image/1x1-image-light.png",
+        fallbackSrc = "/1x1-image-light.png",
         placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNcP2d9PQAGdwJ74VxCZwAAAABJRU5ErkJggg==",
 
         enablePlaceholder = true,

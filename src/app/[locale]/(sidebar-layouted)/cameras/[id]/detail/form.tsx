@@ -28,24 +28,31 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import { CameraType, CameraUpdateInput, CameraResponse } from "@/openapi/client";
+import { CameraTypeChoices, CameraBase, CameraVisible, ValidationError } from "@/openapi/client";
 
 import { cameraUpdateAction } from "./actions";
 
-const Content = ({ data }: { data: CameraResponse }) => {
+const Content = ({ data }: { data: CameraVisible }) => {
     const t = useTranslations();
-    const [errors, setErrors] = useState<Record<string, string> | null>(null);
+    const [errors, setErrors] = useState<Array<ValidationError> | null>(null);
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
-    const handleSubmit = async (values: { name: string; type?: string }) => {
-        if (values.type === undefined) return;
+    const handleSubmit = async (values: {
+        name: string;
+        cameraType?: string;
+        channelName?: string;
+        channelToken?: string;
+    }) => {
+        if (values.cameraType === undefined) return;
         setLoading(true);
         const toastId = toastLoading(t("please-wait"));
         const response = await cameraUpdateAction(data.id, {
             name: values.name,
-            type: values.type as CameraUpdateInput["type"],
+            cameraType: values.cameraType as CameraBase["cameraType"],
+            channelName: values.channelName,
+            channelToken: values.channelToken,
         });
 
         if (response.status == 200 && response.data) {
@@ -56,7 +63,8 @@ const Content = ({ data }: { data: CameraResponse }) => {
             );
             setErrors(null);
             if (response.data) {
-                router.push(`/cameras/${response.data.id}/detail`);
+                router.prefetch(`/users/${response.data.id}/detail`);
+                router.refresh();
             }
         } else {
             toastUpdate(toastId, response.message ?? t("errors.something-went-wrong"), "warning");
@@ -67,7 +75,7 @@ const Content = ({ data }: { data: CameraResponse }) => {
 
     const schema = z.object({
         name: z.string({ required_error: t("validation.default.required") }),
-        type: z.nativeEnum(CameraType, {
+        cameraType: z.nativeEnum(CameraTypeChoices, {
             required_error: t("validation.default.required"),
             message: t("validation.select.invalid"),
         }),
@@ -76,10 +84,14 @@ const Content = ({ data }: { data: CameraResponse }) => {
     const formik = useFormik({
         initialValues: {
             name: data.name ?? "",
-            type: data.type ? data.type.value : undefined,
+            cameraType: data.cameraType ? data.cameraType.value : undefined,
+            channelName: data.channelName ?? "",
+            channelToken: data.channelToken ?? "",
         },
         validationSchema: toFormikValidationSchema(schema),
         onSubmit: handleSubmit,
+
+        enableReinitialize: true,
     });
 
     return (
@@ -103,14 +115,14 @@ const Content = ({ data }: { data: CameraResponse }) => {
                     />
 
                     <Select
-                        value={formik.values.type}
+                        value={formik.values.cameraType}
                         onValueChange={(value: string) => {
-                            formik.setFieldValue("type", value);
+                            formik.setFieldValue("cameraType", value);
                         }}
                     >
                         <SelectTrigger
                             required={true}
-                            error={getError(formik, errors, "type")}
+                            error={getError(formik, errors, "cameraType")}
                             label={t("type")}
                             id="type"
                             fullWidth={true}
@@ -118,14 +130,33 @@ const Content = ({ data }: { data: CameraResponse }) => {
                             <SelectValue placeholder={t("cameras-page.select-camera-type")} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={CameraType.InsideCamera}>
+                            <SelectItem value={CameraTypeChoices.INSIDE}>
                                 {t("camera-type.inside")}
                             </SelectItem>
-                            <SelectItem value={CameraType.OutsideCamera}>
+                            <SelectItem value={CameraTypeChoices.OUTSIDE}>
                                 {t("camera-type.outside")}
                             </SelectItem>
                         </SelectContent>
                     </Select>
+
+                    <Input
+                        id="channelName"
+                        name="channelName"
+                        error={getError(formik, errors, "channelName")}
+                        value={formik.values.channelName}
+                        onChange={formik.handleChange}
+                        placeholder={t("cameras-page.fill-channel-name")}
+                        label={t("cameras-page.channel-name")}
+                    />
+                    <Input
+                        id="channelToken"
+                        name="channelToken"
+                        error={getError(formik, errors, "channelToken")}
+                        value={formik.values.channelToken}
+                        onChange={formik.handleChange}
+                        placeholder={t("cameras-page.fill-channel-token")}
+                        label={t("cameras-page.channel-token")}
+                    />
 
                     <CardFooter className="gap-x-4 justify-end  px-0 py-4">
                         <Button onClick={() => formik.resetForm()} type="button" variant="outline">

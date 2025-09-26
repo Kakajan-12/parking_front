@@ -28,30 +28,30 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import { CameraType } from "@/openapi/client";
+import { CameraTypeChoices, ValidationError } from "@/openapi/client";
 
 import { cameraCreateAction } from "./actions";
 
 const Content = () => {
     const t = useTranslations();
-    const [errors, setErrors] = useState<Record<string, string> | null>(null);
+    const [errors, setErrors] = useState<Array<ValidationError> | null>(null);
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
     const handleSubmit = async (values: {
         name: string;
-        type?: CameraType;
+        cameraType?: CameraTypeChoices;
         channelName: string;
         channelToken: string;
     }) => {
-        if (values.type === undefined) return;
+        if (values.cameraType === undefined) return;
         setLoading(true);
         const toastId = toastLoading(t("please-wait"));
         try {
             const response = await cameraCreateAction({
                 name: values.name,
-                type: values.type,
+                cameraType: values.cameraType,
                 channelName: values.channelName,
                 channelToken: values.channelToken,
             });
@@ -88,7 +88,7 @@ const Content = () => {
 
     const schema = z.object({
         name: z.string({ required_error: t("validation.default.required") }),
-        type: z.nativeEnum(CameraType, {
+        cameraType: z.nativeEnum(CameraTypeChoices, {
             required_error: t("validation.default.required"),
             message: t("validation.select.invalid"),
         }),
@@ -97,7 +97,7 @@ const Content = () => {
     const formik = useFormik({
         initialValues: {
             name: "",
-            type: undefined,
+            cameraType: undefined,
             channelName: "",
             channelToken: "",
         },
@@ -126,31 +126,30 @@ const Content = () => {
                     />
 
                     <Select
-                        value={formik.values.type}
+                        value={formik.values.cameraType}
                         onValueChange={(value: string) => {
-                            formik.setFieldValue("type", value);
+                            formik.setFieldValue("cameraType", value);
                         }}
                     >
                         <SelectTrigger
                             required={true}
-                            error={getError(formik, errors, "type")}
+                            error={getError(formik, errors, "cameraType")}
                             label={t("type")}
-                            id="type"
+                            id="cameraType"
                             fullWidth={true}
                         >
                             <SelectValue placeholder={t("cameras-page.select-camera-type")} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={CameraType.InsideCamera}>
+                            <SelectItem value={CameraTypeChoices.INSIDE}>
                                 {t("camera-type.inside")}
                             </SelectItem>
-                            <SelectItem value={CameraType.OutsideCamera}>
+                            <SelectItem value={CameraTypeChoices.OUTSIDE}>
                                 {t("camera-type.outside")}
                             </SelectItem>
                         </SelectContent>
                     </Select>
                     <Input
-                        required={true}
                         id="channelName"
                         name="channelName"
                         error={getError(formik, errors, "channelName")}
@@ -160,7 +159,6 @@ const Content = () => {
                         label={t("cameras-page.channel-name")}
                     />
                     <Input
-                        required={true}
                         id="channelToken"
                         name="channelToken"
                         error={getError(formik, errors, "channelToken")}

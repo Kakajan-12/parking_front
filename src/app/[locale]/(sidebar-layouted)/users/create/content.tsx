@@ -31,13 +31,13 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import { CarParkType, RoleType } from "@/openapi/client";
+import { CarParkChoices, RoleTypeChoices, ValidationError } from "@/openapi/client";
 
 import { userCreateAction } from "./actions";
 
 const Content = () => {
     const t = useTranslations();
-    const [errors, setErrors] = useState<Record<string, string> | null>(null);
+    const [errors, setErrors] = useState<ValidationError[] | null>(null);
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
@@ -46,8 +46,8 @@ const Content = () => {
         username: string;
         fullName: string;
         password: string;
-        role?: RoleType;
-        carPark?: CarParkType;
+        role?: RoleTypeChoices;
+        carPark?: CarParkChoices;
         isActive: boolean;
     }) => {
         if (values.role === undefined) return;
@@ -97,11 +97,13 @@ const Content = () => {
         username: z.string({ required_error: t("validation.default.required") }),
         fullName: z.string({ required_error: t("validation.default.required") }),
         password: z.string({ required_error: t("validation.default.required") }),
-        role: z.nativeEnum(RoleType, {
+        role: z.nativeEnum(RoleTypeChoices, {
             required_error: t("validation.default.required"),
             message: t("validation.select.invalid"),
         }),
-        carPark: z.nativeEnum(CarParkType, { message: t("validation.select.invalid") }).optional(),
+        carPark: z
+            .nativeEnum(CarParkChoices, { message: t("validation.select.invalid") })
+            .optional(),
     });
 
     const formik = useFormik({
@@ -174,9 +176,13 @@ const Content = () => {
                             <SelectValue placeholder={t("users-page.select-role")} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={RoleType.AdminRole}>Admin</SelectItem>
-                            <SelectItem value={RoleType.OperatorRole}>Operator</SelectItem>
-                            <SelectItem value={RoleType.AccountantRole}>Accountant</SelectItem>
+                            <SelectItem value={RoleTypeChoices.OPERATOR}>
+                                {t("role-type.operator")}
+                            </SelectItem>
+                            <SelectItem value={RoleTypeChoices.ACCOUNTANT}>
+                                {t("role-type.accountant")}
+                            </SelectItem>
+                            <SelectItem value={RoleTypeChoices.ADMIN}>{t("role-type.admin")}</SelectItem>
                         </SelectContent>
                     </Select>
 
@@ -202,8 +208,8 @@ const Content = () => {
                             <SelectItem value="clear" className="text-muted-foreground">
                                 {t("select-park-number")}
                             </SelectItem>
-                            <SelectItem value={CarParkType.Park3}>Park 3</SelectItem>
-                            <SelectItem value={CarParkType.Park4}>Park 4</SelectItem>
+                            <SelectItem value={CarParkChoices.P3}>{t("car-park-type.park-3")}</SelectItem>
+                            <SelectItem value={CarParkChoices.P4}>{t("car-park-type.park-4")}</SelectItem>
                         </SelectContent>
                     </Select>
 

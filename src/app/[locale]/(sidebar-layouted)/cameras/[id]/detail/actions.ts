@@ -9,20 +9,17 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { CameraUpdateInput, CameraResponse } from "@/openapi/client";
+import type { CameraBase, CameraVisible, ValidationError } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
     status: number;
     message: string | null | undefined;
-    errors: Record<string, string> | null;
-    data?: CameraResponse | null;
+    errors: Array<ValidationError> | null;
+    data?: CameraVisible | null;
 }
 
-export const cameraUpdateAction = async (
-    objId: number,
-    values: CameraUpdateInput,
-): Promise<IResponse> => {
+export const cameraUpdateAction = async (objId: number, values: CameraBase): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -39,8 +36,8 @@ export const cameraUpdateAction = async (
     });
     let result = undefined;
     try {
-        const response = await fetchClient.cameras.patchApiV1CameraUpdate({
-            id: objId,
+        const response = await fetchClient.camera.cameraUpdate({
+            objId: objId,
             requestBody: values,
         });
         result = { status: 200, message: response.message, data: response.data, errors: null };
@@ -49,8 +46,8 @@ export const cameraUpdateAction = async (
             if (e.status === 422) {
                 return {
                     status: e.status,
-                    message: e.body?.detail || t("errors.provide-valid-data"),
-                    errors: e.body?.errors ?? null,
+                    message: t("errors.provide-valid-data"),
+                    errors: e.body?.detail ?? null,
                     data: null,
                 };
             } else {

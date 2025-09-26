@@ -37,13 +37,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { formatDatetime, toastLoading, toastUpdate } from "@/lib/helper";
-import { CameraResponse } from "@/openapi/client";
+import { formatDatetime } from "@/lib/helper";
+import { CameraVisible } from "@/openapi/client";
 
-import { cameraDeleteAction } from "./actions";
 
 interface Props {
-    rows: Array<CameraResponse>;
+    rows: Array<CameraVisible>;
     page: number;
     limit: number;
     search?: string;
@@ -89,36 +88,8 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
         router.replace(`${pathname}?${params.toString()}`, { scroll: true });
     };
 
-    const handleDelete = async (value: number) => {
-        const toastId = toastLoading(t("please-wait"));
-        try {
-            const response = await cameraDeleteAction(value);
-            if (response.status == 200) {
-                toastUpdate(
-                    toastId,
-                    response.message ?? t("cameras-page.camera-deleted-successfully"),
-                    "success",
-                );
-                router.refresh();
-            } else {
-                toastUpdate(
-                    toastId,
-                    response.message ?? t("errors.something-went-wrong"),
-                    "warning",
-                );
-            }
-        } catch (e) {
-            if (e instanceof Error) {
-                console.error("Error corrupted:", e.message);
-                console.error(e.stack);
-            } else {
-                console.error("Unknown error:", e);
-            }
-            toastUpdate(toastId, t("errors.something-went-wrong"), "warning");
-        }
-    };
 
-    const columns: ColumnDef<CameraResponse>[] = [
+    const columns: ColumnDef<CameraVisible>[] = [
         {
             accessorKey: "id",
             header: "Id",
@@ -128,10 +99,10 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
             header: t("cameras-page.name"),
         },
         {
-            accessorKey: "type",
+            accessorKey: "cameraType",
             header: t("type"),
             cell: ({ row }) => {
-                return <Badge variant="outline">{row.original.type.label}</Badge>;
+                return <Badge variant="outline">{row.original.cameraType.label}</Badge>;
             },
         },
         {
@@ -181,9 +152,6 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
                                 </Link>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={() => handleDelete(objData.id)}>
-                                {t("action-buttons.delete")}
-                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );

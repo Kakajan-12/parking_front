@@ -37,10 +37,9 @@ const Page = async ({ params, searchParams }: Props) => {
     setRequestLocale(locale);
     const t = await getTranslations();
 
-    const { page, limit, search } = await searchParams;
+    const { page, limit } = await searchParams;
     const safePage = typeof page === "string" ? Number(page) : 1;
     const safeLimit = typeof limit === "string" ? Number(limit) : 25;
-    const safeSearch = typeof search === "string" ? String(search) : undefined;
 
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_TOKEN_COOKIE);
@@ -66,22 +65,18 @@ const Page = async ({ params, searchParams }: Props) => {
         locale: locale,
         token: token.value,
     });
-    const count = await callRequest<"cameras", "getApiV1CameraCount", { count: number }>({
+    const count = await callRequest<"camera", "cameraCount", { count: number }>({
         instance: countClient,
-        service: "cameras",
-        action: "getApiV1CameraCount",
+        service: "camera",
+        action: "cameraCount",
         safeReturn: { count: 0 },
         allow401: true,
         raiseExp: true,
-        params: {
-            search: safeSearch,
-        },
     });
 
-    const promise = fetchClient.cameras.getApiV1Camera({
+    const promise = fetchClient.camera.cameraList({
         page: safePage,
         limit: safeLimit,
-        search: safeSearch,
     });
     return (
         <Fragment>

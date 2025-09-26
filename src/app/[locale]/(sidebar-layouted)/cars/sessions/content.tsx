@@ -15,10 +15,10 @@ import {
 import { ChevronDown, MoreHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
-import Image from "@/components/Image";
 import Link from "@/components/Link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DebouncedInput } from "@/components/ui/debounced-input";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -38,15 +38,16 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { formatDatetime, getPrice } from "@/lib/helper";
-import { CarSessionResponse } from "@/openapi/client";
+import { CarSessionVisible } from "@/openapi/client";
 
 interface Props {
-    rows: Array<CarSessionResponse>;
+    rows: Array<CarSessionVisible>;
     page: number;
     limit: number;
+    search?: string;
 }
 
-function Content({ rows, page, limit }: Props) {
+function Content({ rows, page, limit, search }: Props) {
     const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
@@ -65,43 +66,51 @@ function Content({ rows, page, limit }: Props) {
         router.replace(`${pathname}?${params.toString()}`, { scroll: true });
     };
 
-    const columns: ColumnDef<CarSessionResponse>[] = [
-        {
-            accessorKey: "imageUrl",
-            header: "Image",
-            cell: ({ row }) => {
-                const imageUrl = row.original.imageUrl;
-                if (!imageUrl) return "-";
-                return (
-                    <Image
-                        src={imageUrl}
-                        alt="Car session"
-                        width={150}
-                        height={150}
-                        className="w-full aspect-square object-contain"
-                    />
-                );
-            },
-        },
+    const handleSearch = (search?: string) => {
+        console.log(search);
+        const params = new URLSearchParams(searchParams);
+
+        // Reset to first page when searching
+        params.set("page", "1");
+
+        // Keep the current page size
+        params.set("limit", table.getState().pagination.pageSize.toString());
+
+        // Add search param if provided
+        if (search) {
+            params.set("search", search);
+        } else {
+            params.delete("search");
+        }
+
+        router.replace(`${pathname}?${params.toString()}`, { scroll: true });
+    };
+
+    const columns: ColumnDef<CarSessionVisible>[] = [
         {
             accessorKey: "id",
             header: "Id",
         },
         {
-            accessorKey: "car",
+            accessorKey: "carId",
             header: t("car"),
 
             cell: ({ row }) => {
-                const car = row.original.car;
-                if (!car) return "-";
+                const carId = row.original.carId;
+                const carNumber = row.original.carNumber;
+                if (!carId) return carNumber;
                 return (
-                    <Link
-                        className="text-blue-400 font-semibold"
-                        href={`/cars/${row.original.carId}/detail`}
-                    >
-                        {car.carNumber}
+                    <Link className="text-blue-400 font-semibold" href={`/cars/${carId}/detail`}>
+                        {carNumber}
                     </Link>
                 );
+            },
+        },
+        {
+            accessorKey: "carPark",
+            header: t("car-park"),
+            cell: ({ row }) => {
+                return row.original.carPark.label;
             },
         },
         {
@@ -120,18 +129,10 @@ function Content({ rows, page, limit }: Props) {
                 const isPaid = row.original.isPaid;
                 return (
                     <Badge variant={isPaid ? "secondary" : "destructive"}>
-                        {isPaid ? t("yes") : t("no")}
+                        {isPaid ? t("action-buttons.yes") : t("action-buttons.no")}
                     </Badge>
                 );
             },
-        },
-        {
-            accessorKey: "status",
-            header: t("status"),
-        },
-        {
-            accessorKey: "duration",
-            header: t("duration"),
         },
         {
             accessorKey: "startTime",
@@ -145,6 +146,13 @@ function Content({ rows, page, limit }: Props) {
             header: t("end-time"),
             cell: ({ row }) => {
                 return formatDatetime({ date: row.original.endTime, locale: locale });
+            },
+        },
+        {
+            accessorKey: "invalidatedAt",
+            header: t("invalidated-at"),
+            cell: ({ row }) => {
+                return formatDatetime({ date: row.original.invalidatedAt, locale: locale });
             },
         },
         {
@@ -201,6 +209,15 @@ function Content({ rows, page, limit }: Props) {
     return (
         <div className="w-full">
             <div className="w-full flex items-center py-4">
+                <DebouncedInput
+                    placeholder="Filter..."
+                    value={search ?? ""}
+                    onChange={value => {
+                        handleSearch(value);
+                    }}
+                    fullWidth={true}
+                    className="max-w-md w-full"
+                />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-2 sm:ml-auto">

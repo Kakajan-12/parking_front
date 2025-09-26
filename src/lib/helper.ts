@@ -1,8 +1,28 @@
-import { format, parseISO } from "date-fns";
+import { format, parseISO, intervalToDuration } from "date-fns";
+import type { Locale as DateFnsLocale } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
 import { ru } from "date-fns/locale/ru";
 import type { FormikProps } from "formik";
 import type { ToastOptions } from "react-toastify";
 import { toast as baseToast } from "react-toastify";
+import type { Locale } from "use-intl/core";
+
+import { defaultLocale } from "@/config";
+import { tk } from "@/locale/tk";
+import { ValidationError } from "@/openapi/client";
+
+const localeMap: Record<Locale, DateFnsLocale> = {
+    en: enUS,
+    ru: ru,
+    tk: tk,
+};
+type LocaleStrings = Record<"year" | "month" | "day" | "hour" | "minute" | "second", string>;
+
+const DURATION_LOCALES: Record<string, LocaleStrings> = {
+    ru: { year: "г", month: "мес", day: "дн", hour: "ч", minute: "м", second: "с" },
+    tk: { year: "ýyl", month: "ay", day: "gün", hour: "sagat", minute: "min", second: "sek" },
+    en: { year: "y", month: "mo", day: "d", hour: "h", minute: "m", second: "s" },
+};
 
 const toastOptions: ToastOptions = {
     // autoClose: 5000,
@@ -50,32 +70,80 @@ export const toast = (
 export const formatDate = ({
     date,
     formatStr = "PP",
+    locale = defaultLocale,
 }: {
     date?: string | Date | null;
     formatStr?: string;
-    locale?: string;
+    locale?: Locale;
 }) => {
     if (!date) return "";
     if (typeof date === "string") {
         date = parseISO(date);
     }
-    return format(date, formatStr, { locale: ru });
+    return format(date, formatStr, { locale: localeMap[locale] });
 };
 
 export const formatDatetime = ({
     date,
+    locale = defaultLocale,
     formatStr = "dd.MM.yyyy HH:mm",
 }: {
     date?: string | Date | null;
     formatStr?: string;
-    locale?: string;
+    locale?: Locale;
 }) => {
     if (!date) return "";
     if (typeof date === "string") {
         date = parseISO(date);
     }
-    return format(date, formatStr, { locale: ru });
+    return format(date, formatStr, { locale: localeMap[locale] });
 };
+
+export const formatDuration = ({
+    start,
+    end,
+    locale = "ru",
+}: {
+    start?: string | Date | null;
+    end?: string | Date | null;
+    locale?: Locale;
+}) => {
+    if (!start || !end) return "";
+    if (typeof start === "string") start = new Date(start);
+    if (typeof end === "string") end = new Date(end);
+
+    const duration = intervalToDuration({ start, end });
+    const strings = DURATION_LOCALES[locale];
+
+    const parts: string[] = [];
+    if (duration.years) parts.push(`${duration.years} ${strings.year}`);
+    if (duration.months) parts.push(`${duration.months} ${strings.month}`);
+    if (duration.days) parts.push(`${duration.days} ${strings.day}`);
+    if (duration.hours) parts.push(`${duration.hours} ${strings.hour}`);
+    if (duration.minutes) parts.push(`${duration.minutes} ${strings.minute}`);
+    if (duration.seconds) parts.push(`${duration.seconds} ${strings.second}`);
+
+    return parts.join(" ") || `0 ${strings.minute}`;
+};
+
+export function formatVideoDuration(seconds: number) {
+    const totalSeconds = Math.floor(seconds);
+
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    const format = (num: number) => String(num).padStart(2, "0");
+
+    if (days > 0) {
+        return `${days}:${format(hours)}:${format(minutes)}:${format(secs)}`;
+    } else if (hours > 0) {
+        return `${format(hours)}:${format(minutes)}:${format(secs)}`;
+    } else {
+        return `${format(minutes)}:${format(secs)}`;
+    }
+}
 
 type ResolutionType = "DESKTOP" | "MOBILE";
 
@@ -104,20 +172,25 @@ export const canSubmit = <T>(formik: FormikProps<T>) => {
 
 export const checkError = <T>(
     formik: FormikProps<T>,
-    errors: Record<string, string> | null,
+    errors: ValidationError[] | Record<string, string> | null,
     field: keyof T | string,
 ): boolean => {
-    if (formik.errors[field as keyof T]) {
-        return true;
+    if (formik.errors[field as keyof T]) return true;
+
+    if (Array.isArray(errors)) {
+        return errors.some(e => e.loc[1] === field);
     }
 
-    return !!(errors && field in errors);
+    if (errors && typeof errors === "object") {
+        return Boolean(errors[field as string]);
+    }
 
+    return false;
 };
 
 export function getError<T>(
     formik: FormikProps<T>,
-    errors: Record<string, string> | null,
+    errors: ValidationError[] | Record<string, string> | null,
     field: keyof T | string,
 ): string | undefined {
     const formikError = formik.errors[field as keyof T];
@@ -125,39 +198,25 @@ export function getError<T>(
         return String(formikError);
     }
 
-    if (errors && field in errors) {
-        return errors[field as string];
+    if (errors && Array.isArray(errors)) {
+        const err = errors.find(e => e.loc[1] === field);
+        return err?.msg;
+    } else if (errors && typeof errors === "object") {
+        const errMsg = errors[field as string];
+        return errMsg ?? undefined;
     }
 
     return undefined;
 }
 
-export function formatVideoDuration(seconds: number) {
-    const totalSeconds = Math.floor(seconds);
+export function getPrice({ amount, currency }: { amount: string | null | undefined; currency: string }): string {
+    if (!amount) return "";
 
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
-
-    const format = (num: number) => String(num).padStart(2, "0");
-
-    if (days > 0) {
-        return `${days}:${format(hours)}:${format(minutes)}:${format(secs)}`;
-    } else if (hours > 0) {
-        return `${format(hours)}:${format(minutes)}:${format(secs)}`;
-    } else {
-        return `${format(minutes)}:${format(secs)}`;
-    }
-}
-
-export function getPrice({ amount, currency }: { amount: number; currency: string }): string {
-    if (isNaN(amount)) return "";
-
-    return new Intl.NumberFormat("ru-RU", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(amount);
+    return `${amount} ${currency}`;
+    // return new Intl.NumberForm/*at("ru-RU", {
+    //     style: "currency",
+    //     currency,
+    //     minimumFractionDigits: 2,
+    //     maximumFractionDigits: 2,
+    // }).format(amount);*/
 }

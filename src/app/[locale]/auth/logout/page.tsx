@@ -38,12 +38,12 @@ const Page = async () => {
 
     await callRequest({
         instance: fetchClient,
-        service: "auth",
-        action: "getApiV1AuthLogout",
+        service: "account",
+        action: "logout",
         safeReturn: null,
         allow401: false,
         allow404: false,
-        raiseExp: false,
+        raiseExp: true,
     });
     return <Content />;
 };

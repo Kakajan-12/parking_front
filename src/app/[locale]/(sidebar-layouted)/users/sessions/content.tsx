@@ -36,12 +36,13 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { formatDatetime, toastLoading, toastUpdate } from "@/lib/helper";
-import { UserSessionExtendedResponse } from "@/openapi/client";
+import { UserSessionExtendedVisible } from "@/openapi/client";
 
 import { userSessionRevokeAction } from "./actions";
+import OperatorSessionsTable from "./operator-sessions-table";
 
 interface Props {
-    rows: Array<UserSessionExtendedResponse>;
+    rows: Array<UserSessionExtendedVisible>;
     page: number;
     limit: number;
 }
@@ -75,6 +76,8 @@ function Content({ rows, page, limit }: Props) {
                     response.message ?? t("users-page.user-session-revoked"),
                     "success",
                 );
+                router.prefetch("/user/sessions");
+                router.refresh();
             } else {
                 toastUpdate(
                     toastId,
@@ -93,7 +96,7 @@ function Content({ rows, page, limit }: Props) {
         }
     };
 
-    const columns: ColumnDef<UserSessionExtendedResponse>[] = [
+    const columns: ColumnDef<UserSessionExtendedVisible>[] = [
         {
             accessorKey: "id",
             header: "Id",
@@ -104,10 +107,15 @@ function Content({ rows, page, limit }: Props) {
 
             cell: ({ row }) => {
                 const user = row.original.user;
-                if (!user) return "-";
+                const text = user
+                    ? `${user.username} - ${user.fullName}`
+                    : t("action-buttons.view");
                 return (
-                    <Link className="text-blue-400 font-semibold" href={`/users/${user.id}/detail`}>
-                        {user.username} - {user.fullName}
+                    <Link
+                        className="text-blue-400 font-semibold"
+                        href={`/users/${row.original.userId}/detail`}
+                    >
+                        {text}
                     </Link>
                 );
             },
@@ -119,10 +127,6 @@ function Content({ rows, page, limit }: Props) {
         {
             accessorKey: "userAgent",
             header: "User agent",
-        },
-        {
-            accessorKey: "macUsername",
-            header: "Mac username",
         },
         {
             accessorKey: "revokedAt",
@@ -191,94 +195,103 @@ function Content({ rows, page, limit }: Props) {
         },
     });
     return (
-        <div className="w-full">
-            <div className="w-full flex items-center py-4">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-2 sm:ml-auto">
-                            Columns <ChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter(column => column.getCanHide())
-                            .map(column => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={value => column.toggleVisibility(!!value)}
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-            <div className="overflow-hidden rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map(header => {
+        <div className="space-y-8">
+            <div className="w-full">
+                <div className="font-bold text-xl">{t("users-page.users-sessions")}</div>
+                <div className="w-full flex items-center py-4">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-2 sm:ml-auto">
+                                Columns <ChevronDown />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {table
+                                .getAllColumns()
+                                .filter(column => column.getCanHide())
+                                .map(column => {
                                     return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef.header,
-                                                      header.getContext(),
-                                                  )}
-                                        </TableHead>
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={value =>
+                                                column.toggleVisibility(Boolean(value))
+                                            }
+                                        >
+                                            {column.id}
+                                        </DropdownMenuCheckboxItem>
                                     );
                                 })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map(row => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext(),
-                                            )}
-                                        </TableCell>
-                                    ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+                <div className="overflow-hidden rounded-md border">
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map(headerGroup => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map(header => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                          header.column.columnDef.header,
+                                                          header.getContext(),
+                                                      )}
+                                            </TableHead>
+                                        );
+                                    })}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map(row => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                    >
+                                        {row.getVisibleCells().map(cell => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext(),
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+                <TableActions
+                    pageSize={limit}
+                    onPageSizeChange={value => {
+                        table.setPageSize(value);
+                    }}
+                    previousPage={() => table.previousPage()}
+                    canPreviousPage={table.getCanPreviousPage()}
+                    nextPage={() => table.nextPage()}
+                    canNextPage={table.getCanNextPage()}
+                    selectedCount={table.getFilteredSelectedRowModel().rows.length}
+                    rowsCount={table.getFilteredRowModel().rows.length}
+                    totalPage={table.getPageCount()}
+                    pageIndex={page}
+                />
             </div>
-            <TableActions
-                pageSize={limit}
-                onPageSizeChange={value => {
-                    table.setPageSize(value);
-                }}
-                previousPage={() => table.previousPage()}
-                canPreviousPage={table.getCanPreviousPage()}
-                nextPage={() => table.nextPage()}
-                canNextPage={table.getCanNextPage()}
-                selectedCount={table.getFilteredSelectedRowModel().rows.length}
-                rowsCount={table.getFilteredRowModel().rows.length}
-                totalPage={table.getPageCount()}
-                pageIndex={page}
-            />
+            <OperatorSessionsTable />
         </div>
     );
 }
