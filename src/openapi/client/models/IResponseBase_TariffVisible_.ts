@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TariffVisible } from './TariffVisible';
+import type { TariffVisible } from "./TariffVisible";
+
 export type IResponseBase_TariffVisible_ = {
-    message?: (string | null);
+    message?: string | null;
     data: TariffVisible;
 };
-

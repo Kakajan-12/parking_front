@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum RoleTypeChoices {
-    ADMIN = 'admin',
-    OPERATOR = 'operator',
-    ACCOUNTANT = 'accountant',
+    ADMIN = "admin",
+    OPERATOR = "operator",
+    ACCOUNTANT = "accountant",
 }

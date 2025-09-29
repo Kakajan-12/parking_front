@@ -5,9 +5,8 @@
 export type CarVisible = {
     id: number;
     carNumber: string;
-    ownerName?: (string | null);
+    ownerName?: string | null;
     isStaff: boolean;
     createdAt: string;
-    updatedAt?: (string | null);
+    updatedAt?: string | null;
 };
-

@@ -2,28 +2,29 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CameraEventIn } from '../models/CameraEventIn';
-import type { CarBase } from '../models/CarBase';
-import type { CarCreate } from '../models/CarCreate';
-import type { CarParkChoices } from '../models/CarParkChoices';
-import type { CarSessionVisible } from '../models/CarSessionVisible';
-import type { CarSubscriptionBase } from '../models/CarSubscriptionBase';
-import type { CarSubscriptionCreate } from '../models/CarSubscriptionCreate';
-import type { CarSubscriptionVisible } from '../models/CarSubscriptionVisible';
-import type { CarVisible } from '../models/CarVisible';
-import type { IPaginationDataBase_CarSessionEventVisible_ } from '../models/IPaginationDataBase_CarSessionEventVisible_';
-import type { IPaginationDataBase_CarSessionVisible_ } from '../models/IPaginationDataBase_CarSessionVisible_';
-import type { IPaginationDataBase_CarSubscriptionVisible_ } from '../models/IPaginationDataBase_CarSubscriptionVisible_';
-import type { IPaginationDataBase_CarVisible_ } from '../models/IPaginationDataBase_CarVisible_';
-import type { IPaginationDataBase_TariffVisible_ } from '../models/IPaginationDataBase_TariffVisible_';
-import type { IResponseBase_CarSubscriptionVisible_ } from '../models/IResponseBase_CarSubscriptionVisible_';
-import type { IResponseBase_CarVisible_ } from '../models/IResponseBase_CarVisible_';
-import type { IResponseBase_TariffVisible_ } from '../models/IResponseBase_TariffVisible_';
-import type { TariffBase } from '../models/TariffBase';
-import type { TariffCreate } from '../models/TariffCreate';
-import type { TariffVisible } from '../models/TariffVisible';
-import type { CancelablePromise } from '../core/CancelablePromise';
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+import type { BaseHttpRequest } from "../core/BaseHttpRequest";
+import type { CancelablePromise } from "../core/CancelablePromise";
+import type { CameraEventIn } from "../models/CameraEventIn";
+import type { CarBase } from "../models/CarBase";
+import type { CarCreate } from "../models/CarCreate";
+import type { CarParkChoices } from "../models/CarParkChoices";
+import type { CarSessionVisible } from "../models/CarSessionVisible";
+import type { CarSubscriptionBase } from "../models/CarSubscriptionBase";
+import type { CarSubscriptionCreate } from "../models/CarSubscriptionCreate";
+import type { CarSubscriptionVisible } from "../models/CarSubscriptionVisible";
+import type { CarVisible } from "../models/CarVisible";
+import type { IPaginationDataBase_CarSessionEventVisible_ } from "../models/IPaginationDataBase_CarSessionEventVisible_";
+import type { IPaginationDataBase_CarSessionVisible_ } from "../models/IPaginationDataBase_CarSessionVisible_";
+import type { IPaginationDataBase_CarSubscriptionVisible_ } from "../models/IPaginationDataBase_CarSubscriptionVisible_";
+import type { IPaginationDataBase_CarVisible_ } from "../models/IPaginationDataBase_CarVisible_";
+import type { IPaginationDataBase_TariffVisible_ } from "../models/IPaginationDataBase_TariffVisible_";
+import type { IResponseBase_CarSubscriptionVisible_ } from "../models/IResponseBase_CarSubscriptionVisible_";
+import type { IResponseBase_CarVisible_ } from "../models/IResponseBase_CarVisible_";
+import type { IResponseBase_TariffVisible_ } from "../models/IResponseBase_TariffVisible_";
+import type { TariffBase } from "../models/TariffBase";
+import type { TariffCreate } from "../models/TariffCreate";
+import type { TariffVisible } from "../models/TariffVisible";
+
 export class CarParkService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
@@ -38,21 +39,21 @@ export class CarParkService {
         page,
         limit,
     }: {
-        search?: (string | null),
-        isStaff?: (boolean | null),
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        search?: string | null;
+        isStaff?: boolean | null;
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_CarVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/car/',
+            method: "GET",
+            url: "/api/v1/car-park/car/",
             query: {
-                'search': search,
-                'is_staff': isStaff,
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                search: search,
+                is_staff: isStaff,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -69,15 +70,15 @@ export class CarParkService {
         search,
         isStaff,
     }: {
-        search?: (string | null),
-        isStaff?: (boolean | null),
+        search?: string | null;
+        isStaff?: boolean | null;
     }): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/car/count/',
+            method: "GET",
+            url: "/api/v1/car-park/car/count/",
             query: {
-                'search': search,
-                'is_staff': isStaff,
+                search: search,
+                is_staff: isStaff,
             },
             errors: {
                 400: `Bad Request`,
@@ -93,13 +94,13 @@ export class CarParkService {
     public carCreate({
         requestBody,
     }: {
-        requestBody: CarCreate,
+        requestBody: CarCreate;
     }): CancelablePromise<IResponseBase_CarVisible_> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/car-park/car/create/',
+            method: "POST",
+            url: "/api/v1/car-park/car/create/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -111,16 +112,12 @@ export class CarParkService {
      * @returns CarVisible Successful Response
      * @throws ApiError
      */
-    public carDetail({
-        objId,
-    }: {
-        objId: number,
-    }): CancelablePromise<CarVisible> {
+    public carDetail({ objId }: { objId: number }): CancelablePromise<CarVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/car-park/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -137,17 +134,17 @@ export class CarParkService {
         objId,
         requestBody,
     }: {
-        objId: number,
-        requestBody: CarBase,
+        objId: number;
+        requestBody: CarBase;
     }): CancelablePromise<IResponseBase_CarVisible_> {
         return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/api/v1/car-park/{obj_id}/update/',
+            method: "PATCH",
+            url: "/api/v1/car-park/{obj_id}/update/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -166,21 +163,21 @@ export class CarParkService {
         page,
         limit,
     }: {
-        isPaid?: (boolean | null),
-        isActive?: (boolean | null),
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        isPaid?: boolean | null;
+        isActive?: boolean | null;
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_CarSubscriptionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/subscription/',
+            method: "GET",
+            url: "/api/v1/car-park/subscription/",
             query: {
-                'is_paid': isPaid,
-                'is_active': isActive,
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                is_paid: isPaid,
+                is_active: isActive,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -197,15 +194,15 @@ export class CarParkService {
         isPaid,
         isActive,
     }: {
-        isPaid?: (boolean | null),
-        isActive?: (boolean | null),
+        isPaid?: boolean | null;
+        isActive?: boolean | null;
     }): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/subscription/count/',
+            method: "GET",
+            url: "/api/v1/car-park/subscription/count/",
             query: {
-                'is_paid': isPaid,
-                'is_active': isActive,
+                is_paid: isPaid,
+                is_active: isActive,
             },
             errors: {
                 400: `Bad Request`,
@@ -221,13 +218,13 @@ export class CarParkService {
     public carSubscriptionCreate({
         requestBody,
     }: {
-        requestBody: CarSubscriptionCreate,
+        requestBody: CarSubscriptionCreate;
     }): CancelablePromise<IResponseBase_CarSubscriptionVisible_> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/car-park/subscription/create/',
+            method: "POST",
+            url: "/api/v1/car-park/subscription/create/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -242,13 +239,13 @@ export class CarParkService {
     public carSubscriptionDetail({
         objId,
     }: {
-        objId: number,
+        objId: number;
     }): CancelablePromise<CarSubscriptionVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/subscription/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/car-park/subscription/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -265,17 +262,17 @@ export class CarParkService {
         objId,
         requestBody,
     }: {
-        objId: number,
-        requestBody: CarSubscriptionBase,
+        objId: number;
+        requestBody: CarSubscriptionBase;
     }): CancelablePromise<IResponseBase_CarSubscriptionVisible_> {
         return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/api/v1/car-park/subscription/{obj_id}/update/',
+            method: "PATCH",
+            url: "/api/v1/car-park/subscription/{obj_id}/update/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -295,23 +292,23 @@ export class CarParkService {
         page,
         limit,
     }: {
-        search?: (string | null),
-        carPark?: (CarParkChoices | null),
-        orderBy?: ('created_at' | '-created_at' | null),
-        operatorSessionId?: (number | null),
-        page?: (number | null),
-        limit?: (number | null),
+        search?: string | null;
+        carPark?: CarParkChoices | null;
+        orderBy?: "created_at" | "-created_at" | null;
+        operatorSessionId?: number | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_CarSessionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/session/',
+            method: "GET",
+            url: "/api/v1/car-park/session/",
             query: {
-                'search': search,
-                'car_park': carPark,
-                'order_by': orderBy,
-                'operator_session_id': operatorSessionId,
-                'page': page,
-                'limit': limit,
+                search: search,
+                car_park: carPark,
+                order_by: orderBy,
+                operator_session_id: operatorSessionId,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -329,17 +326,17 @@ export class CarParkService {
         operatorSessionId,
         carPark,
     }: {
-        search?: (string | null),
-        operatorSessionId?: (number | null),
-        carPark?: (CarParkChoices | null),
+        search?: string | null;
+        operatorSessionId?: number | null;
+        carPark?: CarParkChoices | null;
     }): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/session/count/',
+            method: "GET",
+            url: "/api/v1/car-park/session/count/",
             query: {
-                'search': search,
-                'operator_session_id': operatorSessionId,
-                'car_park': carPark,
+                search: search,
+                operator_session_id: operatorSessionId,
+                car_park: carPark,
             },
             errors: {
                 400: `Bad Request`,
@@ -352,16 +349,12 @@ export class CarParkService {
      * @returns CarSessionVisible Successful Response
      * @throws ApiError
      */
-    public carSessionDetail({
-        objId,
-    }: {
-        objId: number,
-    }): CancelablePromise<CarSessionVisible> {
+    public carSessionDetail({ objId }: { objId: number }): CancelablePromise<CarSessionVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/session/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/car-park/session/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -379,17 +372,17 @@ export class CarParkService {
         page,
         limit,
     }: {
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_TariffVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/tariff/',
+            method: "GET",
+            url: "/api/v1/car-park/tariff/",
             query: {
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -404,8 +397,8 @@ export class CarParkService {
      */
     public tariffCount(): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/tariff/count/',
+            method: "GET",
+            url: "/api/v1/car-park/tariff/count/",
             errors: {
                 400: `Bad Request`,
             },
@@ -419,13 +412,13 @@ export class CarParkService {
     public tariffCreate({
         requestBody,
     }: {
-        requestBody: TariffCreate,
+        requestBody: TariffCreate;
     }): CancelablePromise<IResponseBase_TariffVisible_> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/car-park/tariff/create/',
+            method: "POST",
+            url: "/api/v1/car-park/tariff/create/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -437,16 +430,12 @@ export class CarParkService {
      * @returns TariffVisible Successful Response
      * @throws ApiError
      */
-    public tariffDetail({
-        objId,
-    }: {
-        objId: number,
-    }): CancelablePromise<TariffVisible> {
+    public tariffDetail({ objId }: { objId: number }): CancelablePromise<TariffVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/tariff/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/car-park/tariff/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -463,17 +452,17 @@ export class CarParkService {
         objId,
         requestBody,
     }: {
-        objId: number,
-        requestBody: TariffBase,
+        objId: number;
+        requestBody: TariffBase;
     }): CancelablePromise<IResponseBase_TariffVisible_> {
         return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/api/v1/car-park/tariff/{obj_id}/update/',
+            method: "PATCH",
+            url: "/api/v1/car-park/tariff/{obj_id}/update/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -490,20 +479,23 @@ export class CarParkService {
         search,
         page,
         limit,
+        carPark,
     }: {
-        orderBy?: ('created_at' | '-created_at' | null),
-        search?: (string | null),
-        page?: (number | null),
-        limit?: (number | null),
+        orderBy?: "created_at" | "-created_at" | null;
+        search?: string | null;
+        page?: number | null;
+        limit?: number | null;
+        carPark?: string | null;
     }): CancelablePromise<IPaginationDataBase_CarSessionEventVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/car-park/event/',
+            method: "GET",
+            url: "/api/v1/car-park/event/",
             query: {
-                'order_by': orderBy,
-                'search': search,
-                'page': page,
-                'limit': limit,
+                order_by: orderBy,
+                search: search,
+                page: page,
+                limit: limit,
+                car_park: carPark,
             },
             errors: {
                 400: `Bad Request`,
@@ -519,13 +511,13 @@ export class CarParkService {
     public cameraEventEntry({
         requestBody,
     }: {
-        requestBody: CameraEventIn,
+        requestBody: CameraEventIn;
     }): CancelablePromise<string> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/car-park/event/entry/',
+            method: "POST",
+            url: "/api/v1/car-park/event/entry/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -540,13 +532,13 @@ export class CarParkService {
     public cameraEventExit({
         requestBody,
     }: {
-        requestBody: CameraEventIn,
+        requestBody: CameraEventIn;
     }): CancelablePromise<string> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/car-park/event/exit/',
+            method: "POST",
+            url: "/api/v1/car-park/event/exit/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,

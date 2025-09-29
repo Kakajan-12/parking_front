@@ -46,7 +46,7 @@ export const carCreateAction = async (values: CarCreate): Promise<IResponse> => 
                 console.log(e.body?.errors);
                 return {
                     status: e.status,
-                    message:  t("errors.provide-valid-data"),
+                    message: t("errors.provide-valid-data"),
                     errors: e.body?.detail ?? null,
                     data: null,
                 };

@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 import { getTranslations } from "next-intl/server";
 
 import { checkAuthCookies } from "@/lib/auth/actions";
@@ -19,11 +21,12 @@ export async function GET() {
     });
     try {
         const response = await fetchClient.account.me();
-        return Response.json({ data: response, status: 200 });
+        console.log(response, "auth-me data");
+        return NextResponse.json({ data: response, status: 200 });
     } catch (e) {
         if (e instanceof ApiError) {
-            return Response.json({ data: e.body, status: e.status });
+            return NextResponse.json({ data: e.body, status: e.status });
         }
-        return Response.json({ data: null, status: 500 });
+        return NextResponse.json({ data: null, status: 500 });
     }
 }

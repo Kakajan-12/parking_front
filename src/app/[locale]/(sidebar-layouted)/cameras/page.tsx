@@ -65,11 +65,11 @@ const Page = async ({ params, searchParams }: Props) => {
         locale: locale,
         token: token.value,
     });
-    const count = await callRequest<"camera", "cameraCount", { count: number }>({
+    const count = await callRequest<"camera", "cameraCount", number>({
         instance: countClient,
         service: "camera",
         action: "cameraCount",
-        safeReturn: { count: 0 },
+        safeReturn: 0,
         allow401: true,
         raiseExp: true,
     });
@@ -97,7 +97,7 @@ const Page = async ({ params, searchParams }: Props) => {
                     <Await promise={promise} allow401={true}>
                         {data => (
                             <Content
-                                totalCount={count.count}
+                                totalCount={count}
                                 rows={data.rows}
                                 page={safePage}
                                 limit={safeLimit}

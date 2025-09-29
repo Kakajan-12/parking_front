@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { OperatorSessionVisible } from './OperatorSessionVisible';
+import type { OperatorSessionVisible } from "./OperatorSessionVisible";
+
 export type IPaginationDataBase_OperatorSessionVisible_ = {
     limit: number;
     page: number;
     rows: Array<OperatorSessionVisible>;
 };
-

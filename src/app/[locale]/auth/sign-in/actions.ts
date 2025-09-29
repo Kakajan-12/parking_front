@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 
 import { defaultLocale } from "@/config";
 import { setAuthCookies } from "@/lib/auth/actions";
-import { ApiError, CarParkChoices,  Token} from "@/openapi/client";
+import { ApiError, CarParkChoices, Token } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IContactResponse {

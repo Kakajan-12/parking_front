@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { UserSessionExtendedVisible } from './UserSessionExtendedVisible';
+import type { UserSessionExtendedVisible } from "./UserSessionExtendedVisible";
+
 export type IPaginationDataBase_UserSessionVisible_ = {
     limit: number;
     page: number;
     rows: Array<UserSessionExtendedVisible>;
 };
-

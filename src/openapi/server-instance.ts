@@ -18,9 +18,7 @@ async function getServerInstance({
     cache?: "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload";
     locale?: string | undefined;
 } = {}): Promise<FetchClient> {
-
-
-    const headersList = await headers()
+    const headersList = await headers();
 
     const userAgent = headersList.get("user-agent") ?? "";
     const forwardedFor = headersList.get("x-forwarded-for");

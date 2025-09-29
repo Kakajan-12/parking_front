@@ -92,7 +92,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
         const initialize = async () => {
             refreshTokenPayload();
-            // await debouncedFetchUser();
+            await debouncedFetchUser();
             if (!mounted) return;
         };
 

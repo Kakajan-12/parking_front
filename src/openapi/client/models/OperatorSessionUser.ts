@@ -7,4 +7,3 @@ export type OperatorSessionUser = {
     fullName: string;
     username: string;
 };
-

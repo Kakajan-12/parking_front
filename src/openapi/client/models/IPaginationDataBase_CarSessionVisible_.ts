@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CarSessionVisible } from './CarSessionVisible';
+import type { CarSessionVisible } from "./CarSessionVisible";
+
 export type IPaginationDataBase_CarSessionVisible_ = {
     limit: number;
     page: number;
     rows: Array<CarSessionVisible>;
 };
-

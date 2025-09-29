@@ -85,6 +85,7 @@ const Page = async ({ params, searchParams }: Props) => {
                     <Await promise={promise} allow401={true}>
                         {data => (
                             <Content
+                                
                                 rows={data.rows}
                                 page={safePage}
                                 limit={safeLimit}

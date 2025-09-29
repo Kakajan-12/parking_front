@@ -5,5 +5,6 @@
 export type EventCarSession = {
     id: number;
     carNumber: string;
+    totalAmount?: string | null;
+    currency: string;
 };
-

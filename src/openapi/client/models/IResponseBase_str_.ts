@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type IResponseBase_str_ = {
-    message?: (string | null);
+    message?: string | null;
     data: string;
 };
-

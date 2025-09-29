@@ -36,17 +36,22 @@
     --sidebar-accent-foreground: #171717;
     --sidebar-border: #e5e5e5;
     --sidebar-ring: #a1a1a1;
-    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-mono:
+        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+        monospace;
     --radius: 0.625rem;
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
@@ -143,7 +148,7 @@ body {
     }
 }
 
-/* Loader start *//* HTML: <div class="loader"></div> */
+/* Loader start */ /* HTML: <div class="loader"></div> */
 .loader {
     width: 60px;
     aspect-ratio: 1;
@@ -155,27 +160,45 @@ body {
     content: "";
     flex: 1;
     animation:
-            l10-1 1s infinite linear alternate,
-            l10-2 2s infinite steps(1) -.5s;
+        l10-1 1s infinite linear alternate,
+        l10-2 2s infinite steps(1) -0.5s;
 }
 .loader::after {
-    --s:-1,-1;
+    --s: -1, -1;
 }
 @keyframes l10-0 {
-    0%  {transform: scaleX(1)  rotate(0deg)}
-    50% {transform: scaleX(-1) rotate(-90deg)}
+    0% {
+        transform: scaleX(1) rotate(0deg);
+    }
+    50% {
+        transform: scaleX(-1) rotate(-90deg);
+    }
 }
 @keyframes l10-1 {
     0%,
-    5%   {transform:scale(var(--s,1)) translate(0px)   perspective(150px) rotateY(0deg) }
-    33%  {transform:scale(var(--s,1)) translate(-10px) perspective(150px) rotateX(0deg) }
-    66%  {transform:scale(var(--s,1)) translate(-10px) perspective(150px) rotateX(-180deg)}
+    5% {
+        transform: scale(var(--s, 1)) translate(0px) perspective(150px) rotateY(0deg);
+    }
+    33% {
+        transform: scale(var(--s, 1)) translate(-10px) perspective(150px) rotateX(0deg);
+    }
+    66% {
+        transform: scale(var(--s, 1)) translate(-10px) perspective(150px) rotateX(-180deg);
+    }
     95%,
-    100% {transform:scale(var(--s,1)) translate(0px)   perspective(150px) rotateX(-180deg)}
+    100% {
+        transform: scale(var(--s, 1)) translate(0px) perspective(150px) rotateX(-180deg);
+    }
 }
 @keyframes l10-2 {
-    0%  {background:#514b82;border-radius: 0}
-    50% {background:#25b09b;border-radius: 100px 0 0 100px}
+    0% {
+        background: #514b82;
+        border-radius: 0;
+    }
+    50% {
+        background: #25b09b;
+        border-radius: 100px 0 0 100px;
+    }
 }
 /* Loader end */
 
@@ -220,16 +243,16 @@ input {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 /* Firefox */
 * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.3) transparent;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }

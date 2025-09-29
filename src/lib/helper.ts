@@ -209,7 +209,13 @@ export function getError<T>(
     return undefined;
 }
 
-export function getPrice({ amount, currency }: { amount: string | null | undefined; currency: string }): string {
+export function getPrice({
+    amount,
+    currency,
+}: {
+    amount: string | null | undefined;
+    currency: string;
+}): string {
     if (!amount) return "";
 
     return `${amount} ${currency}`;

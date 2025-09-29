@@ -67,11 +67,11 @@ const Page = async ({ params, searchParams }: Props) => {
         token: token.value,
     });
 
-    const count = await callRequest<"carPark", "carCount", { count: number }>({
+    const count = await callRequest<"carPark", "carCount", number>({
         instance: countClient,
         service: "carPark",
         action: "carCount",
-        safeReturn: { count: 0 },
+        safeReturn: 0,
         allow401: true,
         raiseExp: true,
         params: {
@@ -84,8 +84,6 @@ const Page = async ({ params, searchParams }: Props) => {
         limit: safeLimit,
         search: safeSearch,
     });
-
-
 
     return (
         <Fragment>
@@ -106,7 +104,7 @@ const Page = async ({ params, searchParams }: Props) => {
                     <Await promise={promise} allow401={true}>
                         {data => (
                             <Content
-                                totalCount={count.count}
+                                totalCount={count}
                                 rows={data.rows}
                                 page={safePage}
                                 limit={safeLimit}

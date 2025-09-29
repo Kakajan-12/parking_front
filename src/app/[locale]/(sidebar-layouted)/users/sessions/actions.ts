@@ -57,14 +57,15 @@ export const userSessionRevokeAction = async (objId: string): Promise<IResponse>
     return result;
 };
 
-
 interface IOperatorCalculateResponse {
     status: number;
     message: string | null | undefined;
     data: OperatorSessionVisible | null;
 }
 
-export const operatorSessionCalculate = async (objId: number): Promise<IOperatorCalculateResponse> => {
+export const operatorSessionCalculate = async (
+    objId: number,
+): Promise<IOperatorCalculateResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -91,13 +92,13 @@ export const operatorSessionCalculate = async (objId: number): Promise<IOperator
                 return {
                     status: 400,
                     message: e.body?.detail || "errors.something-went-wrong",
-                    data: null
+                    data: null,
                 };
             } else {
                 return {
                     status: e.status,
                     message: t("errors.something-went-wrong"),
-                    data: null
+                    data: null,
                 };
             }
         }
@@ -139,7 +140,7 @@ export const fetchOperatorSessions = async ({
     const fetchClient = await getServerInstance({
         locale: locale,
         token: token,
-        cache: "no-cache"
+        cache: "no-cache",
     });
     try {
         const response = await fetchClient.account.operatorSessionList({

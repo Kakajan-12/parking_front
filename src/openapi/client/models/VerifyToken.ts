@@ -5,4 +5,3 @@
 export type VerifyToken = {
     accessToken: string;
 };
-

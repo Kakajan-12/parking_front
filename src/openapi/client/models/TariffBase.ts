@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type TariffBase = {
-    name?: (string | null);
-    duration?: (number | null);
-    isActive?: (boolean | null);
-    priceAmount?: (number | string | null);
+    name?: string | null;
+    duration?: number | null;
+    isActive?: boolean | null;
+    priceAmount?: number | string | null;
 };
-

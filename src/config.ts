@@ -51,7 +51,6 @@ export const localePrefix: LocalePrefix<typeof locales> = "always";
 export const port = process.env.PORT || 3000;
 export const host = WEBAPP_URL;
 
-
 export const ROUTES_BY_ROLE = {
     [RoleTypeChoices.ADMIN]: "/dashboard",
     [RoleTypeChoices.OPERATOR]: "/video",

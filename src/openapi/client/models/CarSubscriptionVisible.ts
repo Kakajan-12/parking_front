@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CarVisible } from './CarVisible';
+import type { CarVisible } from "./CarVisible";
+
 export type CarSubscriptionVisible = {
     id: number;
     currency: string;
@@ -13,8 +14,7 @@ export type CarSubscriptionVisible = {
     isPaid: boolean;
     isActive: boolean;
     note: string;
-    car?: (CarVisible | null);
+    car?: CarVisible | null;
     createdAt: string;
     updatedAt?: string;
 };
-

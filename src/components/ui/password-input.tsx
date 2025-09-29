@@ -80,7 +80,11 @@ const PasswordInput = ({
                 fullWidth && "w-full",
             )}
         >
-            {label && <Label htmlFor={id}>{label} {required && "*"}</Label>}
+            {label && (
+                <Label htmlFor={id}>
+                    {label} {required && "*"}
+                </Label>
+            )}
             <div className="relative flex items-center">
                 <input
                     id={id}

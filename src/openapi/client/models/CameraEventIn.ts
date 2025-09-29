@@ -2,13 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { EventData } from './EventData';
+import type { EventData } from "./EventData";
+
 export type CameraEventIn = {
     eventid: string;
-    eventdescription?: (string | null);
+    eventdescription?: string | null;
     channelid: string;
     channelname: string;
     timestamp: string;
     event: EventData;
 };
-

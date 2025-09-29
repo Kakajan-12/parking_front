@@ -2,16 +2,17 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { BaseHttpRequest } from './core/BaseHttpRequest';
-import type { OpenAPIConfig } from './core/OpenAPI';
-import { FetchHttpRequest } from './core/FetchHttpRequest';
-import { AccountService } from './services/AccountService';
-import { CameraService } from './services/CameraService';
-import { CarParkService } from './services/CarParkService';
-import { DefaultService } from './services/DefaultService';
-import { FaviconService } from './services/FaviconService';
-import { ReleaseService } from './services/ReleaseService';
-import { SystemService } from './services/SystemService';
+import type { BaseHttpRequest } from "./core/BaseHttpRequest";
+import { FetchHttpRequest } from "./core/FetchHttpRequest";
+import type { OpenAPIConfig } from "./core/OpenAPI";
+import { AccountService } from "./services/AccountService";
+import { CameraService } from "./services/CameraService";
+import { CarParkService } from "./services/CarParkService";
+import { DefaultService } from "./services/DefaultService";
+import { FaviconService } from "./services/FaviconService";
+import { ReleaseService } from "./services/ReleaseService";
+import { SystemService } from "./services/SystemService";
+
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class FetchClient {
     public readonly account: AccountService;
@@ -22,12 +23,15 @@ export class FetchClient {
     public readonly release: ReleaseService;
     public readonly system: SystemService;
     public readonly request: BaseHttpRequest;
-    constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = FetchHttpRequest) {
+    constructor(
+        config?: Partial<OpenAPIConfig>,
+        HttpRequest: HttpRequestConstructor = FetchHttpRequest,
+    ) {
         this.request = new HttpRequest({
-            BASE: config?.BASE ?? '',
-            VERSION: config?.VERSION ?? '0.1.0',
+            BASE: config?.BASE ?? "",
+            VERSION: config?.VERSION ?? "0.1.0",
             WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,
-            CREDENTIALS: config?.CREDENTIALS ?? 'include',
+            CREDENTIALS: config?.CREDENTIALS ?? "include",
             TOKEN: config?.TOKEN,
             USERNAME: config?.USERNAME,
             PASSWORD: config?.PASSWORD,
@@ -45,4 +49,3 @@ export class FetchClient {
         this.system = new SystemService(this.request);
     }
 }
-

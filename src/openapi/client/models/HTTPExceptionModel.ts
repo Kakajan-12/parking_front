@@ -3,6 +3,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type HTTPExceptionModel = {
-    detail?: (string | null);
+    detail?: string | null;
 };
-

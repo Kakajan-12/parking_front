@@ -39,7 +39,11 @@ import {
 import { formatDatetime, getPrice, toastLoading, toastUpdate } from "@/lib/helper";
 import { OperatorSessionVisible } from "@/openapi/client";
 
-import { fetchOperatorSessions, operatorSessionCalculate, userSessionRevokeAction } from "./actions";
+import {
+    fetchOperatorSessions,
+    operatorSessionCalculate,
+    userSessionRevokeAction,
+} from "./actions";
 
 const OperatorSessionsTable = () => {
     const [search, setSearch] = useState("");
@@ -135,7 +139,6 @@ const OperatorSessionsTable = () => {
                     "success",
                 );
                 await callback();
-
             } else {
                 toastUpdate(
                     toastId,
@@ -210,7 +213,7 @@ const OperatorSessionsTable = () => {
                 const carPark = row.original.carPark;
                 if (!carPark) return "-";
                 return carPark.label;
-            }
+            },
         },
         {
             accessorKey: "totalCars",
@@ -262,7 +265,7 @@ const OperatorSessionsTable = () => {
                             <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>{t("action-buttons.view-details")}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={()=>handleCalculate(objData.id)}>
+                            <DropdownMenuItem onClick={() => handleCalculate(objData.id)}>
                                 {t("action-buttons.calculate")}
                             </DropdownMenuItem>
 

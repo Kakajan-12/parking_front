@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CancelablePromise } from '../core/CancelablePromise';
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+import type { BaseHttpRequest } from "../core/BaseHttpRequest";
+import type { CancelablePromise } from "../core/CancelablePromise";
+
 export class DefaultService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
@@ -13,8 +14,8 @@ export class DefaultService {
      */
     public root(): CancelablePromise<any> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/',
+            method: "GET",
+            url: "/",
             errors: {
                 400: `Bad Request`,
             },

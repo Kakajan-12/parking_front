@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CameraTypeChoices } from './CameraTypeChoices';
+import type { CameraTypeChoices } from "./CameraTypeChoices";
+
 export type ChoiceBase_CameraTypeChoices_ = {
     value: CameraTypeChoices;
     label: string;
 };
-

@@ -2,27 +2,28 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Body_get_token } from '../models/Body_get_token';
-import type { CarParkChoices } from '../models/CarParkChoices';
-import type { IPaginationDataBase_OperatorSessionVisible_ } from '../models/IPaginationDataBase_OperatorSessionVisible_';
-import type { IPaginationDataBase_UserSessionVisible_ } from '../models/IPaginationDataBase_UserSessionVisible_';
-import type { IPaginationDataBase_UserVisible_ } from '../models/IPaginationDataBase_UserVisible_';
-import type { IResponseBase_OperatorSessionVisible_ } from '../models/IResponseBase_OperatorSessionVisible_';
-import type { IResponseBase_str_ } from '../models/IResponseBase_str_';
-import type { IResponseBase_Union_UserSessionVisible__NoneType__ } from '../models/IResponseBase_Union_UserSessionVisible__NoneType__';
-import type { IResponseBase_UserSessionVisible_ } from '../models/IResponseBase_UserSessionVisible_';
-import type { IResponseBase_UserVisible_ } from '../models/IResponseBase_UserVisible_';
-import type { OperatorSessionVisible } from '../models/OperatorSessionVisible';
-import type { PasswordIn } from '../models/PasswordIn';
-import type { Token } from '../models/Token';
-import type { UserBase } from '../models/UserBase';
-import type { UserCreate } from '../models/UserCreate';
-import type { UserSessionExtendedVisible } from '../models/UserSessionExtendedVisible';
-import type { UserSessionVisible } from '../models/UserSessionVisible';
-import type { UserVisible } from '../models/UserVisible';
-import type { VerifyToken } from '../models/VerifyToken';
-import type { CancelablePromise } from '../core/CancelablePromise';
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+import type { BaseHttpRequest } from "../core/BaseHttpRequest";
+import type { CancelablePromise } from "../core/CancelablePromise";
+import type { Body_get_token } from "../models/Body_get_token";
+import type { CarParkChoices } from "../models/CarParkChoices";
+import type { IPaginationDataBase_OperatorSessionVisible_ } from "../models/IPaginationDataBase_OperatorSessionVisible_";
+import type { IPaginationDataBase_UserSessionVisible_ } from "../models/IPaginationDataBase_UserSessionVisible_";
+import type { IPaginationDataBase_UserVisible_ } from "../models/IPaginationDataBase_UserVisible_";
+import type { IResponseBase_OperatorSessionVisible_ } from "../models/IResponseBase_OperatorSessionVisible_";
+import type { IResponseBase_Union_UserSessionVisible__NoneType__ } from "../models/IResponseBase_Union_UserSessionVisible__NoneType__";
+import type { IResponseBase_UserSessionVisible_ } from "../models/IResponseBase_UserSessionVisible_";
+import type { IResponseBase_UserVisible_ } from "../models/IResponseBase_UserVisible_";
+import type { IResponseBase_str_ } from "../models/IResponseBase_str_";
+import type { OperatorSessionVisible } from "../models/OperatorSessionVisible";
+import type { PasswordIn } from "../models/PasswordIn";
+import type { Token } from "../models/Token";
+import type { UserBase } from "../models/UserBase";
+import type { UserCreate } from "../models/UserCreate";
+import type { UserSessionExtendedVisible } from "../models/UserSessionExtendedVisible";
+import type { UserSessionVisible } from "../models/UserSessionVisible";
+import type { UserVisible } from "../models/UserVisible";
+import type { VerifyToken } from "../models/VerifyToken";
+
 export class AccountService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
@@ -32,8 +33,8 @@ export class AccountService {
      */
     public logout(): CancelablePromise<IResponseBase_Union_UserSessionVisible__NoneType__> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/auth/logout/',
+            method: "GET",
+            url: "/api/v1/auth/logout/",
             errors: {
                 400: `Bad Request`,
             },
@@ -49,17 +50,17 @@ export class AccountService {
         formData,
         carPark,
     }: {
-        formData: Body_get_token,
-        carPark?: (CarParkChoices | null),
+        formData: Body_get_token;
+        carPark?: CarParkChoices | null;
     }): CancelablePromise<Token> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/auth/get-token/',
+            method: "POST",
+            url: "/api/v1/auth/get-token/",
             query: {
-                'car_park': carPark,
+                car_park: carPark,
             },
             formData: formData,
-            mediaType: 'application/x-www-form-urlencoded',
+            mediaType: "application/x-www-form-urlencoded",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -71,16 +72,12 @@ export class AccountService {
      * @returns boolean Successful Response
      * @throws ApiError
      */
-    public verifyToken({
-        requestBody,
-    }: {
-        requestBody: VerifyToken,
-    }): CancelablePromise<boolean> {
+    public verifyToken({ requestBody }: { requestBody: VerifyToken }): CancelablePromise<boolean> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/auth/verify-token/',
+            method: "POST",
+            url: "/api/v1/auth/verify-token/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -94,8 +91,8 @@ export class AccountService {
      */
     public authSessions(): CancelablePromise<Array<UserSessionVisible>> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/auth/sessions/',
+            method: "GET",
+            url: "/api/v1/auth/sessions/",
             errors: {
                 400: `Bad Request`,
             },
@@ -108,8 +105,8 @@ export class AccountService {
      */
     public authSessionRevokeAll(): CancelablePromise<IResponseBase_str_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/auth/sessions/revoke-all/',
+            method: "GET",
+            url: "/api/v1/auth/sessions/revoke-all/",
             errors: {
                 400: `Bad Request`,
             },
@@ -123,13 +120,13 @@ export class AccountService {
     public authSessionRevoke({
         objId,
     }: {
-        objId: string,
+        objId: string;
     }): CancelablePromise<IResponseBase_UserSessionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/auth/sessions/{obj_id}/revoke/',
+            method: "GET",
+            url: "/api/v1/auth/sessions/{obj_id}/revoke/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -144,8 +141,8 @@ export class AccountService {
      */
     public me(): CancelablePromise<UserSessionExtendedVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/auth/me/',
+            method: "GET",
+            url: "/api/v1/auth/me/",
             errors: {
                 400: `Bad Request`,
             },
@@ -163,21 +160,21 @@ export class AccountService {
         page,
         limit,
     }: {
-        userId?: (string | null),
-        search?: (string | null),
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        userId?: string | null;
+        search?: string | null;
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_UserVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/',
+            method: "GET",
+            url: "/api/v1/user/",
             query: {
-                'user_id': userId,
-                'search': search,
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                user_id: userId,
+                search: search,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -190,16 +187,12 @@ export class AccountService {
      * @returns number Successful Response
      * @throws ApiError
      */
-    public userCount({
-        search,
-    }: {
-        search?: (string | null),
-    }): CancelablePromise<number> {
+    public userCount({ search }: { search?: string | null }): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/count/',
+            method: "GET",
+            url: "/api/v1/user/count/",
             query: {
-                'search': search,
+                search: search,
             },
             errors: {
                 400: `Bad Request`,
@@ -215,13 +208,13 @@ export class AccountService {
     public userCreate({
         requestBody,
     }: {
-        requestBody: UserCreate,
+        requestBody: UserCreate;
     }): CancelablePromise<IResponseBase_UserVisible_> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/user/create/',
+            method: "POST",
+            url: "/api/v1/user/create/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -233,16 +226,12 @@ export class AccountService {
      * @returns UserVisible Successful Response
      * @throws ApiError
      */
-    public userDetail({
-        objId,
-    }: {
-        objId: string,
-    }): CancelablePromise<UserVisible> {
+    public userDetail({ objId }: { objId: string }): CancelablePromise<UserVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/user/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -259,17 +248,17 @@ export class AccountService {
         objId,
         requestBody,
     }: {
-        objId: string,
-        requestBody: UserBase,
+        objId: string;
+        requestBody: UserBase;
     }): CancelablePromise<IResponseBase_UserVisible_> {
         return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/api/v1/user/{obj_id}/update/',
+            method: "PATCH",
+            url: "/api/v1/user/{obj_id}/update/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -281,16 +270,12 @@ export class AccountService {
      * @returns void
      * @throws ApiError
      */
-    public userDelete({
-        objId,
-    }: {
-        objId: string,
-    }): CancelablePromise<void> {
+    public userDelete({ objId }: { objId: string }): CancelablePromise<void> {
         return this.httpRequest.request({
-            method: 'DELETE',
-            url: '/api/v1/user/{obj_id}/delete/',
+            method: "DELETE",
+            url: "/api/v1/user/{obj_id}/delete/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -306,13 +291,13 @@ export class AccountService {
     public staffChangePassword({
         requestBody,
     }: {
-        requestBody: PasswordIn,
+        requestBody: PasswordIn;
     }): CancelablePromise<IResponseBase_str_> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/staff/change-password/',
+            method: "POST",
+            url: "/api/v1/staff/change-password/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -330,19 +315,19 @@ export class AccountService {
         page,
         limit,
     }: {
-        userId?: (string | null),
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        userId?: string | null;
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_UserSessionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/session/',
+            method: "GET",
+            url: "/api/v1/user/session/",
             query: {
-                'user_id': userId,
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                user_id: userId,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -355,16 +340,12 @@ export class AccountService {
      * @returns number Successful Response
      * @throws ApiError
      */
-    public userSessionCount({
-        userId,
-    }: {
-        userId?: (string | null),
-    }): CancelablePromise<number> {
+    public userSessionCount({ userId }: { userId?: string | null }): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/session/count/',
+            method: "GET",
+            url: "/api/v1/user/session/count/",
             query: {
-                'user_id': userId,
+                user_id: userId,
             },
             errors: {
                 400: `Bad Request`,
@@ -380,13 +361,13 @@ export class AccountService {
     public userSessionRevoke({
         objId,
     }: {
-        objId: string,
+        objId: string;
     }): CancelablePromise<IResponseBase_UserSessionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/user/session/{obj_id}/revoke/',
+            method: "GET",
+            url: "/api/v1/user/session/{obj_id}/revoke/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -406,21 +387,21 @@ export class AccountService {
         page,
         limit,
     }: {
-        userId?: (string | null),
-        sessionId?: (string | null),
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        userId?: string | null;
+        sessionId?: string | null;
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_OperatorSessionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/operator-session/',
+            method: "GET",
+            url: "/api/v1/operator-session/",
             query: {
-                'user_id': userId,
-                'session_id': sessionId,
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                user_id: userId,
+                session_id: sessionId,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -437,15 +418,15 @@ export class AccountService {
         userId,
         sessionId,
     }: {
-        userId?: (string | null),
-        sessionId?: (string | null),
+        userId?: string | null;
+        sessionId?: string | null;
     }): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/operator-session/count/',
+            method: "GET",
+            url: "/api/v1/operator-session/count/",
             query: {
-                'user_id': userId,
-                'session_id': sessionId,
+                user_id: userId,
+                session_id: sessionId,
             },
             errors: {
                 400: `Bad Request`,
@@ -461,13 +442,13 @@ export class AccountService {
     public operatorSessionDetail({
         objId,
     }: {
-        objId: number,
+        objId: number;
     }): CancelablePromise<OperatorSessionVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/operator-session/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/operator-session/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -483,13 +464,13 @@ export class AccountService {
     public operatorSessionCalculate({
         objId,
     }: {
-        objId: number,
+        objId: number;
     }): CancelablePromise<IResponseBase_OperatorSessionVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/operator-session/{obj_id}/calculate/',
+            method: "GET",
+            url: "/api/v1/operator-session/{obj_id}/calculate/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,

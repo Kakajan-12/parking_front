@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CarBase = {
-    carNumber?: (string | null);
-    ownerName?: (string | null);
-    isStaff?: (boolean | null);
+    carNumber?: string | null;
+    ownerName?: string | null;
+    isStaff?: boolean | null;
 };
-

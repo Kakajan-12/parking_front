@@ -4,10 +4,9 @@
 /* eslint-disable */
 export type EventData = {
     platetext: string;
-    platetextformat?: (string | null);
-    parkingtimesec: (number | string);
-    lastname?: (string | null);
-    firstname?: (string | null);
-    patronymic?: (string | null);
+    platetextformat?: string | null;
+    parkingtimesec: number | string;
+    lastname?: string | null;
+    firstname?: string | null;
+    patronymic?: string | null;
 };
-

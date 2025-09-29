@@ -4,7 +4,6 @@
 /* eslint-disable */
 export type CarCreate = {
     carNumber: string;
-    ownerName?: (string | null);
+    ownerName?: string | null;
     isStaff: boolean;
 };
-

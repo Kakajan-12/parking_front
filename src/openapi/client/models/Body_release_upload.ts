@@ -9,8 +9,7 @@ export type Body_release_upload = {
 };
 export namespace Body_release_upload {
     export enum release_os {
-        ANDROID = 'android',
-        IOS = 'ios',
+        ANDROID = "android",
+        IOS = "ios",
     }
 }
-

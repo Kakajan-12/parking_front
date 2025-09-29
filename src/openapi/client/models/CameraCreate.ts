@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CameraTypeChoices } from './CameraTypeChoices';
+import type { CameraTypeChoices } from "./CameraTypeChoices";
+
 export type CameraCreate = {
     cameraType: CameraTypeChoices;
     name: string;
     channelName: string;
     channelToken: string;
 };
-

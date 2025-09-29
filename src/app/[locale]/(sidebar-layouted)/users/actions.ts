@@ -36,7 +36,7 @@ export const userDeleteAction = async (objId: string): Promise<IResponse> => {
         await fetchClient.account.userDelete({
             objId: objId,
         });
-        result = { status: 200, message: null};
+        result = { status: 200, message: null };
     } catch (e: any) {
         if (e instanceof ApiError) {
             if (e.status === 400) {

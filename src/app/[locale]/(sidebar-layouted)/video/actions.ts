@@ -7,7 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
-import { ApiError, CarSessionEventVisible } from "@/openapi/client";
+import { ApiError, CarSessionEventVisible, CarParkChoices } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
@@ -21,11 +21,13 @@ interface IResponse {
 export const fetchEvents = async ({
     page,
     limit,
-    search
+    search,
+    carPark,
 }: {
     page: number;
     limit: number;
     search?: string;
+    carPark?: CarParkChoices | null;
 }): Promise<IResponse> => {
     const t = await getTranslations();
 
@@ -40,15 +42,16 @@ export const fetchEvents = async ({
     const fetchClient = await getServerInstance({
         locale: locale,
         token: token,
-        cache: "no-cache"
+        cache: "no-cache",
     });
     try {
         const response = await fetchClient.carPark.cameraEventList({
             page: page,
             limit: limit,
-            search: search
+            search: search,
+            carPark: carPark,
         });
-        return  { status: 200, message: null, data: response };
+        return { status: 200, message: null, data: response };
     } catch (e: any) {
         if (e instanceof ApiError) {
             if (e.status === 400) {

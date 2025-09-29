@@ -238,7 +238,6 @@ const OperatorSessionsTable = ({ rows, page, limit }: Props) => {
     });
 
     const renderRows = () => {
-
         const rows = table.getRowModel().rows;
         if (Array.isArray(rows) && rows.length > 0) {
             return rows.map(row => (
@@ -264,7 +263,6 @@ const OperatorSessionsTable = ({ rows, page, limit }: Props) => {
         <div className="w-full">
             <div className="font-bold text-xl">{t("users-page.operator-sessions")}</div>
             <div className="w-full flex items-center py-4">
-
                 <div className="flex flex-row ml-auto space-x-2">
                     <Button variant="ghost" size="icon" onClick={handleRefresh}>
                         <LuRefreshCcw className="size-4" />

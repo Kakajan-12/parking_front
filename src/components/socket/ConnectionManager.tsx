@@ -1,6 +1,6 @@
 "use client";
 
-import  { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { HiOutlineSignal, HiOutlineSignalSlash } from "react-icons/hi2";
@@ -42,11 +42,12 @@ export function ConnectionManager({ socket }: { socket: Socket | null }) {
         socket.disconnect();
     }
 
-    if (!socket) return (
-        <div className="rounded-md bg-destructive text-foreground size-10 flex justify-center items-center">
-            <HiOutlineSignalSlash className="size-4" />
-        </div>
-    );
+    if (!socket)
+        return (
+            <div className="rounded-md bg-destructive text-foreground size-10 flex justify-center items-center">
+                <HiOutlineSignalSlash className="size-4" />
+            </div>
+        );
 
     return (
         <Fragment>
@@ -71,7 +72,11 @@ export function ConnectionManager({ socket }: { socket: Socket | null }) {
             ) : (
                 <Tooltip>
                     <TooltipTrigger asChild={true}>
-                        <Button aria-label="Disconnect" variant="default" onClick={handleDisconnect}>
+                        <Button
+                            aria-label="Disconnect"
+                            variant="default"
+                            onClick={handleDisconnect}
+                        >
                             <HiOutlineSignal className="size-4" />
                             <span className="sr-only">Disconnect</span>
                         </Button>

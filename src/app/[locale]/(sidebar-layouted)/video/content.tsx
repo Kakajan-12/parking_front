@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -81,10 +81,22 @@ interface SocketEvent {
     };
 }
 
+interface EventData {
+    eventType: string;
+    carNumber: string;
+    imageUrl: string;
+    channelName: string;
+    carPark: string;
+    currency: string;
+    totalAmount: string;
+}
+
 function Content({ rows, page, limit, search }: Props) {
     const [modalOpen, setModalOpen] = React.useState(false);
+    const [modalSessionOpen, setModalSessionOpen] = React.useState(false);
+    const [currentSession, setCurrentSession] = React.useState<CarSessionVisible | null>(null);
+    const [currentEvent, setCurrentEvent] = React.useState<EventData | null>(null);
     const [fullName, setFullName] = React.useState("");
-    const [socketEvent, setSocketEvent] = useState<SocketEvent | null>(null);
     const [socket, setSocket] = React.useState<Socket | null>(null);
     const { token, userSession, payload } = useAuthContext();
     const locale = useLocale();
@@ -115,18 +127,33 @@ function Content({ rows, page, limit, search }: Props) {
         if (!socket) return;
 
         function onServerSessionEvent(event: SocketEvent) {
+            console.log(event);
             if (payload === null) {
                 return;
-            } else if (payload.role === RoleTypeChoices.OPERATOR) {
-                if (event.data.car_park === payload.car_park){
+            }
+            const eventData = {
+                eventType: event.data.event_type,
+                carNumber: event.data.car_number,
+                imageUrl: event.data.image_url,
+                channelName: event.data.channel_name,
+                carPark: event.data.car_park,
+                currency: event.data.currency ?? "",
+                totalAmount: event.data.total_amount ?? "",
+            };
+            if (payload.role === RoleTypeChoices.OPERATOR) {
+                if (event.data.car_park === payload.car_park) {
                     router.refresh();
-                    setSocketEvent(event);
-                    setModalOpen(true); // open modal on event
+                    if (event.data.event_type === "exit") {
+                        setCurrentEvent(eventData);
+                        setModalOpen(true); // open modal on event
+                    }
                 }
             } else {
                 router.refresh();
-                setSocketEvent(event);
-                setModalOpen(true); // open modal on event
+                if (event.data.event_type === "exit") {
+                    setCurrentEvent(eventData);
+                    setModalOpen(true); // open modal on event
+                }
             }
         }
 
@@ -175,6 +202,28 @@ function Content({ rows, page, limit, search }: Props) {
     };
 
     const columns: ColumnDef<CarSessionVisible>[] = [
+        {
+            accessorKey: "imageUrl",
+            header: t("image"),
+            cell: ({ row }) => {
+                const imageUrl = row.original.imageUrl;
+                if (!imageUrl) return "-";
+                return (
+                    <div>
+                        <Image
+                            withBackground={true}
+                            isServerImage={true}
+                            src={imageUrl}
+                            width={80}
+                            height={80}
+                            className="w-20 aspect-square object-contain"
+                            alt="Event image"
+                        />
+                        <span>{imageUrl}</span>
+                    </div>
+                );
+            },
+        },
         {
             accessorKey: "id",
             header: "Id",
@@ -280,10 +329,13 @@ function Content({ rows, page, limit, search }: Props) {
                             <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
 
-                            <DropdownMenuItem asChild={true}>
-                                <Link href={`/cars/sessions/${objData.id}/detail`}>
-                                    {t("action-buttons.view-details")}
-                                </Link>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    setCurrentSession(objData);
+                                    setModalSessionOpen(true);
+                                }}
+                            >
+                                {t("action-buttons.view-details")}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -318,10 +370,18 @@ function Content({ rows, page, limit, search }: Props) {
                         <span className="font-bold">{t("user")}:</span> {payload?.username}
                     </div>
                     <div>
-                        <span className="font-bold">{t("full-name")}:</span> {fullName}
+                        <span className="font-bold">{t("full-name")}:</span> <span>{fullName}</span>
+                    </div>
+                    <div>
+                        <span className="font-bold">{t("total-summary")}:</span>{" "}
+                        <span>
+                            {getPrice({
+                                amount: userSession?.operatorSession?.totalAmount,
+                                currency: userSession?.operatorSession?.currency ?? "",
+                            })}
+                        </span>
                     </div>
                 </div>
-                <div></div>
             </Paper>
 
             <div className="w-full">
@@ -424,9 +484,9 @@ function Content({ rows, page, limit, search }: Props) {
                         table.setPageSize(value);
                     }}
                     previousPage={() => table.previousPage()}
-                    canPreviousPage={table.getCanPreviousPage()}
+                    canPreviousPage={true}
                     nextPage={() => table.nextPage()}
-                    canNextPage={table.getCanNextPage()}
+                    canNextPage={true}
                     selectedCount={table.getFilteredSelectedRowModel().rows.length}
                     rowsCount={table.getFilteredRowModel().rows.length}
                     totalPage={table.getPageCount()}
@@ -437,32 +497,91 @@ function Content({ rows, page, limit, search }: Props) {
 
             {/* --- Socket Event Modal --- */}
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                <DialogContent className="max-w-lg p-4">
+                <DialogContent className="max-w-lg p-4 bg-red-200">
                     <DialogHeader>
-                        <DialogTitle>Event: {socketEvent?.data.event_type}</DialogTitle>
+                        <DialogTitle>
+                            {t("event")}: {currentEvent?.eventType && t(currentEvent?.eventType)}
+                        </DialogTitle>
                         <DialogDescription>
-                            <div>{t("car")}: {socketEvent?.data.car_number}</div>
-                            <div>{t("channel")}: {socketEvent?.data.channel_name}</div>
-                            {socketEvent?.data.event_type === "exit" && (
-                                <div>{t("total-amount")}: {getPrice({amount: socketEvent?.data?.total_amount, currency: socketEvent?.data?.currency ?? ""})}</div>
-                            )}
-
+                            <div>
+                                <div>
+                                    {t("car")}: {currentEvent?.carNumber}
+                                </div>
+                                <div>
+                                    {t("channel")}: {currentEvent?.channelName}
+                                </div>
+                                {currentEvent?.eventType === "exit" && (
+                                    <div>
+                                        {t("total-amount")}:{" "}
+                                        {getPrice({
+                                            amount: currentEvent?.totalAmount,
+                                            currency: currentEvent?.currency ?? "",
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         </DialogDescription>
                     </DialogHeader>
-                    {socketEvent?.data.image_url && (
+                    {currentEvent?.imageUrl && (
                         <Image
                             isServerImage={true}
                             withBackground={true}
                             width={800}
                             height={800}
-                            src={socketEvent.data.image_url}
+                            src={currentEvent.imageUrl}
                             alt="Event"
-                            className="w-full aspect-square rounded-md mt-2"
+                            className="w-full aspect-square object-contain rounded-md mt-2"
                         />
                     )}
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button variant="outline">Close</Button>
+                            <Button variant="outline" className="w-full">
+                                {t("open-barrier")}
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* --- Car session Modal --- */}
+            <Dialog open={modalSessionOpen} onOpenChange={setModalSessionOpen}>
+                <DialogContent className="max-w-lg p-4">
+                    <DialogHeader>
+                        <DialogTitle>
+                            {t("car")}: {currentSession?.carNumber}
+                        </DialogTitle>
+                        <DialogDescription>
+                            <div>
+                                <div>
+                                    {t("car-park")}: {currentSession?.carPark?.label}
+                                </div>
+
+                                <div>
+                                    {t("total-amount")}:{" "}
+                                    {getPrice({
+                                        amount: currentSession?.totalAmount,
+                                        currency: currentSession?.currency ?? "",
+                                    })}
+                                </div>
+                            </div>
+                        </DialogDescription>
+                    </DialogHeader>
+                    {currentSession?.imageUrl && (
+                        <Image
+                            isServerImage={true}
+                            withBackground={true}
+                            width={800}
+                            height={800}
+                            src={currentSession.imageUrl}
+                            alt="Event"
+                            className="w-full aspect-square object-contain rounded-md mt-2"
+                        />
+                    )}
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button variant="outline" className="w-full">
+                                {t("open-barrier")}
+                            </Button>
                         </DialogClose>
                     </DialogFooter>
                 </DialogContent>

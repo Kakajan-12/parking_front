@@ -1,7 +1,8 @@
 "use client";
+
 import React from "react";
 
-import { ChevronRight} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import Link from "@/components/Link";

@@ -7,4 +7,3 @@ export type PasswordIn = {
     passwordConfirm: string;
     password: string;
 };
-

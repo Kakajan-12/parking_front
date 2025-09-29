@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, Fragment } from "react";
 
 import {
     ColumnDef,
@@ -19,6 +19,15 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { DebouncedInput } from "@/components/ui/debounced-input";
 import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
@@ -36,6 +45,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { useAuthContext } from "@/lib/auth/provider";
 import { formatDatetime } from "@/lib/helper";
 import { CarSessionEventVisible } from "@/openapi/client";
 
@@ -43,9 +53,12 @@ import { fetchEvents } from "./actions";
 
 const EventsTable = () => {
     const [search, setSearch] = useState("");
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState<CarSessionEventVisible | null>(null);
     const locale = useLocale();
     const t = useTranslations();
     const [loading, setLoading] = useState(false);
+    const { payload } = useAuthContext();
     const [data, setData] = useState<Array<CarSessionEventVisible>>([]);
     const [pagination, setPagination] = useState({
         page: 1,
@@ -59,6 +72,7 @@ const EventsTable = () => {
                 page: pagination.page,
                 limit: pagination.pageSize,
                 search: search,
+                carPark: payload?.car_park,
             });
             if (response.status === 200 && response.data) {
                 const rows = response.data.rows;
@@ -148,7 +162,7 @@ const EventsTable = () => {
         {
             id: "actions",
             enableHiding: false,
-            cell: () => {
+            cell: ({ row }) => {
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -160,7 +174,14 @@ const EventsTable = () => {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>{t("action-buttons.view-details")}</DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    setSelected(row.original);
+                                    setOpen(true);
+                                }}
+                            >
+                                {t("action-buttons.view-details")}
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );
@@ -216,87 +237,125 @@ const EventsTable = () => {
         );
     };
     return (
-        <div className="w-full">
-            <div className="w-full flex items-center py-4">
-                <DebouncedInput
-                    placeholder="Filter..."
-                    value={search ?? ""}
-                    onChange={value => {
-                        setSearch(value);
-                    }}
-                    fullWidth={true}
-                    className="max-w-md w-full"
-                />
-                <div className="flex flex-row ml-auto space-x-2">
-                    <Button variant="ghost" size="icon" onClick={handleRefresh}>
-                        <LuRefreshCcw className="size-4" />
-                    </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
-                                Columns <ChevronDown />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            {table
-                                .getAllColumns()
-                                .filter(column => column.getCanHide())
-                                .map(column => {
-                                    return (
-                                        <DropdownMenuCheckboxItem
-                                            key={column.id}
-                                            className="capitalize"
-                                            checked={column.getIsVisible()}
-                                            onCheckedChange={value =>
-                                                column.toggleVisibility(!!value)
-                                            }
-                                        >
-                                            {column.id}
-                                        </DropdownMenuCheckboxItem>
-                                    );
-                                })}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+        <Fragment>
+            <div className="w-full">
+                <div className="w-full flex items-center py-4">
+                    <DebouncedInput
+                        placeholder="Filter..."
+                        value={search ?? ""}
+                        onChange={value => {
+                            setSearch(value);
+                        }}
+                        fullWidth={true}
+                        className="max-w-md w-full"
+                    />
+                    <div className="flex flex-row ml-auto space-x-2">
+                        <Button variant="ghost" size="icon" onClick={handleRefresh}>
+                            <LuRefreshCcw className="size-4" />
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">
+                                    Columns <ChevronDown />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {table
+                                    .getAllColumns()
+                                    .filter(column => column.getCanHide())
+                                    .map(column => {
+                                        return (
+                                            <DropdownMenuCheckboxItem
+                                                key={column.id}
+                                                className="capitalize"
+                                                checked={column.getIsVisible()}
+                                                onCheckedChange={value =>
+                                                    column.toggleVisibility(!!value)
+                                                }
+                                            >
+                                                {column.id}
+                                            </DropdownMenuCheckboxItem>
+                                        );
+                                    })}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
+                <div className="overflow-hidden rounded-md border">
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map(headerGroup => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map(header => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                          header.column.columnDef.header,
+                                                          header.getContext(),
+                                                      )}
+                                            </TableHead>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                        <TableBody>{renderRows()}</TableBody>
+                    </Table>
+                </div>
+                <TableActions
+                    pageSize={pagination.pageSize}
+                    onPageSizeChange={value => {
+                        table.setPageSize(value);
+                    }}
+                    previousPage={() => table.previousPage()}
+                    canPreviousPage={table.getCanPreviousPage()}
+                    nextPage={() => table.nextPage()}
+                    canNextPage={table.getCanNextPage()}
+                    selectedCount={table.getFilteredSelectedRowModel().rows.length}
+                    rowsCount={table.getFilteredRowModel().rows.length}
+                    totalPage={table.getPageCount()}
+                    pageIndex={pagination.page}
+                />
+
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogContent className="max-w-lg p-4">
+                        <DialogHeader>
+                            <DialogDescription>
+                                <div>
+                                    <DialogTitle>
+                                        {t("event")}: {selected?.eventType?.label}
+                                    </DialogTitle>
+                                    <div>
+                                        {t("car")}: {selected?.carSession?.carNumber}
+                                    </div>
+                                    <div>
+                                        {t("channel")}: {selected?.channelName}
+                                    </div>
+                                </div>
+                            </DialogDescription>
+                        </DialogHeader>
+                        {selected?.imageUrl && (
+                            <Image
+                                isServerImage={true}
+                                withBackground={true}
+                                width={800}
+                                height={800}
+                                src={selected.imageUrl}
+                                alt="Event"
+                                className="w-full aspect-square object-contain rounded-md mt-2"
+                            />
+                        )}
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Close</Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
-            <div className="overflow-hidden rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map(header => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef.header,
-                                                      header.getContext(),
-                                                  )}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>{renderRows()}</TableBody>
-                </Table>
-            </div>
-            <TableActions
-                pageSize={pagination.pageSize}
-                onPageSizeChange={value => {
-                    table.setPageSize(value);
-                }}
-                previousPage={() => table.previousPage()}
-                canPreviousPage={table.getCanPreviousPage()}
-                nextPage={() => table.nextPage()}
-                canNextPage={table.getCanNextPage()}
-                selectedCount={table.getFilteredSelectedRowModel().rows.length}
-                rowsCount={table.getFilteredRowModel().rows.length}
-                totalPage={table.getPageCount()}
-                pageIndex={pagination.page}
-            />
-        </div>
+        </Fragment>
     );
 };
 

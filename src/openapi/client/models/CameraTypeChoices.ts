@@ -3,6 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum CameraTypeChoices {
-    INSIDE = 'inside',
-    OUTSIDE = 'outside',
+    INSIDE = "inside",
+    OUTSIDE = "outside",
 }

@@ -373,5 +373,8 @@
   "paid-cars": "Paid cars",
   "captured-amount": "Captured amount",
   "user": "User",
-  "note": "Note"
+  "note": "Note",
+  "channel": "Channel",
+  "total-summary": "Total summary",
+  "event": "Event"
 }

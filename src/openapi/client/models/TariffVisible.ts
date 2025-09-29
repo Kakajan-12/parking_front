@@ -10,6 +10,5 @@ export type TariffVisible = {
     currency: string;
     priceAmount: string;
     createdAt: string;
-    updatedAt?: (string | null);
+    updatedAt?: string | null;
 };
-

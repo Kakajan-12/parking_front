@@ -2,37 +2,44 @@
 
 import { useState } from "react";
 
-
-
 import { useRouter } from "next/navigation";
-
-
 
 import { useFormik } from "formik";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
-
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectTrigger,
+    SelectContent,
+    SelectItem,
+    SelectValue,
+} from "@/components/ui/select";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import { CarParkChoices, UserBase, UserVisible, RoleTypeChoices, ValidationError } from "@/openapi/client";
-
-
+import {
+    CarParkChoices,
+    UserBase,
+    UserVisible,
+    RoleTypeChoices,
+    ValidationError,
+} from "@/openapi/client";
 
 import { userUpdateAction } from "./actions";
-
-
-
-
 
 const Content = ({ data }: { data: UserVisible }) => {
     const t = useTranslations();
@@ -87,7 +94,9 @@ const Content = ({ data }: { data: UserVisible }) => {
             required_error: t("validation.default.required"),
             message: t("validation.select.invalid"),
         }),
-        carPark: z.nativeEnum(CarParkChoices, { message: t("validation.select.invalid") }).optional(),
+        carPark: z
+            .nativeEnum(CarParkChoices, { message: t("validation.select.invalid") })
+            .optional(),
     });
 
     const formik = useFormik({
@@ -168,7 +177,9 @@ const Content = ({ data }: { data: UserVisible }) => {
                             <SelectItem value={RoleTypeChoices.ACCOUNTANT}>
                                 {t("role-type.accountant")}
                             </SelectItem>
-                            <SelectItem value={RoleTypeChoices.ADMIN}>{t("role-type.admin")}</SelectItem>
+                            <SelectItem value={RoleTypeChoices.ADMIN}>
+                                {t("role-type.admin")}
+                            </SelectItem>
                         </SelectContent>
                     </Select>
 

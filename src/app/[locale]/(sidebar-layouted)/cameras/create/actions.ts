@@ -45,7 +45,7 @@ export const cameraCreateAction = async (values: CameraCreate): Promise<IRespons
             if (e.status === 422) {
                 return {
                     status: e.status,
-                    message:  t("errors.provide-valid-data"),
+                    message: t("errors.provide-valid-data"),
                     errors: e.body?.detail ?? null,
                     data: null,
                 };

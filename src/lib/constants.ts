@@ -39,6 +39,3 @@ export const M_WEEK_DELAY = 604800; // revalidate at every 1 week
 export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Company name";
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME ?? "Site name";
 export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? "localhost";
-
-
-

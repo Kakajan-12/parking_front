@@ -35,7 +35,13 @@ export const DebouncedInput: React.FC<DebouncedInputProps> = ({
         debouncedOnChange(val); // call onChange after debounce
     };
     return (
-        <Input fullWidth={fullWidth} {...props} value={internalValue} onChange={handleChange} className={cn(className)} />
+        <Input
+            fullWidth={fullWidth}
+            {...props}
+            value={internalValue}
+            onChange={handleChange}
+            className={cn(className)}
+        />
     );
 };
 

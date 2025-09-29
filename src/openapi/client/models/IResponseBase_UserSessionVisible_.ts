@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { UserSessionVisible } from './UserSessionVisible';
+import type { UserSessionVisible } from "./UserSessionVisible";
+
 export type IResponseBase_UserSessionVisible_ = {
-    message?: (string | null);
+    message?: string | null;
     data: UserSessionVisible;
 };
-

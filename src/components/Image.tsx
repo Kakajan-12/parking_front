@@ -58,6 +58,7 @@ const Image = memo(
     }: ImageProps) => {
         const [imgSrc, setImgSrc] = useState<string | null>(fallbackSrc);
         const [loading, setLoading] = useState(true);
+        const [retryCount, setRetryCount] = useState(0);
         const imgWidth = useMemo(() => {
             return typeof width === "string" ? parseInt(width) : (width ?? 500);
         }, [width]);
@@ -98,8 +99,7 @@ const Image = memo(
                 // Path like "media/img.png" or "uploads/image.jpg"
                 setImgSrc(`${MEDIA_HOST}/${finalSrc}`);
             }
-        }, [src, fallbackSrc,isServerImage]);
-
+        }, [src, fallbackSrc, isServerImage]);
         return (
             <div
                 className={cn(
@@ -138,6 +138,14 @@ const Image = memo(
                         const themeFallbackSrc = fallbackSrc;
                         setImgSrc(themeFallbackSrc);
                         setLoading(false);
+
+                        if (retryCount === 0 && src) {
+                            setRetryCount(1);
+                            setTimeout(() => {
+                                setImgSrc(imgSrc); // re-request
+                                setLoading(true);
+                            }, 3000);
+                        }
                     }}
                     className={`transition-opacity duration-300 ${
                         loading ? "opacity-0" : "opacity-100"

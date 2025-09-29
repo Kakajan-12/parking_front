@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CarSubscriptionCreate = {
-    totalAmount: (number | string);
+    totalAmount: number | string;
     carId: number;
     startTime: string;
     endTime: string;
@@ -11,4 +11,3 @@ export type CarSubscriptionCreate = {
     isActive: boolean;
     note: string;
 };
-

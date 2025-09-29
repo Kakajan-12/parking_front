@@ -2,13 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CameraBase } from '../models/CameraBase';
-import type { CameraCreate } from '../models/CameraCreate';
-import type { CameraVisible } from '../models/CameraVisible';
-import type { IPaginationDataBase_CameraVisible_ } from '../models/IPaginationDataBase_CameraVisible_';
-import type { IResponseBase_CameraVisible_ } from '../models/IResponseBase_CameraVisible_';
-import type { CancelablePromise } from '../core/CancelablePromise';
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+import type { BaseHttpRequest } from "../core/BaseHttpRequest";
+import type { CancelablePromise } from "../core/CancelablePromise";
+import type { CameraBase } from "../models/CameraBase";
+import type { CameraCreate } from "../models/CameraCreate";
+import type { CameraVisible } from "../models/CameraVisible";
+import type { IPaginationDataBase_CameraVisible_ } from "../models/IPaginationDataBase_CameraVisible_";
+import type { IResponseBase_CameraVisible_ } from "../models/IResponseBase_CameraVisible_";
+
 export class CameraService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
@@ -21,17 +22,17 @@ export class CameraService {
         page,
         limit,
     }: {
-        orderBy?: ('created_at' | '-created_at' | null),
-        page?: (number | null),
-        limit?: (number | null),
+        orderBy?: "created_at" | "-created_at" | null;
+        page?: number | null;
+        limit?: number | null;
     }): CancelablePromise<IPaginationDataBase_CameraVisible_> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/camera/',
+            method: "GET",
+            url: "/api/v1/camera/",
             query: {
-                'order_by': orderBy,
-                'page': page,
-                'limit': limit,
+                order_by: orderBy,
+                page: page,
+                limit: limit,
             },
             errors: {
                 400: `Bad Request`,
@@ -46,8 +47,8 @@ export class CameraService {
      */
     public cameraCount(): CancelablePromise<number> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/camera/count/',
+            method: "GET",
+            url: "/api/v1/camera/count/",
             errors: {
                 400: `Bad Request`,
             },
@@ -61,13 +62,13 @@ export class CameraService {
     public cameraCreate({
         requestBody,
     }: {
-        requestBody: CameraCreate,
+        requestBody: CameraCreate;
     }): CancelablePromise<IResponseBase_CameraVisible_> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/api/v1/camera/create/',
+            method: "POST",
+            url: "/api/v1/camera/create/",
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,
@@ -79,16 +80,12 @@ export class CameraService {
      * @returns CameraVisible Successful Response
      * @throws ApiError
      */
-    public cameraDetail({
-        objId,
-    }: {
-        objId: number,
-    }): CancelablePromise<CameraVisible> {
+    public cameraDetail({ objId }: { objId: number }): CancelablePromise<CameraVisible> {
         return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/v1/camera/{obj_id}/detail/',
+            method: "GET",
+            url: "/api/v1/camera/{obj_id}/detail/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             errors: {
                 400: `Bad Request`,
@@ -105,17 +102,17 @@ export class CameraService {
         objId,
         requestBody,
     }: {
-        objId: number,
-        requestBody: CameraBase,
+        objId: number;
+        requestBody: CameraBase;
     }): CancelablePromise<IResponseBase_CameraVisible_> {
         return this.httpRequest.request({
-            method: 'PATCH',
-            url: '/api/v1/camera/{obj_id}/update/',
+            method: "PATCH",
+            url: "/api/v1/camera/{obj_id}/update/",
             path: {
-                'obj_id': objId,
+                obj_id: objId,
             },
             body: requestBody,
-            mediaType: 'application/json',
+            mediaType: "application/json",
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,

@@ -3,6 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum EventTypeChoices {
-    ENTRY = 'entry',
-    EXIT = 'exit',
+    ENTRY = "entry",
+    EXIT = "exit",
 }

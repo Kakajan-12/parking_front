@@ -215,7 +215,7 @@ const OperatorSessionsTable = ({ rows, page, limit }: Props) => {
     };
     return (
         <div className="w-full">
-            <div className="font-bold text-xl">{t("users-page.operator-sessions")}</div>
+            <div className="font-bold text-xl">{t("nav.subscriptions")}</div>
             <div className="w-full flex items-center py-4">
                 <div className="flex flex-row ml-auto space-x-2">
                     <Button variant="ghost" size="icon" onClick={handleRefresh}>

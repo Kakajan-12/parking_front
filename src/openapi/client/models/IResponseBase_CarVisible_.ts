@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CarVisible } from './CarVisible';
+import type { CarVisible } from "./CarVisible";
+
 export type IResponseBase_CarVisible_ = {
-    message?: (string | null);
+    message?: string | null;
     data: CarVisible;
 };
-

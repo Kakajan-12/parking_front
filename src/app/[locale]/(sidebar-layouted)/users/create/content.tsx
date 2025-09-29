@@ -182,7 +182,9 @@ const Content = () => {
                             <SelectItem value={RoleTypeChoices.ACCOUNTANT}>
                                 {t("role-type.accountant")}
                             </SelectItem>
-                            <SelectItem value={RoleTypeChoices.ADMIN}>{t("role-type.admin")}</SelectItem>
+                            <SelectItem value={RoleTypeChoices.ADMIN}>
+                                {t("role-type.admin")}
+                            </SelectItem>
                         </SelectContent>
                     </Select>
 
@@ -208,8 +210,12 @@ const Content = () => {
                             <SelectItem value="clear" className="text-muted-foreground">
                                 {t("select-park-number")}
                             </SelectItem>
-                            <SelectItem value={CarParkChoices.P3}>{t("car-park-type.park-3")}</SelectItem>
-                            <SelectItem value={CarParkChoices.P4}>{t("car-park-type.park-4")}</SelectItem>
+                            <SelectItem value={CarParkChoices.P3}>
+                                {t("car-park-type.park-3")}
+                            </SelectItem>
+                            <SelectItem value={CarParkChoices.P4}>
+                                {t("car-park-type.park-4")}
+                            </SelectItem>
                         </SelectContent>
                     </Select>
 

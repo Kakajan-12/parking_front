@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TariffVisible } from './TariffVisible';
+import type { TariffVisible } from "./TariffVisible";
+
 export type IPaginationDataBase_TariffVisible_ = {
     limit: number;
     page: number;
     rows: Array<TariffVisible>;
 };
-

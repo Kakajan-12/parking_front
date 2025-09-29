@@ -40,7 +40,6 @@ import {
 import { formatDatetime } from "@/lib/helper";
 import { CameraVisible } from "@/openapi/client";
 
-
 interface Props {
     rows: Array<CameraVisible>;
     page: number;
@@ -87,7 +86,6 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
 
         router.replace(`${pathname}?${params.toString()}`, { scroll: true });
     };
-
 
     const columns: ColumnDef<CameraVisible>[] = [
         {
@@ -151,7 +149,6 @@ function Content({ rows, page, limit, totalCount, search }: Props) {
                                     {t("action-buttons.view-details")}
                                 </Link>
                             </DropdownMenuItem>
-
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );

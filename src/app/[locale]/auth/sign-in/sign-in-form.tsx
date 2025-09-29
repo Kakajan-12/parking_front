@@ -30,7 +30,7 @@ import { authenticate } from "./actions";
 const ROUTES_BY_ROLE = {
     [RoleTypeChoices.ADMIN]: "/dashboard",
     [RoleTypeChoices.OPERATOR]: "/video",
-    [RoleTypeChoices.ACCOUNTANT]: "/report",
+    [RoleTypeChoices.ACCOUNTANT]: "/reports",
 };
 
 const SignInForm = () => {
@@ -56,8 +56,8 @@ const SignInForm = () => {
         setLoading(true);
         const toastId = toastLoading(t("please-wait"));
         const response = await authenticate({
-            username: values.username,
-            password: values.password,
+            username: values.username.trim(),
+            password: values.password.trim(),
             carPark: values.carPark || undefined,
             remember: values.remember,
         });

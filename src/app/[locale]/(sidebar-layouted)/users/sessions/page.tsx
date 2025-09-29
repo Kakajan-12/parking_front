@@ -74,13 +74,7 @@ const Page = async ({ params, searchParams }: Props) => {
             <Paper>
                 <Suspense fallback={<Loader />}>
                     <Await promise={promise} allow401={true}>
-                        {data => (
-                            <Content
-                                rows={data.rows}
-                                page={safePage}
-                                limit={safeLimit}
-                            />
-                        )}
+                        {data => <Content rows={data.rows} page={safePage} limit={safeLimit} />}
                     </Await>
                 </Suspense>
             </Paper>

@@ -65,15 +65,14 @@ const Page = async ({ params, searchParams }: Props) => {
         locale: locale,
         token: token.value,
     });
-    const count = await callRequest<"carPark", "tariffCount", { count: number }>({
+    const count = await callRequest<"carPark", "tariffCount", number>({
         instance: countClient,
         service: "carPark",
         action: "tariffCount",
-        safeReturn: { count: 0 },
+        safeReturn: 0,
         allow401: true,
-        raiseExp: true
+        raiseExp: true,
     });
-
 
     const promise = fetchClient.carPark.tariffList({
         page: safePage,
@@ -98,7 +97,7 @@ const Page = async ({ params, searchParams }: Props) => {
                     <Await promise={promise} allow401={true}>
                         {data => (
                             <Content
-                                totalCount={count.count}
+                                totalCount={count}
                                 rows={data.rows}
                                 page={safePage}
                                 limit={safeLimit}

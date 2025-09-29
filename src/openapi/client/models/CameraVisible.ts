@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ChoiceBase_CameraTypeChoices_ } from './ChoiceBase_CameraTypeChoices_';
+import type { ChoiceBase_CameraTypeChoices_ } from "./ChoiceBase_CameraTypeChoices_";
+
 export type CameraVisible = {
     id: number;
     cameraType: ChoiceBase_CameraTypeChoices_;
@@ -10,6 +11,5 @@ export type CameraVisible = {
     channelName: string;
     channelToken: string;
     createdAt: string;
-    updatedAt?: (string | null);
+    updatedAt?: string | null;
 };
-
