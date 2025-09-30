@@ -46,7 +46,7 @@ function SelectTrigger({
     return (
         <div
             className={cn(
-                "input-wrapper",
+                "select-input-wrapper",
                 label && "space-y-2",
                 wrapperClass,
                 fullWidth && "w-full",

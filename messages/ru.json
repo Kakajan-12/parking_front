@@ -131,7 +131,8 @@
     "report": "Отчёт",
     "camera-session-detail": "Детали сессии камеры",
     "subscriptions": "Подписки",
-    "subscription-add": "Добавить подписку"
+    "subscription-add": "Добавить подписку",
+    "subscription-detail": "Subscription detail"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -152,7 +153,8 @@
     "report": "Отчёт",
     "camera-session-detail": "Детали сессии камеры",
     "subscriptions": "Подписки",
-    "subscription-add": "Добавить подписку"
+    "subscription-add": "Добавить подписку",
+    "subscription-detail": "Subscription detail"
   },
   "users-page": {
     "add-new-user": "Добавить нового пользователя",
@@ -229,7 +231,10 @@
     "select-start-time": "Выберите время начала",
     "select-end-time": "Выберите время окончания",
     "add-new-car-subscription": "Добавить новую подписку на автомобиль",
-    "add-car-subscription-instruction": "Инструкция по добавлению подписки на автомобиль"
+    "add-car-subscription-instruction": "Инструкция по добавлению подписки на автомобиль",
+
+    "update-subscription-details": "Обновить данные подписки",
+    "update-subscription-instruction": "Пожалуйста, обновите данные вашей подписки."
   },
   "action-buttons": {
     "add": "Добавить",

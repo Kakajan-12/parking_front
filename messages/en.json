@@ -131,7 +131,8 @@
     "report": "Report",
     "camera-session-detail": "Camera session details",
     "subscriptions": "Subscriptions",
-    "subscription-add": "Add subscription"
+    "subscription-add": "Add subscription",
+    "subscription-detail": "Subscription detail"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -152,7 +153,8 @@
     "report": "Report",
     "camera-session-detail": "Camera session details",
     "subscriptions": "Subscriptions",
-    "subscription-add": "Add subscription"
+    "subscription-add": "Add subscription",
+    "subscription-detail": "Subscription detail"
   },
   "users-page": {
     "add-new-user": "Add new user",
@@ -229,7 +231,9 @@
     "select-start-time": "Select start time",
     "select-end-time": "Select end time",
     "add-new-car-subscription": "Add new car subscription",
-    "add-car-subscription-instruction": "Instructions for adding a car subscription"
+    "add-car-subscription-instruction": "Instructions for adding a car subscription",
+    "update-subscription-details": "Update subscription details",
+    "update-subscription-instruction": "Please update your subscription information."
   },
   "action-buttons": {
     "add": "Add",

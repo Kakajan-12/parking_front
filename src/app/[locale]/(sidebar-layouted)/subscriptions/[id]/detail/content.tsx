@@ -2,11 +2,12 @@ import React from "react";
 
 import { useLocale, useTranslations } from "next-intl";
 
+import Link from "@/components/Link";
 import { Badge } from "@/components/ui/badge";
 import { formatDatetime } from "@/lib/helper";
-import { UserVisible } from "@/openapi/client";
+import { CarSubscriptionVisible } from "@/openapi/client";
 
-const Content = ({ data }: { data: UserVisible }) => {
+const Content = ({ data }: { data: CarSubscriptionVisible }) => {
     const locale = useLocale();
     const t = useTranslations();
 
@@ -27,32 +28,17 @@ const Content = ({ data }: { data: UserVisible }) => {
                     <tr className="border-b">
                         <th
                             scope="row"
-                            className="px-4 py-2 text-left font-medium text-muted-foreground"
+                            className="w-40 px-4 py-2 text-left font-medium text-muted-foreground"
                         >
-                            {t("username")}
-                        </th>
-                        <td className="px-4 py-2">{data.username}</td>
-                    </tr>
-                    <tr className="border-b">
-                        <th
-                            scope="row"
-                            className="px-4 py-2 text-left font-medium text-muted-foreground"
-                        >
-                            {t("full-name")}
-                        </th>
-                        <td className="px-4 py-2">{data.fullName || "-"}</td>
-                    </tr>
-                    <tr className="border-b">
-                        <th
-                            scope="row"
-                            className="px-4 py-2 text-left font-medium text-muted-foreground"
-                        >
-                            {t("role")}
+                            Car
                         </th>
                         <td className="px-4 py-2">
-                            <Badge variant="outline">{data.role.label}</Badge>
+                            <Link withoutStyling={false}   href={`/cars/${data.carId}/detail`}>
+                                {data.car ? data.car.carNumber : data.carId}
+                            </Link>
                         </td>
                     </tr>
+
                     <tr className="border-b">
                         <th
                             scope="row"
@@ -68,21 +54,6 @@ const Content = ({ data }: { data: UserVisible }) => {
                                     <Badge variant="destructive">{t("inactive")}</Badge>
                                 )}
                             </Badge>
-                        </td>
-                    </tr>
-                    <tr className="border-b">
-                        <th
-                            scope="row"
-                            className="px-4 py-2 text-left font-medium text-muted-foreground"
-                        >
-                            {t("car-park")}
-                        </th>
-                        <td className="px-4 py-2">
-                            {data.carPark ? (
-                                <Badge variant="outline">{data.carPark.label}</Badge>
-                            ) : (
-                                "-"
-                            )}
                         </td>
                     </tr>
                     <tr className="border-b">

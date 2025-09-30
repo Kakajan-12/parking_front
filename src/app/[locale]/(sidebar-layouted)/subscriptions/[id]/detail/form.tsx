@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -19,29 +19,17 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DatetimePicker } from "@/components/ui/datetime-picker";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PasswordInput } from "@/components/ui/password-input";
-import {
-    Select,
-    SelectTrigger,
-    SelectContent,
-    SelectItem,
-    SelectValue,
-} from "@/components/ui/select";
+import { NumberInput } from "@/components/ui/number-input";
+import { Textarea } from "@/components/ui/textarea";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
-import {
-    CarParkChoices,
-    UserBase,
-    UserVisible,
-    RoleTypeChoices,
-    ValidationError,
-} from "@/openapi/client";
+import { ValidationError, CarSubscriptionVisible } from "@/openapi/client";
 
-import { userUpdateAction } from "./actions";
+import { updateAction } from "./actions";
 
-const Content = ({ data }: { data: UserVisible }) => {
+const Content = ({ data }: { data: CarSubscriptionVisible }) => {
     const t = useTranslations();
     const [errors, setErrors] = useState<Array<ValidationError> | null>(null);
     const [loading, setLoading] = useState(false);
@@ -49,34 +37,27 @@ const Content = ({ data }: { data: UserVisible }) => {
     const router = useRouter();
 
     const handleSubmit = async (values: {
-        username: string;
-        fullName: string;
-        password: string;
-        role?: string;
-        carPark?: string;
+        totalAmount: string;
+        isPaid: boolean;
         isActive: boolean;
     }) => {
-        if (values.role === undefined) return;
         setLoading(true);
         const toastId = toastLoading(t("please-wait"));
-        const response = await userUpdateAction(data.id, {
-            username: values.username,
-            password: values.password,
-            fullName: values.fullName,
-            role: values.role as UserBase["role"],
-            carPark: (values.carPark || undefined) as UserBase["carPark"],
+        const response = await updateAction(data.id, {
+            totalAmount: values.totalAmount,
+            isPaid: values.isPaid,
             isActive: values.isActive,
         });
 
         if (response.status == 200 && response.data) {
             toastUpdate(
                 toastId,
-                response.message ?? t("users-page.user-updated-successfully"),
+                response.message ?? t("subscription-page.subscription-updated-successfully"),
                 "success",
             );
             setErrors(null);
             if (response.data) {
-                router.prefetch(`/users/${response.data.id}/detail`);
+                router.prefetch(`/subscriptions/${response.data.id}/detail`);
                 router.refresh();
             }
         } else {
@@ -87,28 +68,22 @@ const Content = ({ data }: { data: UserVisible }) => {
     };
 
     const schema = z.object({
-        username: z.string({ required_error: t("validation.default.required") }),
-        fullName: z.string({ required_error: t("validation.default.required") }),
-        password: z.string().optional(),
-        role: z.nativeEnum(RoleTypeChoices, {
-            required_error: t("validation.default.required"),
-            message: t("validation.select.invalid"),
-        }),
-        carPark: z
-            .nativeEnum(CarParkChoices, { message: t("validation.select.invalid") })
-            .optional(),
+        totalAmount: z.string({ required_error: t("validation.default.required") }),
+        startTime: z.string({ required_error: t("validation.default.required") }),
+        endTime: z.string({ required_error: t("validation.default.required") }),
     });
 
     const formik = useFormik({
         initialValues: {
-            username: data.username,
-            fullName: data.fullName ?? "",
-            password: "",
-            carPark: data.carPark ? data.carPark.value : undefined,
-            role: data.role.value,
+            totalAmount: data.totalAmount ?? "",
+            isPaid: data.isPaid,
             isActive: data.isActive,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            note: data.note,
         },
         validationSchema: toFormikValidationSchema(schema),
+
         onSubmit: handleSubmit,
         enableReinitialize: true,
     });
@@ -116,104 +91,61 @@ const Content = ({ data }: { data: UserVisible }) => {
     return (
         <Card className="w-full mx-auto p-6">
             <CardHeader>
-                <CardTitle>{t("users-page.update-user-details")}</CardTitle>
-                <CardDescription>{t("users-page.update-user-instruction")}</CardDescription>
+                <CardTitle>{t("subscriptions-page.update-subscription-details")}</CardTitle>
+                <CardDescription>
+                    {t("subscriptions-page.update-subscription-instruction")}
+                </CardDescription>
             </CardHeader>
             <CardContent className="px-6 py-4">
                 <Form onSubmit={formik.handleSubmit} noValidate={true} className="w-full space-y-4">
-                    <Input
+                    <NumberInput
                         required={true}
-                        id="fullName"
-                        name="fullName"
-                        error={getError(formik, errors, "fullName")}
-                        value={formik.values.fullName}
+                        id="totalAmount"
+                        name="totalAmount"
+                        error={getError(formik, errors, "totalAmount")}
+                        value={formik.values.totalAmount}
                         onChange={formik.handleChange}
-                        placeholder={t("users-page.fill-full-name")}
-                        label={t("full-name")}
+                        placeholder={t("subscriptions-page.fill-total-amount")}
+                        label={t("total-amount")}
                     />
-
-                    <Input
+                    <DatetimePicker
+                        value={formik.values.startTime}
                         required={true}
-                        id="username"
-                        name="username"
-                        error={getError(formik, errors, "username")}
-                        value={formik.values.username}
-                        onChange={formik.handleChange}
-                        label={t("username")}
-                        placeholder={t("users-page.fill-username")}
-                    />
-
-                    <PasswordInput
-                        id="password"
-                        name="password"
-                        required={true}
-                        error={getError(formik, errors, "password")}
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        label={t("password")}
-                        helperText={t("users-page.fill-password-for-change")}
-                        placeholder="••••••••"
-                    />
-
-                    <Select
-                        value={formik.values.role}
-                        onValueChange={(value: string) => {
-                            formik.setFieldValue("role", value);
-                        }}
-                    >
-                        <SelectTrigger
-                            required={true}
-                            error={getError(formik, errors, "role")}
-                            label={t("role")}
-                            id="role"
-                            fullWidth={true}
-                        >
-                            <SelectValue placeholder={t("users-page.select-role")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value={RoleTypeChoices.OPERATOR}>
-                                {t("role-type.operator")}
-                            </SelectItem>
-                            <SelectItem value={RoleTypeChoices.ACCOUNTANT}>
-                                {t("role-type.accountant")}
-                            </SelectItem>
-                            <SelectItem value={RoleTypeChoices.ADMIN}>
-                                {t("role-type.admin")}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-
-                    <Select
-                        value={formik.values.carPark}
-                        onValueChange={(value: string) => {
-                            if (value === "clear") {
-                                formik.setFieldValue("carPark", "");
+                        label={t("start-time")}
+                        onChange={value => {
+                            if (value) {
+                                formik.setFieldValue("startTime", value.toISOString());
                             } else {
-                                formik.setFieldValue("carPark", value);
+                                formik.setFieldValue("startTime", undefined);
                             }
                         }}
-                    >
-                        <SelectTrigger
-                            error={getError(formik, errors, "carPark")}
-                            label={t("park-number")}
-                            id="carPark"
-                            fullWidth={true}
-                        >
-                            <SelectValue placeholder={t("users-page.select-car-park")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="clear" className="text-muted-foreground">
-                                {t("select-park-number")}
-                            </SelectItem>
-                            <SelectItem value={CarParkChoices.P3}>
-                                {t("car-park-type.park-3")}
-                            </SelectItem>
-                            <SelectItem value={CarParkChoices.P4}>
-                                {t("car-park-type.park-4")}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                    />
+                    <DatetimePicker
+                        value={formik.values.endTime}
+                        required={true}
+                        label={t("end-time")}
+                        onChange={value => {
+                            if (value) {
+                                formik.setFieldValue("endTime", value.toISOString());
+                            } else {
+                                formik.setFieldValue("endTime", undefined);
+                            }
+                        }}
+                    />
 
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            name="isPaid"
+                            id="isPaid"
+                            checked={formik.values.isPaid}
+                            onCheckedChange={checked => {
+                                formik.setFieldValue("isPaid", checked);
+                            }}
+                        />
+                        <Label htmlFor="isPaid" className="text-sm font-medium">
+                            {t("is-paid")}
+                        </Label>
+                    </div>
                     {/* Is Active */}
                     <div className="flex items-center space-x-2">
                         <Checkbox
@@ -228,7 +160,17 @@ const Content = ({ data }: { data: UserVisible }) => {
                             {t("is-active")}
                         </Label>
                     </div>
-
+                    <div>
+                        <Label htmlFor="note" className="text-sm font-medium">
+                            {t("note")}
+                        </Label>
+                        <Textarea
+                            value={formik.values.note}
+                            onChange={formik.handleChange}
+                            id="note"
+                            name="note"
+                        />
+                    </div>
                     <CardFooter className="gap-x-4 justify-end  px-0 py-4">
                         <Button onClick={() => formik.resetForm()} type="button" variant="outline">
                             {t("action-buttons.reset")}

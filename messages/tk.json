@@ -131,7 +131,8 @@
     "report": "Hasabat",
     "camera-session-detail": "Kamera sessiýasynyň maglumatlary",
     "subscriptions": "Abunalar",
-    "subscription-add": "Abuna goş"
+    "subscription-add": "Abuna goş",
+    "subscription-detail": "Subscription detail"
   },
   "nav": {
     "dashboard": "Dolandyryş paneli",
@@ -152,7 +153,8 @@
     "report": "Hasabat",
     "camera-session-detail": "Kamera sessiýasynyň maglumatlary",
     "subscriptions": "Abunalar",
-    "subscription-add": "Abuna goş"
+    "subscription-add": "Abuna goş",
+    "subscription-detail": "Subscription detail"
   },
   "users-page": {
     "add-new-user": "Täze ulanyjy goş",
@@ -229,7 +231,10 @@
     "select-start-time": "Başlaýyş wagtyny saýlaň",
     "select-end-time": "Tamamlaýyş wagtyny saýlaň",
     "add-new-car-subscription": "Täze maşyn abunasy goş",
-    "add-car-subscription-instruction": "Maşyn abunasyny goşmak görkezmesi"
+    "add-car-subscription-instruction": "Maşyn abunasyny goşmak görkezmesi",
+
+    "update-subscription-details": "Abunalyk maglumatlaryny täzele",
+    "update-subscription-instruction": "Abunalyk maglumatlaryňyzy täzeläň."
   },
   "action-buttons": {
     "add": "Goş",

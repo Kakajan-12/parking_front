@@ -9,17 +9,17 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { ValidationError, UserVisible, UserBase } from "@/openapi/client";
+import type { ValidationError, CarSubscriptionVisible, CarSubscriptionBase } from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
     status: number;
     message: string | null | undefined;
     errors: Array<ValidationError> | null;
-    data?: UserVisible | null;
+    data?: CarSubscriptionVisible | null;
 }
 
-export const userUpdateAction = async (objId: string, values: UserBase): Promise<IResponse> => {
+export const updateAction = async (objId: number, values: CarSubscriptionBase): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();
@@ -36,7 +36,7 @@ export const userUpdateAction = async (objId: string, values: UserBase): Promise
     });
     let result = undefined;
     try {
-        const response = await fetchClient.account.userUpdate({
+        const response = await fetchClient.carPark.carSubscriptionUpdate({
             objId: objId,
             requestBody: values,
         });
@@ -60,9 +60,9 @@ export const userUpdateAction = async (objId: string, values: UserBase): Promise
                 };
             }
         }
-        return { status: 500, errors: null, message: "Something went wrong!", data: null };
+        return { status: 500, errors: null, message: t("errors.something-went-wrong"), data: null };
     }
-    revalidateTag("user-list");
-    revalidateTag("user-detail");
+    revalidateTag("subscription-list");
+    revalidateTag("subscription-detail");
     return result;
 };

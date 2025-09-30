@@ -17,7 +17,7 @@ import Content from "./content";
 import Form from "./form";
 
 type Props = {
-    params: Promise<{ locale: string; id: string }>;
+    params: Promise<{ locale: string; id: number }>;
 };
 
 export async function generateMetadata(props: Omit<Props, "children">): Promise<Metadata> {
@@ -26,7 +26,7 @@ export async function generateMetadata(props: Omit<Props, "children">): Promise<
     const t = await getTranslations({ locale });
 
     return {
-        title: t("page-titles.user-detail"),
+        title: t("page-titles.subscription-detail"),
     };
 }
 
@@ -48,8 +48,8 @@ const Page = async ({ params }: Props) => {
     });
     const data: UserVisible | null = await callRequest({
         instance: fetchClient,
-        service: "account",
-        action: "userDetail",
+        service: "carPark",
+        action: "carSubscriptionDetail",
         params: { objId: id },
         safeReturn: null,
     });
@@ -61,12 +61,12 @@ const Page = async ({ params }: Props) => {
     return (
         <Fragment>
             <PageHeading
-                title={t("nav.user-detail")}
+                title={t("nav.subscription-detail")}
                 breadcrumbs={[
                     { href: "/dashboard", label: t("nav.dashboard") },
                     {
-                        href: "/users",
-                        label: t("nav.users"),
+                        href: "/subscriptions",
+                        label: t("nav.subscriptions"),
                         current: true,
                     },
                 ]}

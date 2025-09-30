@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -19,40 +19,86 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Combobox, ComboboxOption } from "@/components/ui/combobox";
+import { DatetimePicker } from "@/components/ui/datetime-picker";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NumberInput } from "@/components/ui/number-input";
 import { Textarea } from "@/components/ui/textarea";
+import { useDebounceCallback } from "@/hooks/use-debounce-callback";
 import { canSubmit, getError, toastLoading, toastUpdate } from "@/lib/helper";
 import { ValidationError } from "@/openapi/client";
 
-import { createAction } from "./actions";
+import { createAction, fetchCars } from "./actions";
 
 const Content = () => {
+    const [cars, setCars] = useState<Array<ComboboxOption>>([]);
+    const [carLoading, setCarLoading] = useState<boolean>(false);
+    const [searchValue, setSearchValue] = useState<string>("");
     const t = useTranslations();
     const [errors, setErrors] = useState<ValidationError[] | null>(null);
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
+    const callback = useCallback(async () => {
+        setCarLoading(true);
+        try {
+            const response = await fetchCars({
+                page: 1,
+                limit: 25,
+                isStaff: true,
+                search: searchValue,
+            });
+            if (response.status === 200 && response.data) {
+                const options: ComboboxOption[] = response.data.map(item => ({
+                    value: item.id.toString(),
+                    label: item.carNumber,
+                    disabled: false,
+                }));
+                setCars(options);
+            } else {
+                setCars([]);
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error("Error corrupted:", e.message);
+                console.error(e.stack);
+            } else {
+                console.error("Unknown error:", e);
+            }
+            setCars([]);
+        }
+        setCarLoading(false);
+    }, []);
+
+    const debouncedOnChange = useDebounceCallback(async () => {
+        await callback();
+    }, 300);
+
+    const handleChange = (value: string) => {
+        setSearchValue(value); // update UI immediately
+        debouncedOnChange(); // call onChange after debounce
+    };
+
     const handleSubmit = async (values: {
-        carId: string;
+        carId: ComboboxOption | null;
         totalAmount: string;
-        startTime: string;
-        endTime: string;
+        startTime: string | undefined;
+        endTime: string | undefined;
         isPaid: boolean;
         isActive: boolean;
         note: string;
     }) => {
-        if (values.carId === "") return;
+        if (values.carId === null) return;
         setLoading(true);
-        const toastId = toastLoading(t("plea    se-wait"));
+        const toastId = toastLoading(t("please-wait"));
         try {
             const response = await createAction({
-                carId: parseInt(values.carId),
+                carId: parseInt(values.carId.value),
                 totalAmount: values.totalAmount,
-                startTime: values.startTime,
-                endTime: values.endTime,
+                startTime: values.startTime ?? "",
+                endTime: values.endTime ?? "",
                 isPaid: values.isPaid || false,
                 isActive: values.isActive || false,
                 note: values.note,
@@ -89,15 +135,17 @@ const Content = () => {
     };
 
     const schema = z.object({
-        carId: z.string({ required_error: t("validation.default.required") }),
+        totalAmount: z.string({ required_error: t("validation.default.required") }),
+        startTime: z.string({ required_error: t("validation.default.required") }),
+        endTime: z.string({ required_error: t("validation.default.required") }),
     });
 
     const formik = useFormik({
         initialValues: {
-            carId: "",
+            carId: null,
             totalAmount: "",
-            startTime: "",
-            endTime: "",
+            startTime: undefined,
+            endTime: undefined,
             isPaid: false,
             isActive: false,
             note: "",
@@ -116,18 +164,22 @@ const Content = () => {
             </CardHeader>
             <CardContent className="px-6 py-4">
                 <Form onSubmit={formik.handleSubmit} noValidate={true} className="w-full space-y-4">
-                    <Input
-                        autoFocus={true}
+                    <Combobox
                         required={true}
                         id="carId"
-                        name="carId"
-                        error={getError(formik, errors, "carId")}
-                        value={formik.values.carId}
-                        onChange={formik.handleChange}
-                        placeholder={t("subscriptions-page.select-car")}
                         label={t("car")}
+                        loading={carLoading}
+                        onValueChange={value => {
+                            console.log(value);
+                            formik.setFieldValue("carId", value);
+                        }}
+                        value={formik.values.carId}
+                        options={cars}
+                        searchValue={searchValue}
+                        setSearchValue={handleChange}
+                        error={getError(formik, errors, "carId")}
                     />
-                    <Input
+                    <NumberInput
                         required={true}
                         id="totalAmount"
                         name="totalAmount"
@@ -137,25 +189,29 @@ const Content = () => {
                         placeholder={t("subscriptions-page.fill-total-amount")}
                         label={t("total-amount")}
                     />
-                    <Input
-                        required={true}
-                        id="startTime"
-                        name="startTime"
-                        error={getError(formik, errors, "startTime")}
+                    <DatetimePicker
                         value={formik.values.startTime}
-                        onChange={formik.handleChange}
-                        placeholder={t("subscriptions-page.select-start-time")}
-                        label={t("start-time")}
-                    />
-                    <Input
                         required={true}
-                        id="endTime"
-                        name="endTime"
-                        error={getError(formik, errors, "endTime")}
+                        label={t("start-time")}
+                        onChange={value => {
+                            if (value) {
+                                formik.setFieldValue("startTime", value.toISOString());
+                            } else {
+                                formik.setFieldValue("startTime", undefined);
+                            }
+                        }}
+                    />
+                    <DatetimePicker
                         value={formik.values.endTime}
-                        onChange={formik.handleChange}
-                        placeholder={t("subscriptions-page.select-end-time")}
+                        required={true}
                         label={t("end-time")}
+                        onChange={value => {
+                            if (value) {
+                                formik.setFieldValue("endTime", value.toISOString());
+                            } else {
+                                formik.setFieldValue("endTime", undefined);
+                            }
+                        }}
                     />
 
                     <div className="flex items-center space-x-2">
