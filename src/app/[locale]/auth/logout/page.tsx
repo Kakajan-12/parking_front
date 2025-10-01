@@ -43,7 +43,7 @@ const Page = async () => {
         safeReturn: null,
         allow401: false,
         allow404: false,
-        raiseExp: true,
+        raiseExp: false,
     });
     return <Content />;
 };

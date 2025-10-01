@@ -283,9 +283,9 @@ const OperatorSessionsTable = ({ rows, page, limit }: Props) => {
                     table.setPageSize(value);
                 }}
                 previousPage={() => table.previousPage()}
-                canPreviousPage={table.getCanPreviousPage()}
+                canPreviousPage={true}
                 nextPage={() => table.nextPage()}
-                canNextPage={table.getCanNextPage()}
+                canNextPage={true}
                 selectedCount={table.getFilteredSelectedRowModel().rows.length}
                 rowsCount={table.getFilteredRowModel().rows.length}
                 totalPage={table.getPageCount()}
