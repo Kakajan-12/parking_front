@@ -42,7 +42,7 @@ const Content = ({ data }: { data: CarVisible }) => {
         setLoading(true);
         const toastId = toastLoading(t("please-wait"));
         const response = await carUpdateAction(data.id, {
-            carNumber: values.carNumber,
+            carNumber: values.carNumber.toUpperCase(),
             isStaff: values.isStaff || false,
             ownerName: values.ownerName,
         });

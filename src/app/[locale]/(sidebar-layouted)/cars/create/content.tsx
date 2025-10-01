@@ -43,7 +43,7 @@ const Content = () => {
         const toastId = toastLoading(t("please-wait"));
         try {
             const response = await carCreateAction({
-                carNumber: values.carNumber,
+                carNumber: values.carNumber.toUpperCase(),
                 isStaff: values.isStaff || false,
                 ownerName: values.ownerName,
             });
