@@ -380,5 +380,7 @@
   "note": "Note",
   "channel": "Channel",
   "total-summary": "Total summary",
-  "event": "Event"
+  "event": "Event",
+  "exit": "Exit",
+  "entry": "Entry"
 }

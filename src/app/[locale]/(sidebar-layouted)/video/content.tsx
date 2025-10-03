@@ -209,7 +209,6 @@ function Content({ rows, page, limit, search }: Props) {
                 const imageUrl = row.original.imageUrl;
                 if (!imageUrl) return "-";
                 return (
-                    <div>
                         <Image
                             withBackground={true}
                             isServerImage={true}
@@ -219,8 +218,6 @@ function Content({ rows, page, limit, search }: Props) {
                             className="w-20 aspect-square object-contain"
                             alt="Event image"
                         />
-                        <span>{imageUrl}</span>
-                    </div>
                 );
             },
         },
@@ -502,7 +499,7 @@ function Content({ rows, page, limit, search }: Props) {
                         <DialogTitle>
                             {t("event")}: {currentEvent?.eventType && t(currentEvent?.eventType)}
                         </DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription asChild={true}>
                             <div>
                                 <div>
                                     {t("car")}: {currentEvent?.carNumber}
@@ -550,7 +547,7 @@ function Content({ rows, page, limit, search }: Props) {
                         <DialogTitle>
                             {t("car")}: {currentSession?.carNumber}
                         </DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription asChild={true}>
                             <div>
                                 <div>
                                     {t("car-park")}: {currentSession?.carPark?.label}

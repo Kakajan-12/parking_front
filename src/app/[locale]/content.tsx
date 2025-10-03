@@ -51,7 +51,7 @@ const Content = () => {
                         ))
                     ) : (
                         <Button asChild={true} className="w-full">
-                            <Link href={route}>{route}</Link>
+                            <Link href={route ?? "#"}>{route}</Link>
                         </Button>
                     )}
                 </CardContent>

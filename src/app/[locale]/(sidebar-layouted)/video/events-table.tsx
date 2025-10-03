@@ -322,7 +322,7 @@ const EventsTable = () => {
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogContent className="max-w-lg p-4">
                         <DialogHeader>
-                            <DialogDescription>
+                            <DialogDescription asChild={true}>
                                 <div>
                                     <DialogTitle>
                                         {t("event")}: {selected?.eventType?.label}

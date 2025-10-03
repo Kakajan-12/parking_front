@@ -381,7 +381,8 @@
   "note": "Bellik",
   "channel": "Kanal",
   "total-summary": "Jemi",
-  "event": "Waka"
-  
+  "event": "Waka",
+  "exit": "Exit",
+  "entry": "Entry"
 
 }
