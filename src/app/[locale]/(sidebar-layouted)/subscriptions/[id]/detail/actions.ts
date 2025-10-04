@@ -9,7 +9,11 @@ import { defaultLocale } from "@/config";
 import { checkAuthCookies } from "@/lib/auth/actions";
 import { AuthError } from "@/lib/auth/exceptions";
 import { ApiError } from "@/openapi/client";
-import type { ValidationError, CarSubscriptionVisible, CarSubscriptionBase } from "@/openapi/client";
+import type {
+    ValidationError,
+    CarSubscriptionVisible,
+    CarSubscriptionBase,
+} from "@/openapi/client";
 import getServerInstance from "@/openapi/server-instance";
 
 interface IResponse {
@@ -19,7 +23,10 @@ interface IResponse {
     data?: CarSubscriptionVisible | null;
 }
 
-export const updateAction = async (objId: number, values: CarSubscriptionBase): Promise<IResponse> => {
+export const updateAction = async (
+    objId: number,
+    values: CarSubscriptionBase,
+): Promise<IResponse> => {
     const t = await getTranslations();
 
     const [token, isAuth] = await checkAuthCookies();

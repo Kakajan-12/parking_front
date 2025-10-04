@@ -42,7 +42,7 @@ export type { IPaginationDataBase_CarSubscriptionVisible_ } from "./models/IPagi
 export type { IPaginationDataBase_CarVisible_ } from "./models/IPaginationDataBase_CarVisible_";
 export type { IPaginationDataBase_OperatorSessionVisible_ } from "./models/IPaginationDataBase_OperatorSessionVisible_";
 export type { IPaginationDataBase_TariffVisible_ } from "./models/IPaginationDataBase_TariffVisible_";
-export type { IPaginationDataBase_UserSessionVisible_ } from "./models/IPaginationDataBase_UserSessionVisible_";
+export type { IPaginationDataBase_UserSessionExtendedVisible_ } from "./models/IPaginationDataBase_UserSessionExtendedVisible_";
 export type { IPaginationDataBase_UserVisible_ } from "./models/IPaginationDataBase_UserVisible_";
 export type { IResponseBase_CameraVisible_ } from "./models/IResponseBase_CameraVisible_";
 export type { IResponseBase_CarSubscriptionVisible_ } from "./models/IResponseBase_CarSubscriptionVisible_";

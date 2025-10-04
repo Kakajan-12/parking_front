@@ -132,7 +132,8 @@
     "camera-session-detail": "Camera session details",
     "subscriptions": "Subscriptions",
     "subscription-add": "Add subscription",
-    "subscription-detail": "Subscription detail"
+    "subscription-detail": "Subscription detail",
+    "car-session-detail": "car-session-detail"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -154,7 +155,8 @@
     "camera-session-detail": "Camera session details",
     "subscriptions": "Subscriptions",
     "subscription-add": "Add subscription",
-    "subscription-detail": "Subscription detail"
+    "subscription-detail": "Subscription detail",
+    "car-session-detail": "car-session-detail"
   },
   "users-page": {
     "add-new-user": "Add new user",
@@ -382,5 +384,8 @@
   "total-summary": "Total summary",
   "event": "Event",
   "exit": "Exit",
-  "entry": "Entry"
+  "entry": "Entry",
+  "is-subscription": "Is subscription",
+  "reason": "Reason",
+  "barrier-opened": "Barrier opened"
 }

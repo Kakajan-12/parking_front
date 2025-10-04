@@ -5,7 +5,7 @@
 export type EventData = {
     platetext: string;
     platetextformat?: string | null;
-    parkingtimesec: number | string;
+    parkingtimesec?: number | string | null;
     lastname?: string | null;
     firstname?: string | null;
     patronymic?: string | null;

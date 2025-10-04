@@ -9,6 +9,7 @@ import type { CameraCreate } from "../models/CameraCreate";
 import type { CameraVisible } from "../models/CameraVisible";
 import type { IPaginationDataBase_CameraVisible_ } from "../models/IPaginationDataBase_CameraVisible_";
 import type { IResponseBase_CameraVisible_ } from "../models/IResponseBase_CameraVisible_";
+import type { IResponseBase_str_ } from "../models/IResponseBase_str_";
 
 export class CameraService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
@@ -113,6 +114,28 @@ export class CameraService {
             },
             body: requestBody,
             mediaType: "application/json",
+            errors: {
+                400: `Bad Request`,
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Camera-Open-Barrier
+     * @returns IResponseBase_str_ Successful Response
+     * @throws ApiError
+     */
+    public cameraOpenBarrier({
+        channelToken,
+    }: {
+        channelToken: string;
+    }): CancelablePromise<IResponseBase_str_> {
+        return this.httpRequest.request({
+            method: "GET",
+            url: "/api/v1/camera/{channel_token}/open-barrier/",
+            path: {
+                channel_token: channelToken,
+            },
             errors: {
                 400: `Bad Request`,
                 422: `Validation Error`,

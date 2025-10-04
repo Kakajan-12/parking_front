@@ -18,6 +18,7 @@ export type AuthContextType = {
     setUserSession: (value: UserSessionExtendedVisible | null) => void;
     token: string | null;
     isLoading: boolean;
+    fetchUserData: () => void;
 };
 
 const API_ME_URL = "/api/auth/me";
@@ -29,6 +30,7 @@ export const AuthContext = React.createContext<AuthContextType>({
     setUserSession: () => undefined,
     token: null,
     isLoading: false,
+    fetchUserData: () => undefined,
 });
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -140,8 +142,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
                 setAuthState(prev => ({ ...prev, userSession: value })),
             token,
             isLoading: authState.isLoading,
+            fetchUserData: debouncedFetchUser,
         }),
-        [authState, token, refreshTokenPayload],
+        [authState, token, refreshTokenPayload, debouncedFetchUser],
     );
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

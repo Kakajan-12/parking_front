@@ -75,7 +75,6 @@ interface IFetchCarsResponse {
     data: Array<CarVisible> | null;
 }
 
-
 export const fetchCars = async (values: {
     search?: string;
     page: number;
@@ -123,4 +122,3 @@ export const fetchCars = async (values: {
         return { status: 500, message: t("errors.something-went-wrong"), data: null };
     }
 };
-

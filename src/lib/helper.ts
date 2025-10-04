@@ -86,7 +86,7 @@ export const formatDate = ({
 export const formatDatetime = ({
     date,
     locale = defaultLocale,
-    formatStr = "dd.MM.yyyy HH:mm",
+    formatStr = "dd.MM.yyyy HH:mm:ss",
 }: {
     date?: string | Date | null;
     formatStr?: string;
@@ -126,8 +126,8 @@ export const formatDuration = ({
     return parts.join(" ") || `0 ${strings.minute}`;
 };
 
-export function formatVideoDuration(seconds: number) {
-    const totalSeconds = Math.floor(seconds);
+export function formatVideoDuration(seconds: number | string) {
+    const totalSeconds = Math.floor(Number(seconds));
 
     const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor((totalSeconds % 86400) / 3600);

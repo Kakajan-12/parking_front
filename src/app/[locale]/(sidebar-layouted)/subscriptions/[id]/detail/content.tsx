@@ -33,7 +33,7 @@ const Content = ({ data }: { data: CarSubscriptionVisible }) => {
                             Car
                         </th>
                         <td className="px-4 py-2">
-                            <Link withoutStyling={false}   href={`/cars/${data.carId}/detail`}>
+                            <Link withoutStyling={false} href={`/cars/${data.carId}/detail`}>
                                 {data.car ? data.car.carNumber : data.carId}
                             </Link>
                         </td>

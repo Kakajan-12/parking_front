@@ -40,7 +40,7 @@ const Page = async ({ params, searchParams }: Props) => {
 
     const { page, limit, search } = await searchParams;
     const safePage = typeof page === "string" ? Number(page) : 1;
-    const safeLimit = typeof limit === "string" ? Number(limit) : 25;
+    const safeLimit = typeof limit === "string" ? Number(limit) : 10;
     const safeSearch = typeof search === "string" ? String(search) : undefined;
 
     const cookieStore = await cookies();
@@ -85,7 +85,6 @@ const Page = async ({ params, searchParams }: Props) => {
                     <Await promise={promise} allow401={true}>
                         {data => (
                             <Content
-                                
                                 rows={data.rows}
                                 page={safePage}
                                 limit={safeLimit}

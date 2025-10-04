@@ -477,15 +477,15 @@ export class CarParkService {
     public cameraEventList({
         orderBy,
         search,
+        carPark,
         page,
         limit,
-        carPark,
     }: {
         orderBy?: "created_at" | "-created_at" | null;
         search?: string | null;
+        carPark?: CarParkChoices | null;
         page?: number | null;
         limit?: number | null;
-        carPark?: string | null;
     }): CancelablePromise<IPaginationDataBase_CarSessionEventVisible_> {
         return this.httpRequest.request({
             method: "GET",
@@ -493,9 +493,9 @@ export class CarParkService {
             query: {
                 order_by: orderBy,
                 search: search,
+                car_park: carPark,
                 page: page,
                 limit: limit,
-                car_park: carPark,
             },
             errors: {
                 400: `Bad Request`,

@@ -50,7 +50,6 @@ export function DatetimePicker({
         }
     }, [parsedDate]);
 
-
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTime = e.target.value;
         setTime(newTime);

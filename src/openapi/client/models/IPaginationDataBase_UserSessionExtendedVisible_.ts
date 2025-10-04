@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { UserSessionExtendedVisible } from "./UserSessionExtendedVisible";
 
-export type IPaginationDataBase_UserSessionVisible_ = {
+export type IPaginationDataBase_UserSessionExtendedVisible_ = {
     limit: number;
     page: number;
     rows: Array<UserSessionExtendedVisible>;

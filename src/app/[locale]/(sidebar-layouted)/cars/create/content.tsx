@@ -74,8 +74,9 @@ const Content = () => {
                 console.error("Unknown error:", e);
             }
             toastUpdate(toastId, t("errors.something-went-wrong"), "warning");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const schema = z.object({

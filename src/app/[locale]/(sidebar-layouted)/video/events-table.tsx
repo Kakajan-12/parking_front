@@ -62,7 +62,7 @@ const EventsTable = () => {
     const [data, setData] = useState<Array<CarSessionEventVisible>>([]);
     const [pagination, setPagination] = useState({
         page: 1,
-        pageSize: 25,
+        pageSize: 10,
     });
 
     const callback = useCallback(async () => {

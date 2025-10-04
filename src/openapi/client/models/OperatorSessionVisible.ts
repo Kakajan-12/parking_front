@@ -16,7 +16,7 @@ export type OperatorSessionVisible = {
     totalCars?: number | null;
     paidCars?: number | null;
     note: string;
-    carPark?: ChoiceBase_CarParkChoices_ | null;
+    carPark: ChoiceBase_CarParkChoices_;
     createdAt: string;
     updatedAt?: string | null;
     sessionId: string;

@@ -52,10 +52,19 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { useAuthContext } from "@/lib/auth/provider";
-import { formatDatetime, formatDuration, getPrice, toast } from "@/lib/helper";
+import {
+    formatDatetime,
+    formatDuration,
+    formatVideoDuration,
+    getPrice,
+    toast,
+    toastLoading,
+    toastUpdate,
+} from "@/lib/helper";
 import { CarSessionVisible, RoleTypeChoices } from "@/openapi/client";
 import { getSocketIO } from "@/socket";
 
+import { openBarrierAction } from "./actions";
 import EventsTable from "./events-table";
 
 interface Props {
@@ -86,19 +95,20 @@ interface EventData {
     carNumber: string;
     imageUrl: string;
     channelName: string;
+    channelToken: string;
     carPark: string;
     currency: string;
     totalAmount: string;
 }
 
-function Content({ rows, page, limit, search }: Props) {
+function Content({ rows, page, limit, search }: Props) { 
     const [modalOpen, setModalOpen] = React.useState(false);
     const [modalSessionOpen, setModalSessionOpen] = React.useState(false);
     const [currentSession, setCurrentSession] = React.useState<CarSessionVisible | null>(null);
     const [currentEvent, setCurrentEvent] = React.useState<EventData | null>(null);
     const [fullName, setFullName] = React.useState("");
     const [socket, setSocket] = React.useState<Socket | null>(null);
-    const { token, userSession, payload } = useAuthContext();
+    const { token, userSession, payload, fetchUserData } = useAuthContext();
     const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
@@ -136,6 +146,7 @@ function Content({ rows, page, limit, search }: Props) {
                 carNumber: event.data.car_number,
                 imageUrl: event.data.image_url,
                 channelName: event.data.channel_name,
+                channelToken: event.data.channel_token,
                 carPark: event.data.car_park,
                 currency: event.data.currency ?? "",
                 totalAmount: event.data.total_amount ?? "",
@@ -167,6 +178,27 @@ function Content({ rows, page, limit, search }: Props) {
     const handleRefresh = () => {
         router.refresh();
         toast(t("page-refreshed"));
+    };
+    const handleRefreshSession = () => {
+        fetchUserData();
+    };
+    const handleOpenBarrier = async (channelToken: string) => { 
+        const toastId = toastLoading(t("please-wait"));
+        try {
+            const response = await openBarrierAction(channelToken);
+
+            if (response.status == 200) {
+                toastUpdate(toastId, response.message ?? t("barrier-opened"), "success");
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error("Error corrupted:", e.message);
+                console.error(e.stack);
+            } else {
+                console.error("Unknown error:", e);
+            }
+            toastUpdate(toastId, t("errors.something-went-wrong"), "warning");
+        }  
     };
 
     const handlePageChange = (updaterOrValue: Updater<PaginationState>) => {
@@ -209,15 +241,15 @@ function Content({ rows, page, limit, search }: Props) {
                 const imageUrl = row.original.imageUrl;
                 if (!imageUrl) return "-";
                 return (
-                        <Image
-                            withBackground={true}
-                            isServerImage={true}
-                            src={imageUrl}
-                            width={80}
-                            height={80}
-                            className="w-20 aspect-square object-contain"
-                            alt="Event image"
-                        />
+                    <Image
+                        withBackground={true}
+                        isServerImage={true}
+                        src={imageUrl}
+                        width={80}
+                        height={80}
+                        className="w-20 aspect-square object-contain"
+                        alt="Event image"
+                    />
                 );
             },
         },
@@ -257,6 +289,18 @@ function Content({ rows, page, limit, search }: Props) {
             },
         },
         {
+            accessorKey: "is-subscription",
+            header: t("is-subscription"),
+            cell: ({ row }) => {
+                const isSubscription = row.original.isSubscription;
+                return (
+                    <Badge variant={isSubscription ? "secondary" : "destructive"}>
+                        {isSubscription ? t("action-buttons.yes") : t("action-buttons.no")}
+                    </Badge>
+                );
+            },
+        },
+        {
             accessorKey: "isPaid",
             header: t("is-paid"),
             cell: ({ row }) => {
@@ -272,6 +316,10 @@ function Content({ rows, page, limit, search }: Props) {
             accessorKey: "duration",
             header: t("duration"),
             cell: ({ row }) => {
+                const duration = row.original.duration;
+                if (duration) {
+                    return formatVideoDuration(duration);
+                }
                 return formatDuration({
                     start: row.original.startTime,
                     end: row.original.endTime,
@@ -357,20 +405,21 @@ function Content({ rows, page, limit, search }: Props) {
 
     return (
         <div className="space-y-8">
-            <Paper elevation={4} className="flex flex-row items-center ">
+            <Paper elevation={4} className="flex flex-row justify-between items-start ">
                 <div className="text-lg">
                     <div>
-                        <span className="font-bold">{t("car-park")}: </span>{" "}
+                        <span className="font-bold">{t("car-park")}: </span>
                         {payload?.car_park && t(`car-park-type.${payload.car_park}`)}
                     </div>
                     <div>
-                        <span className="font-bold">{t("user")}:</span> {payload?.username}
+                        <span className="font-bold">{t("user")}: </span> {payload?.username}
                     </div>
                     <div>
-                        <span className="font-bold">{t("full-name")}:</span> <span>{fullName}</span>
+                        <span className="font-bold">{t("full-name")}: </span>{" "}
+                        <span>{fullName}</span>
                     </div>
                     <div>
-                        <span className="font-bold">{t("total-summary")}:</span>{" "}
+                        <span className="font-bold">{t("total-summary")}: </span>
                         <span>
                             {getPrice({
                                 amount: userSession?.operatorSession?.totalAmount,
@@ -378,7 +427,27 @@ function Content({ rows, page, limit, search }: Props) {
                             })}
                         </span>
                     </div>
+                    <div>
+                        <span className="font-bold">{t("captured-summary")}: </span>
+                        <span>
+                            {getPrice({
+                                amount: userSession?.operatorSession?.capturedAmount,
+                                currency: userSession?.operatorSession?.currency ?? "",
+                            })}
+                        </span>
+                    </div>
+                    <div>
+                        <span className="font-bold">{t("total-cars")}: </span>
+                        <span>{userSession?.operatorSession?.totalCars}</span>
+                    </div>
+                    <div>
+                        <span className="font-bold">{t("paid-cars")}: </span>
+                        <span>{userSession?.operatorSession?.paidCars}</span>
+                    </div>
                 </div>
+                <Button variant="ghost" size="icon" onClick={handleRefreshSession}>
+                    <LuRefreshCcw className="size-4" />
+                </Button>
             </Paper>
 
             <div className="w-full">
@@ -494,7 +563,7 @@ function Content({ rows, page, limit, search }: Props) {
 
             {/* --- Socket Event Modal --- */}
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                <DialogContent className="max-w-lg p-4 bg-red-200">
+                <DialogContent className="max-w-lg p-4">
                     <DialogHeader>
                         <DialogTitle>
                             {t("event")}: {currentEvent?.eventType && t(currentEvent?.eventType)}
@@ -532,7 +601,15 @@ function Content({ rows, page, limit, search }: Props) {
                     )}
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button variant="outline" className="w-full">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={async () => {
+                                    if (currentEvent?.channelToken) {
+                                        await handleOpenBarrier(currentEvent.channelToken);
+                                    }
+                                }}
+                            >
                                 {t("open-barrier")}
                             </Button>
                         </DialogClose>
@@ -576,7 +653,15 @@ function Content({ rows, page, limit, search }: Props) {
                     )}
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button variant="outline" className="w-full">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={async () => {
+                                    if (currentSession?.exitToken) {
+                                        await handleOpenBarrier(currentSession.exitToken);
+                                    }
+                                }}
+                            >
                                 {t("open-barrier")}
                             </Button>
                         </DialogClose>

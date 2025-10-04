@@ -14,7 +14,7 @@ export type CarSubscriptionVisible = {
     isPaid: boolean;
     isActive: boolean;
     note: string;
-    car?: CarVisible | null;
     createdAt: string;
-    updatedAt?: string;
+    updatedAt?: string | null;
+    car?: CarVisible | null;
 };

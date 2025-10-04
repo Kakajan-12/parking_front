@@ -132,7 +132,9 @@
     "camera-session-detail": "Детали сессии камеры",
     "subscriptions": "Подписки",
     "subscription-add": "Добавить подписку",
-    "subscription-detail": "Subscription detail"
+    "subscription-detail": "Subscription detail",
+    
+    "car-session-detail": "car-session-detail"
   },
   "nav": {
     "dashboard": "Панель управления",
@@ -154,7 +156,8 @@
     "camera-session-detail": "Детали сессии камеры",
     "subscriptions": "Подписки",
     "subscription-add": "Добавить подписку",
-    "subscription-detail": "Subscription detail"
+    "subscription-detail": "Subscription detail",
+    "car-session-detail": "car-session-detail"
   },
   "users-page": {
     "add-new-user": "Добавить нового пользователя",
@@ -385,5 +388,11 @@
   "total-summary": "Обшая сумма",
   "event": "События",
   "exit": "Exit",
-  "entry": "Entry"
+  "entry": "Entry",
+  
+  "is-subscription": "Подписка",
+  
+  "reason": "Reason",
+  
+  "barrier-opened": "Шлагбаум открыт"
 }

@@ -14,13 +14,15 @@ export type CarSessionVisible = {
     reason: string;
     isPaid: boolean;
     isSubscription: boolean;
+    duration?: string | null;
     startTime?: string | null;
     endTime?: string | null;
     invalidatedAt?: string | null;
     carPark: ChoiceBase_CarParkChoices_;
+    imageUrl?: string | null;
     events?: Array<CarSessionEventVisible> | null;
     createdAt: string;
     updatedAt?: string | null;
     operatorSessionId?: number | null;
-    imageUrl?: string | null;
+    exitToken?: string | null;
 };

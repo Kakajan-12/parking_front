@@ -132,7 +132,8 @@
     "camera-session-detail": "Kamera sessiýasynyň maglumatlary",
     "subscriptions": "Abunalar",
     "subscription-add": "Abuna goş",
-    "subscription-detail": "Subscription detail"
+    "subscription-detail": "Subscription detail",
+    "car-session-detail": "car-session-detail"
   },
   "nav": {
     "dashboard": "Dolandyryş paneli",
@@ -154,7 +155,8 @@
     "camera-session-detail": "Kamera sessiýasynyň maglumatlary",
     "subscriptions": "Abunalar",
     "subscription-add": "Abuna goş",
-    "subscription-detail": "Subscription detail"
+    "subscription-detail": "Subscription detail",
+    "car-session-detail": "car-session-detail"
   },
   "users-page": {
     "add-new-user": "Täze ulanyjy goş",
@@ -248,7 +250,7 @@
     "close": "Ýap",
     "open": "Aç",
     "view": "Gör",
-    "view-details": "Jikme-jiklikleri gör",
+    "view-details": "Maglumaty görmek",
     "search": "Gözle",
     "filter": "Filter",
     "reset": "Arassala",
@@ -347,8 +349,8 @@
   "add-user": "Ulanyjy goş",
   "edit-user": "Ulanyjy täzeläň",
   "total-users": "Ulanyjylaryň sany: {count}",
-  "start-time": "Başlaýan wagty",
-  "end-time": "Gutarýan wagty",
+  "start-time": "Başlan wagty",
+  "end-time": "Gutaran wagty",
   "invalidated-at": "Ýatyran wagty",
   "price": "Baha",
   "session-expired": "Sessia gutardy. Täzeden giriň.",
@@ -365,8 +367,8 @@
   "type": "Görnüşi",
   "car": "Maşyn",
   "total-amount": "Jemi baha",
-  "is-paid": "Tölegli",
-  "duration": "Möhleti",
+  "is-paid": "Tölenen",
+  "duration": "Dowamlygy",
   "connect": "Birikdir",
   "disconnect": "Aýyr",
   "connected": "Birikdirildi",
@@ -383,6 +385,11 @@
   "total-summary": "Jemi",
   "event": "Waka",
   "exit": "Exit",
-  "entry": "Entry"
+  "entry": "Entry",
 
+  "is-subscription": "Abuna",
+  
+  "reason": "Sebäp",
+  
+  "barrier-opened": "Şlagbaum açyldy"
 }

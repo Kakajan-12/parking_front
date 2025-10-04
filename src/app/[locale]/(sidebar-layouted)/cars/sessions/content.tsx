@@ -15,6 +15,7 @@ import {
 import { ChevronDown, MoreHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
+import Image from "@/components/Image";
 import Link from "@/components/Link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { formatDatetime, getPrice } from "@/lib/helper";
+import { formatDatetime, formatDuration, formatVideoDuration, getPrice } from "@/lib/helper";
 import { CarSessionVisible } from "@/openapi/client";
 
 interface Props {
@@ -88,6 +89,25 @@ function Content({ rows, page, limit, search }: Props) {
 
     const columns: ColumnDef<CarSessionVisible>[] = [
         {
+            accessorKey: "imageUrl",
+            header: t("image"),
+            cell: ({ row }) => {
+                const imageUrl = row.original.imageUrl;
+                if (!imageUrl) return "-";
+                return (
+                    <Image
+                        withBackground={true}
+                        isServerImage={true}
+                        src={imageUrl}
+                        width={80}
+                        height={80}
+                        className="w-20 aspect-square object-contain"
+                        alt="Event image"
+                    />
+                );
+            },
+        },
+        {
             accessorKey: "id",
             header: "Id",
         },
@@ -123,6 +143,18 @@ function Content({ rows, page, limit, search }: Props) {
             },
         },
         {
+            accessorKey: "is-subscription",
+            header: t("is-subscription"),
+            cell: ({ row }) => {
+                const isSubscription = row.original.isSubscription;
+                return (
+                    <Badge variant={isSubscription ? "secondary" : "destructive"}>
+                        {isSubscription ? t("action-buttons.yes") : t("action-buttons.no")}
+                    </Badge>
+                );
+            },
+        },
+        {
             accessorKey: "isPaid",
             header: t("is-paid"),
             cell: ({ row }) => {
@@ -132,6 +164,22 @@ function Content({ rows, page, limit, search }: Props) {
                         {isPaid ? t("action-buttons.yes") : t("action-buttons.no")}
                     </Badge>
                 );
+            },
+        },
+
+        {
+            accessorKey: "duration",
+            header: t("duration"),
+            cell: ({ row }) => {
+                const duration = row.original.duration;
+                if (duration) {
+                    return formatVideoDuration(duration);
+                }
+                return formatDuration({
+                    start: row.original.startTime,
+                    end: row.original.endTime,
+                    locale: locale,
+                });
             },
         },
         {

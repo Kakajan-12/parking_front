@@ -7,7 +7,7 @@ import type { CancelablePromise } from "../core/CancelablePromise";
 import type { Body_get_token } from "../models/Body_get_token";
 import type { CarParkChoices } from "../models/CarParkChoices";
 import type { IPaginationDataBase_OperatorSessionVisible_ } from "../models/IPaginationDataBase_OperatorSessionVisible_";
-import type { IPaginationDataBase_UserSessionVisible_ } from "../models/IPaginationDataBase_UserSessionVisible_";
+import type { IPaginationDataBase_UserSessionExtendedVisible_ } from "../models/IPaginationDataBase_UserSessionExtendedVisible_";
 import type { IPaginationDataBase_UserVisible_ } from "../models/IPaginationDataBase_UserVisible_";
 import type { IResponseBase_OperatorSessionVisible_ } from "../models/IResponseBase_OperatorSessionVisible_";
 import type { IResponseBase_Union_UserSessionVisible__NoneType__ } from "../models/IResponseBase_Union_UserSessionVisible__NoneType__";
@@ -306,7 +306,7 @@ export class AccountService {
     }
     /**
      * User-Session-List
-     * @returns IPaginationDataBase_UserSessionVisible_ Successful Response
+     * @returns IPaginationDataBase_UserSessionExtendedVisible_ Successful Response
      * @throws ApiError
      */
     public userSessionList({
@@ -319,7 +319,7 @@ export class AccountService {
         orderBy?: "created_at" | "-created_at" | null;
         page?: number | null;
         limit?: number | null;
-    }): CancelablePromise<IPaginationDataBase_UserSessionVisible_> {
+    }): CancelablePromise<IPaginationDataBase_UserSessionExtendedVisible_> {
         return this.httpRequest.request({
             method: "GET",
             url: "/api/v1/user/session/",
