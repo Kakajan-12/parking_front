@@ -70,7 +70,7 @@ const Content = () => {
             setCars([]);
         }
         setCarLoading(false);
-    }, []);
+    }, [searchValue]);
 
     const debouncedOnChange = useDebounceCallback(async () => {
         await callback();
