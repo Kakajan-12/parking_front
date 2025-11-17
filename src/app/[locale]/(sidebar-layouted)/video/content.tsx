@@ -87,6 +87,7 @@ interface SocketEvent {
         car_park: string;
         currency?: string;
         total_amount?: string;
+        is_subscription: boolean;
     };
 }
 
@@ -99,9 +100,10 @@ interface EventData {
     carPark: string;
     currency: string;
     totalAmount: string;
+    isSubscription: boolean;
 }
 
-function Content({ rows, page, limit, search }: Props) { 
+function Content({ rows, page, limit, search }: Props) {
     const [modalOpen, setModalOpen] = React.useState(false);
     const [modalSessionOpen, setModalSessionOpen] = React.useState(false);
     const [currentSession, setCurrentSession] = React.useState<CarSessionVisible | null>(null);
@@ -150,6 +152,7 @@ function Content({ rows, page, limit, search }: Props) {
                 carPark: event.data.car_park,
                 currency: event.data.currency ?? "",
                 totalAmount: event.data.total_amount ?? "",
+                isSubscription: event.data.is_subscription || false
             };
             if (payload.role === RoleTypeChoices.OPERATOR) {
                 if (event.data.car_park === payload.car_park) {
@@ -182,7 +185,7 @@ function Content({ rows, page, limit, search }: Props) {
     const handleRefreshSession = () => {
         fetchUserData();
     };
-    const handleOpenBarrier = async (channelToken: string) => { 
+    const handleOpenBarrier = async (channelToken: string) => {
         const toastId = toastLoading(t("please-wait"));
         try {
             const response = await openBarrierAction(channelToken);
@@ -198,7 +201,7 @@ function Content({ rows, page, limit, search }: Props) {
                 console.error("Unknown error:", e);
             }
             toastUpdate(toastId, t("errors.something-went-wrong"), "warning");
-        }  
+        }
     };
 
     const handlePageChange = (updaterOrValue: Updater<PaginationState>) => {
@@ -576,9 +579,16 @@ function Content({ rows, page, limit, search }: Props) {
                                 <div>
                                     {t("channel")}: {currentEvent?.channelName}
                                 </div>
+                                <div className="flex flex-row ">
+                                    <div>{t("is-subscription")}:</div>
+
+                                    <Badge variant={currentEvent?.isSubscription ? "secondary" : "destructive"}>
+                                        {currentEvent?.isSubscription ? t("action-buttons.yes") : t("action-buttons.no")}
+                                    </Badge>
+                                </div>
                                 {currentEvent?.eventType === "exit" && (
                                     <div>
-                                        {t("total-amount")}:{" "}
+                                        {t("total-amount")}:
                                         {getPrice({
                                             amount: currentEvent?.totalAmount,
                                             currency: currentEvent?.currency ?? "",
@@ -631,7 +641,7 @@ function Content({ rows, page, limit, search }: Props) {
                                 </div>
 
                                 <div>
-                                    {t("total-amount")}:{" "}
+                                    {t("total-amount")}:
                                     {getPrice({
                                         amount: currentSession?.totalAmount,
                                         currency: currentSession?.currency ?? "",

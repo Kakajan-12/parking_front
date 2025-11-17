@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
     // trailingSlash: false,
     compress: false,
     skipTrailingSlashRedirect: true,
-    // output: 'standalone',
+    output: "standalone",
     compiler: {
         styledComponents: true,
     },
